@@ -6,3 +6,8 @@ export interface FormValues {
     confirm_password: string;
     mobile:string
   }
+
+  export interface FormLogin {
+    email: string;
+    password: string
+  }

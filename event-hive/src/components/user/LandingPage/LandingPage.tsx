@@ -2,7 +2,7 @@ import React from 'react'
 import UserNavbar from '../userNavbar/UserNavbar'
 import image  from '../../../assets/landing-page-image.webp'
 import UserFooter from '../UserFooter/UserFooter'
-function LandingPage() {
+const  LandingPage:React.FC = () => {
   return (
     <>
     <UserNavbar/>
@@ -16,11 +16,11 @@ function LandingPage() {
                <p>sdlsgdlk</p>
         </div>
     </div> */}
-    <div className=' bg-blue-400 shadow-lg shadow-slate-400 p-8 m-7 h-80 rounded-md flex justify-center  items-center'>
-       <p className='text-5xl font-bold text-white '>The World's Leader in Hackathons and Developer Relations</p>
-       <button className='mt-[200px] shadow-lg shadow-slate-400 w-[150px] h-10 border  bg-white rounded-md end-0 bottom-0 relative text-indigo-400 rounded-sm transform motion-safe:hover:scale-110 ...'>Get started</button>
+    <div className='   p-8 m-7 h-96 rounded-md flex justify-center   items-center'>
+       <p className='text-5xl font-bold mt-28 text-black '>The World's Leader in Hackathons and Developer Relations</p>
+       {/* <button className='mt-[200px] shadow-lg shadow-slate-400 w-[150px] h-10 border  bg-white rounded-md end-0 bottom-0 relative text-indigo-400 rounded-sm transform motion-safe:hover:scale-110 ...'>Get started</button> */}
     </div>
-    <div className='w-full flex p-10 shadow-md backdrop-sepia-0 bg-white/30 ... bg-slate-100' >
+    <div className='w-full mt-16 flex p-10 shadow-md backdrop-sepia-0 bg-white/30 ... bg-slate-100' >
         <div className='w-1/2 justify-center flex items-center flex-col'>
            <h4 className='text-orange-300 font-bold mb-5 shadow-md  shadow-gray-400'>FOR ORGANISATIONS</h4>
            <p className='text-4xl  font-bold'>Get Your Tech Into the Hands of Developers</p>
@@ -33,7 +33,7 @@ function LandingPage() {
             </button>
         </div>
         <div className='w-1/2 p-10'>
-        <div className=' bg-red-600 w-full  relative   rounded-2xl md:h-[22rem] '>
+        <div className=' bg-gray-400 w-full  relative   rounded-2xl md:h-[22rem] '>
         
         <img  className='object-contain  absolute top-[1rem] right-[1rem]  rounded-2xl 'src={image} alt="" />
         </div>

@@ -40,5 +40,19 @@ userApi.interceptors.response.use(
       
     }
   }
+  export const login = async ({email,password}:{
+    email:string;
+    password:string;
+  }) =>{
+    try {
+      const res = await userApi.post('/login',{email,password},{
+        withCredentials:true
+      })
+      return res
+    } catch (error) {
+      console.log(error);
+      
+    }
+  }
  
   
