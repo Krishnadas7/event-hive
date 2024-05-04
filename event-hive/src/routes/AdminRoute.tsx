@@ -8,7 +8,7 @@ const AdminRoute :React.FC= () =>{
 
         <Routes>
             <Route path='/dashboard' element={<AdminHomePage/>}></Route>
-            <Route path='/login' element={<AdminLoginPage/>}></Route>
+            <Route path='/' element={<AdminLoginPage/>}></Route>
         </Routes>
 
     </>

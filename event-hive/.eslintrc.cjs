@@ -10,6 +10,33 @@ module.exports = {
   parser: '@typescript-eslint/parser',
   plugins: ['react-refresh'],
   rules: {
+
+    camelcase: 'error',
+    "@typescript-eslint/naming-convention": [
+      "error",
+      {
+        selector: "variable",
+        format: ["camelCase"],
+        leadingUnderscore: "allow",
+        modifiers: ["exported"]
+      },
+      {
+        selector: "variable",
+        format: ["camelCase", "UPPER_CASE"],
+        leadingUnderscore: "forbid",
+        modifiers: ["global"]
+      },
+      {
+        selector: "function",
+        format: ["camelCase", "PascalCase"],
+        leadingUnderscore: "allow"
+      },
+      {
+        selector: "interface",
+        format: ["PascalCase"]
+      }
+    ],
+
     'react-refresh/only-export-components': [
       'warn',
       { allowConstantExport: true },

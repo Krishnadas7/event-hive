@@ -38,3 +38,23 @@ adminApi.interceptors.response.use(
         
     }
   }
+  export const getUser = async () =>{
+     try {
+        const res = await adminApi.get('/get-user')
+        return res
+     } catch (error) {
+      console.log(error);
+      
+     }
+  }
+  export const blockUnblock = async (_id:string) =>{
+    try {
+      console.log('admin apiiii');
+      
+      const res = await adminApi.patch(`/user/block-unblock?_id=${_id}`)
+      return res
+    } catch (error) {
+      console.log(error);
+      
+    }
+  }

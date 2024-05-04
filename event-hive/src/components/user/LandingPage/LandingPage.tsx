@@ -2,7 +2,7 @@ import React from 'react'
 import UserNavbar from '../userNavbar/UserNavbar'
 import image  from '../../../assets/landing-page-image.webp'
 import UserFooter from '../UserFooter/UserFooter'
-const  LandingPage:React.FC = () => {
+const  LandingPage:React.FC = ():JSX.Element => {
   return (
     <>
     <UserNavbar/>
@@ -22,7 +22,7 @@ const  LandingPage:React.FC = () => {
     </div>
     <div className='w-full mt-16 flex p-10 shadow-md backdrop-sepia-0 bg-white/30 ... bg-slate-100' >
         <div className='w-1/2 justify-center flex items-center flex-col'>
-           <h4 className='text-orange-300 font-bold mb-5 shadow-md  shadow-gray-400'>FOR ORGANISATIONS</h4>
+           <h4 className='text-black font-bold mb-5 shadow-md  shadow-gray-400'>FOR ORGANISATIONS</h4>
            <p className='text-4xl  font-bold'>Get Your Tech Into the Hands of Developers</p>
            <p className='mt-8 text-slate-400'>Market your technology to developers, activate developers to build using your technology, and engage developers that are already in your ecosystem</p>
                     <button type="button" className="text-white shadow-md shadow-slate-400 mt-5 bg-blue-700 hover:bg-blue-800 focus:ring-4 w-36 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">

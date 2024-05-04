@@ -3,11 +3,11 @@ import { Link } from 'react-router-dom'
 import { useFormik } from 'formik'
 import { toast } from 'react-toastify'
 import { setAdminCredentials } from '../../../slices/authSlice'
-import { useNavigate } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
+import { useNavigate } from 'react-router-dom'
 import { FormLogin } from '../../../validations/validationTypes'
 import { login } from '../../../api/adminApi'
-function AdminLogin() {
+function AdminLogin():JSX.Element {
   const dispatch = useDispatch()
   const navigate = useNavigate()
 
