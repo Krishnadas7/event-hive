@@ -1,23 +1,30 @@
 import {createSlice} from '@reduxjs/toolkit';
+import { PayloadAction } from '@reduxjs/toolkit';
 
 export interface UserInfo{
     _id?: string;
     email: string;
-    name: string;
+    name?: string;
+    first_name?:string;
+    last_name?:string;
+    ProfileImg?:string;
     mobile?: string;
     password?: string;
-    createdAt?:string
+    createdAt?:string;
 }
 interface InitialState {
-    userInfo:  UserInfo | null // UserInfo | null;
+    userInfo:  UserInfo | null|any // UserInfo | null;
     adminInfo: UserInfo | null
     registerInfo: UserInfo | null
+    timerInfo:any
+    companyInfo: any
 }
 
 const userInfoFromLocalStorage = localStorage.getItem('userInfo');
 const adminInfoFromLocalStorage = localStorage.getItem("adminInfo");
 const registerInfoFromLocalStorage = localStorage.getItem("registerInfo");
-
+const timerInfoFromLocalStorage = localStorage.getItem("timerInfo")
+const companyInfoFromLocalStorage = localStorage.getItem('companyInfo')
 // localStorage.removeItem('userInfo');
 
 const initialState: InitialState = {
@@ -26,6 +33,8 @@ const initialState: InitialState = {
     registerInfo: registerInfoFromLocalStorage
     ? JSON.parse(registerInfoFromLocalStorage)
     : null,
+    timerInfo: timerInfoFromLocalStorage ? JSON.parse(timerInfoFromLocalStorage) : null,
+    companyInfo: companyInfoFromLocalStorage ?JSON.parse(companyInfoFromLocalStorage):null
 };
 
 
@@ -33,7 +42,7 @@ const authSlice = createSlice({
     name: 'auth',
     initialState,
     reducers: {
-        setCredential: (state:any, action:any) => {
+        setCredential: (state, action: PayloadAction<UserInfo>) => {
             state.userInfo = action.payload;
             localStorage.setItem("userInfo", JSON.stringify(action.payload));
           },
@@ -48,6 +57,22 @@ const authSlice = createSlice({
           setRegister: (state, action) => {
             state.registerInfo = action.payload;
             localStorage.setItem("registerInfo", JSON.stringify(action.payload));
+          },
+          setCompany:(state,action) =>{
+            state.companyInfo = action.payload
+            localStorage.setItem("companyInfo",JSON.stringify(action.payload))
+          },
+          clearCompany:(state) =>{
+            state.companyInfo = null;
+            localStorage.removeItem("companyInfo")
+          },
+          setTimeInfo:(state, action) =>{
+           state.timerInfo = action.payload
+           localStorage.setItem("timerInfo", JSON.stringify(action.payload));
+          },
+          clearTimeInfo:(state) =>{
+           state.timerInfo=null
+           localStorage.removeItem("timerInfo")
           },
           adminLogOut: (state) => {
             state.adminInfo = null;
@@ -65,7 +90,11 @@ export const {
     adminLogOut,
     setRegister,
     clearRegister,
+    setTimeInfo,
     setAdminCredentials,
+    setCompany,
+    clearCompany,
+    clearTimeInfo,
 } = authSlice.actions;
 
 export default authSlice.reducer;

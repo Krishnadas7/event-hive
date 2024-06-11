@@ -9,7 +9,7 @@ import { IoLogoWhatsapp } from "react-icons/io";
 const  UserFooter:React.FC = () => {
   return (
     <>
-    <div className='w-full flex py-10  max-sm:flex-col bg-black mt-16 justify-around text-white text-sm'>
+    <div className='w-full flex py-10   max-sm:flex-col bg-white mt-16 justify-around text-black text-sm'>
         <div className='flex justify-center items-center'>
          <h1 className='font-mono font-bold'>EVENT HIVE</h1>
         </div>
@@ -33,7 +33,7 @@ const  UserFooter:React.FC = () => {
           <span className='mt-6 sm:text-center sm:p-5'><b>Subscribe</b></span>
           <div className='mt-5 flex sm:ml-4 flex-col'>
           <input type="text" className='h-6 focus:border-transparent  border focus:outline-none text-black p-2' placeholder='Email' />
-          <button className='bg-white text-black h-6 mt-2'>Subscribe</button>
+          <button className='bg-slate-400 text-black h-6 mt-2'>Subscribe</button>
           <span className='mt-2 ml-14'><b>Follow us</b></span>
           <div className='ml-2'>
             <ul className='flex justify-around leading-7 mt-3'>

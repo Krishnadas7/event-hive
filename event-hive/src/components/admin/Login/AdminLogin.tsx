@@ -1,15 +1,24 @@
-import React from 'react'
+import React,{useEffect} from 'react'
 import { Link } from 'react-router-dom'
 import { useFormik } from 'formik'
 import { toast } from 'react-toastify'
 import { setAdminCredentials } from '../../../slices/authSlice'
-import { useDispatch } from 'react-redux'
+import { useDispatch,useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
+import { RootState } from '../../../app/store'
 import { FormLogin } from '../../../validations/validationTypes'
 import { login } from '../../../api/adminApi'
 function AdminLogin():JSX.Element {
   const dispatch = useDispatch()
   const navigate = useNavigate()
+  const {adminInfo} = useSelector((state:RootState)=>state.auth)
+ console.log('admin login');
+ 
+   useEffect(()=>{
+    if(adminInfo){
+      navigate('/admin')
+    }
+   },[]) 
 
   const initialValues : FormLogin ={
    email: "",
@@ -22,9 +31,14 @@ function AdminLogin():JSX.Element {
       try {
         const {email,password}= values
         const res:any = await login({email,password})
+        console.log('res from admin login',res)
+        localStorage.setItem("adminAccessToken",res.data.adminAccessToken)  
+        localStorage.setItem("adminRefreshToken",res.data.adminRefreshToken)  
+        // console.log('login from res',res)
         dispatch(setAdminCredentials({...res.data}))
-        navigate('/admin/dashboard')
         toast.success(res.message)
+        navigate('/admin/dashboard')
+        
       } catch (error) {
         toast.error('admin login error')
       }
@@ -69,7 +83,7 @@ function AdminLogin():JSX.Element {
                   focus:outline-none
                    rounded-lg text-sm px-5 py-2.5 text-center me-2 mt-5 w-full
                     dark:hover:text-white
-                    ">SIGN IN</button>
+                    ">SIGN IN</button> 
                     {/* <p>OR sign Up using</p> */}
 
                 </div>

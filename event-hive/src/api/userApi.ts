@@ -56,25 +56,25 @@
 //   }
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
 import { IUser } from '../types/schema';
+import { MyError } from '../validations/validationTypes';
+import { string } from 'yup';
 
-
-const userApi: AxiosInstance = axios.create({
+export const userApi: AxiosInstance = axios.create({
     baseURL: 'http://localhost:3003/api/user'
 });
 
 userApi.interceptors.request.use(
     (config) => {
-        console.log('userapi request interceptors')
-        const accessToken = localStorage.getItem('accessToken');
+        const accessToken = localStorage.getItem('userAccessToken');
+        console.log('acess from request interceptors',accessToken);
+        
         if (accessToken) {
           config.headers.Authorization = `Bearer ${accessToken}`;
-          console.log('acccccccccc',config.headers.Authorization);
           
         }
         return config;
       },
       (error) => {
-        console.log('request error in api');
         
         return Promise.reject(error);
       }
@@ -83,29 +83,29 @@ userApi.interceptors.request.use(
 // Response interceptor
 userApi.interceptors.response.use(
     (response) => {
-      console.log('success response');
         
         return response;
       },
       async (error) => {
         const originalRequest = error.config;
-
+        const refreshToken = localStorage.getItem('userRefreshToken')
+        console.log('dsklklds',originalRequest);
+        console.log('sdklsdjkljds',error.response.status);
         
-        if (error.response.status === 401 && !originalRequest._retry) {
+        if (error.response.status === 401 && !originalRequest._retry && refreshToken) {
+           console.log('sdkljdskljdsklsd=');
+           
           originalRequest._retry = true;
           try {
-            const response = await axios.post("/refresh-token", {
-              refreshToken: localStorage.getItem('refreshToken')
-            });
+            const response = await userApi.post("http://localhost:3003/api/user/refresh-token", {
+              refreshToken
+            },{withCredentials:true});
             const newAccessToken = response.data.accessToken;
-            localStorage.setItem('accessToken', newAccessToken);
-            // Update the original request with the new access token
-            originalRequest.headers["Authorization"] = `Bearer ${newAccessToken}`;
-            // Retry the original request
-            return axios(originalRequest);
+            localStorage.setItem('userAccessToken', newAccessToken);
+            originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
+            return userApi(originalRequest)
           } catch (err) {
-            console.error('Failed to refresh token:', err);
-            // Redirect to login or do something else upon refresh token failure
+            return Promise.reject(error);
           }
         }
         return Promise.reject(error);
@@ -130,32 +130,23 @@ export const signUp = async ({ first_name, last_name, email, mobile, password, c
 };
 
 export const login = async ({ email, password }: { email: string; password: string; }) => {
-    try {
+    
         const res = await userApi.post('/login', { email, password }, {
             withCredentials: true
         });
-
+          
         // Store tokens securely
-        localStorage.setItem('accessToken', res.data.accessToken);
-        localStorage.setItem('refreshToken', res.data.refreshToken);
-       console.log('access',res.data.accessToken);
-       console.log('refreshh',res.data.refreshToken)
+        localStorage.setItem('userAccessToken', res.data.userAccessToken);
+        localStorage.setItem('userRefreshToken', res.data.userRefreshToken);
         return res;
-    } catch (error) {
-        console.log(error);
-    }
+   
 };
 export const getProfile = async ()=>{
   try {
-    const accessToken = localStorage.getItem('accessToken');
-    console.log('getuser',accessToken);
+   
     
-    const res = await userApi.get('/profile', {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      });
-      // console.log(res.data.status==401);
+    const res = await userApi.get('/profile');
+      console.log('from userprofile frontend',res);
       
     return res
   } catch (error) {
@@ -172,6 +163,151 @@ export const sendOtpToEmail = async ({first_name,email}:{first_name:string,email
     
   }
 }
+export const otpVerification = async ({otp,email}:{otp:string,email:string}) =>{
+  try {
+    console.log('otpp',otp);
+    
+    const res = await userApi.post('/verifyEmail',{otp,email},{withCredentials:true})
+    console.log('resss ',res)
+    return res
+  } catch (error) {
+    
+  }
+}
+export const googleAuth = async ({name,email,password}:{name:string,email:string,password:string}) =>{
+  let first_name=name
+  try {
+    const res = await userApi.post('/oauth',{first_name,email,password},{withCredentials:true})
+    return res
+  } catch (error) {
+    console.log(error);
+    
+  }
+}
+export const profileImageUpload = async (formData :any) =>{
+  try {
+    console.log('data from usreprofile update',formData)
+    const res =await userApi.post('/profile-image-update',formData,{headers: {
+      'Content-Type': 'multipart/form-data',
+    }})
+    console.log('response from imagecrop==',res.data.data);
+    
+    return res
+  
+  } catch (error) {
+    console.log(error);
+    
+  }
+}
+export const getImage = async (email:string) =>{
+  try {
+    const res = await userApi.get(`/get-image?email=${email}`)
+    return res
+  } catch (error) {
+    console.log(error)
+  }
+}
+export const forgotPassword = async ({name,email}:{name:string,email:string}) =>{
+  try {
+    const res = userApi.post('/sendemailfor-forgot',{name,email},{withCredentials:true})
+    return res
+  } catch (error) {
+    console.log(error)
+  }
+}
+export const resetPassword = async ({password,forgotToken}:{password:string,forgotToken:string}) =>{
+   try {
+    console.log('itemssss  ',password,forgotToken)
+    const res = userApi.post('/reset-password',{password,forgotToken},{withCredentials:true})
+    return res
+   } catch (error) {
+    console.log('reset password error')
+   }
+}
+export const updateProfile = async ({
+  first_name,
+  last_name,
+  qualification,
+  bio,
+  socialmedialink1,
+  socialmedialink2}:{
+    first_name:string,
+    last_name:string,
+    bio:string,
+    qualification:string,
+    socialmedialink1:string,
+    socialmedialink2:string
+  }) =>{
+    console.log(first_name,last_name,qualification,bio,socialmedialink1,socialmedialink2)
+     const res = await userApi.post('/profile-update',{
+      first_name,
+      last_name,
+      bio,
+      qualification,
+      socialmedialink1,
+      socialmedialink2
+     },{withCredentials:true})
+     return res
+  }
+  export const userData = async (email:string) =>{
+    try {
+      const res = await userApi.get(`/user-data?email=${email}`,{withCredentials:true})
+      console.log('res from userdata',res);
+      
+      return res
+    } catch (error) {
+      console.log(error); 
+    }
+  }
+  export const getRandomUser = async (userId:string) =>{
+    try{
+      const res = await userApi.get(`/random-user-data?userId=${userId}`,{withCredentials:true})
+      console.log('res from userdata',res);
+      
+      return res
+    }catch(error){
+      console.log(error)
+    }
+  }
+  export const allUsers = async () =>{
+    try {
+      const res = await userApi.get('/all-user')
+      return res
+    } catch (error) {
+     console.log(error);
+     
+    }
+  }
+  export const eventForUser = async () =>{
+    try{
+      const res = await userApi.get('/event-for-users')
+      return res
+    }catch(error){
+      console.log(error);
+      
+    }
+  }
+  export const selectedEvent = async (eventId:string) =>{
+    try {
+      console.log('idddd',eventId)
+      const res = await userApi.get(`/selected-event?eventId=${eventId}`)
+      console.log('sdfdsfds',res)
+      return res
+    } catch (error) {
+      console.log(error);
+      
+    }
+  }
+  // export const getConversation = async () =>{
+  //   try {
+  //     const res = await userApi.get('/conversation',{withCredentials:true})
+  //     return res
+  //   } catch (error) {
+  //     console.log(error); 
+  //   }
+   
+
+  // }
 
 export default userApi;
 
