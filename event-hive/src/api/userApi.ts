@@ -1,63 +1,8 @@
-// import axios,{AxiosInstance,AxiosRequestConfig,AxiosResponse} from 'axios'
-// import { IUser } from '../types/schema'
 
-// const userApi : AxiosInstance = axios.create({
-//     baseURL:'http://localhost:3003/api/user'
-// })
-
-// userApi.interceptors.request.use(
-//     (config: any) => {
-//         return config
-//     },
-//     (error) => {
-//         return Promise.reject(error)
-//     }
-// )
-// userApi.interceptors.response.use(
-//     (response: AxiosResponse) => {
-//       // Do something with successful response data
-//       return response;
-//     },
-//     (error) => {
-//       // Do something with response error
-//       return Promise.reject(error);
-//     }
-//   );
-
-//   export const signUp = async ({first_name,last_name,email,mobile,password,confirm_password}:IUser) =>{
-//     try {
-//       if(password!=confirm_password){
-//         alert('password and confirm password not match')
-//       }
-//       const res =await userApi.post('/signup',{first_name,last_name,email,mobile,password,confirm_password},{
-//         withCredentials:true
-//       })
-      
-//       console.log(res.data.token)
-//       return res
-//     } catch (error) {
-//       console.log(error);
-      
-//     }
-//   }
-//   export const login = async ({email,password}:{
-//     email:string;
-//     password:string;
-//   }) =>{
-//     try {
-//       const res = await userApi.post('/login',{email,password},{
-//         withCredentials:true
-//       })
-//       return res
-//     } catch (error) {
-//       console.log(error);
-      
-//     }
-//   }
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
 import { IUser } from '../types/schema';
-import { MyError } from '../validations/validationTypes';
-import { string } from 'yup';
+import { Booking, MyError } from '../validations/validationTypes';
+import { number, string } from 'yup';
 
 export const userApi: AxiosInstance = axios.create({
     baseURL: 'http://localhost:3003/api/user'
@@ -278,9 +223,13 @@ export const updateProfile = async ({
      
     }
   }
-  export const eventForUser = async () =>{
+  export const eventForUser = async (pagination:number) =>{
     try{
-      const res = await userApi.get('/event-for-users')
+      console.log('ppppppppppp',pagination);
+      
+      const res = await userApi.get('/event-for-users',{
+        params: { pagination: pagination },
+      })
       return res
     }catch(error){
       console.log(error);
@@ -308,6 +257,96 @@ export const updateProfile = async ({
    
 
   // }
+  export const searchEvent = async (search:string) =>{
+    try {
+      const res = await userApi.get('/search-event',{
+        params:{search:search}
+      })
+      return res
+    } catch (error) {
+      console.log(error)
+    }
+  }
+  export const filterEvent= async ({type,ticket,date}:{type:string,ticket:string,date:string}) =>{
+    console.log(type,ticket,date)
+    try {
+    
+    //   interface Obj{
+    //     type: string;
+    //     ticket: string;
+    //     date: string;
+    // }
+    // let obj:Obj = {
+    //     type,
+    //     ticket,
+    //     date
+    //   }
+      const res = await userApi.get('/filter-events',{
+        params:{type:type,
+          ticket:ticket,
+          date:date
+        }
+      })
+      return res
+    } catch (error) {
+      console.log(error)
+    }
+  }
+  export const ticketBooking = async (obj:Booking) =>{
+    try {
+      const res = await userApi.post('/ticket-booking',obj)
+      console.log('====',res)
+      return res
+    } catch (error) {
+      console.log(error)
+    }
+  }
+  export const allBookings = async (userId : string) =>{
+     try {
+      console.log('all bookings')
+      const res = await userApi.get('/all-bookings',{
+        params:{userId:userId}
+      })
+      return res
+     } catch (error) {
+       console.log(error)
+     }
+  }
+  export const membersExist = async (userId:string,email :string) =>{
+    try {
+      const res = userApi.get('/member-exist',{
+        params:{
+          userId:userId,
+          email:email
+        }
+      })
+      return res
+    } catch (error) {
+      console.log(error)
+    }
+  }
+  export const liveChecking = async (userId:string) =>{
+     try {
+        const res =await userApi.get('/live-checking',{
+          params:{userId:userId}
+        })
+        return res
+     } catch (error) {
+      console.log(error)
+     }
+  }
+  export const liveListing = async (userId:string) =>{
+    try {
+      const res = await userApi.get('/live-listing',{
+        params:{
+          userId:userId
+        }
+      })
+      return res
+    } catch (error) {
+      console.log(error)
+    }
+  }
 
 export default userApi;
 

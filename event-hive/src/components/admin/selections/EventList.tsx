@@ -39,19 +39,22 @@ const EventList = () => {
   const handleEndDateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setEndDate(event.target.value);
   };
-
-  const filteredEvents = data.filter((event: any) => {
-    const eventStartDate = new Date(event.start_date);
-    const eventEndDate = new Date(event.end_date);
-    const startDateFilter = startDate ? new Date(startDate) : null;
-    const endDateFilter = endDate ? new Date(endDate) : null;
-
-    return (
-      event.event_name.toLowerCase().includes(searchTerm.toLowerCase()) &&
-      (!startDateFilter || eventStartDate >= startDateFilter) &&
-      (!endDateFilter || eventEndDate <= endDateFilter)
-    );
-  });
+  let filteredEvents
+  if(data && data.length>0){
+     filteredEvents = data?.filter((event: any) => {
+      const eventStartDate = new Date(event.start_date);
+      const eventEndDate = new Date(event.end_date);
+      const startDateFilter = startDate ? new Date(startDate) : null;
+      const endDateFilter = endDate ? new Date(endDate) : null;
+  
+      return (
+        event.event_name.toLowerCase().includes(searchTerm.toLowerCase()) &&
+        (!startDateFilter || eventStartDate >= startDateFilter) &&
+        (!endDateFilter || eventEndDate <= endDateFilter)
+      );
+    });
+  }
+  
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -79,7 +82,7 @@ const EventList = () => {
         </div>
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 bg-gray-200 lg:grid-cols-3 gap-4">
-        {filteredEvents.map((details: any, index) => (
+        {filteredEvents?.map((details: any, index) => (
           <div
             key={index}
             className="shadow-lg rounded-lg overflow-hidden cursor-pointer transition-transform transform hover:scale-105"

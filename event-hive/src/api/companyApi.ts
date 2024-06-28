@@ -1,5 +1,4 @@
 import axios,{AxiosInstance,AxiosRequestConfig,AxiosResponse} from 'axios'
-import { CompanyData } from '../components/company/CompanyHomepage/ProfileDetails';
 
 const companyApi : AxiosInstance = axios.create({
     baseURL:'http://localhost:3003/api/company'
@@ -142,7 +141,37 @@ export const createEvent = async (formData:any) =>{
 }
 export const getEvent = async (companyId:string) =>{
   try {
-    const res = await companyApi.get(`/get-all-company?companyId=${companyId}`)
+    const res = await companyApi.get(`/get-all-event?companyId=${companyId}`)
+    return res
+  } catch (error) {
+    console.log(error);
+    
+  }
+}
+export const liveEvents = async (companyId:string) =>{
+  try {
+     const res = await companyApi.get(`/live-events?companyId=${companyId}`)
+     return res
+  } catch (error) {
+    console.log(error)
+  }
+}
+export const allMembers = async (eventId:string) =>{
+  try {
+    const res = await companyApi.get('/all-members',{
+      params:{
+        eventId:eventId
+      }
+    })
+    return res
+  } catch (error) {
+    console.log(error);
+    
+  }
+}
+export const closeEvent = async (eventId:string) =>{
+  try {
+    const res = await companyApi.post('/close-event',{eventId:eventId})
     return res
   } catch (error) {
     console.log(error);

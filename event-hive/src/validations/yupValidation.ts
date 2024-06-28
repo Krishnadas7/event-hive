@@ -5,7 +5,13 @@ export const loginValidation = Yup.object({
     email: Yup.string()
     .email("please enter valid email")
     .required("please enter email"),
-    password: Yup.string().required("Please enter password"),
+    password: Yup.string().required("Please enter password")
+    .min(6, "Password must be at least 6 characters")
+  .matches(/^[^\s]+$/, "Password cannot contain spaces")
+      .matches(
+        /[!@#$%^&*(),.?":{}|<>]/,
+        "Password must contain at least one special character"
+  ),
 })
 export const companyLogin = Yup.object({
   company_email:Yup.string()

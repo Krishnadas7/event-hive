@@ -11,29 +11,18 @@ import { useNavigate } from 'react-router-dom';
 import { getImage, getProfile } from '../../../api/userApi';
 import image from  '../../../assets/user-profile-icon-vector-avatar-600nw-2247726673.webp'
 import { AiOutlineLogout } from "react-icons/ai";
-import { liveChecking } from '../../../api/userApi';
+import { clearCompany } from '../../../slices/authSlice';
 
-
-
-const UserNavbar: React.FC = () => {
+interface CompanyNavbarProps {
+    onOpenModal: () => void;
+  }
+  const CompanyNavbar: React.FC<CompanyNavbarProps> = ({ onOpenModal }) => {
   const [scrolled, setScrolled] = useState(false);
   const [profile, setProfile] = useState(false);
-  const [liveicon,setLiveicon] = useState(false)
-  const {userInfo} = useSelector((state:RootState)=>state.auth)
-  
+  const {companyInfo} = useSelector((state:RootState)=>state.auth)
   const dispatch = useDispatch()
   const navigate = useNavigate()
-  useEffect(()=>{
-    const fetchData = async () =>{
-      const res = await liveChecking(userInfo._id)
-      if(res?.data.data>0){
-        setLiveicon(true)
-      }else{
-        setLiveicon(false)
-      }
-    }
-    fetchData()
-  },[])
+ 
 
   useEffect(() => {
     const handleScroll = () => {
@@ -46,12 +35,12 @@ const UserNavbar: React.FC = () => {
     return () => {
       window.removeEventListener('scroll', handleScroll);
     };
-  }, [userInfo]);
+  }, [companyInfo]);
 
   const handleLogout = async()=>{
     try {
      setProfile(false)
-      dispatch(userLogOut())
+      dispatch(clearCompany())
       
     } catch (error) {
       console.error(error);
@@ -59,8 +48,10 @@ const UserNavbar: React.FC = () => {
   }
   const handleProfile= async ()=>{
     const res = await getProfile()
-    navigate('/user/profile')
+    navigate('/company/profile')
   }
+
+  
 
   return (
     <header className={`h-20 top-0 fixed w-full transition-all  z-10 duration-300 ${scrolled ? ' bg-blue-500': 'bg-blue-500'}`}>
@@ -72,31 +63,30 @@ const UserNavbar: React.FC = () => {
         <h1 className=' font-bold mt-6 ml-6'>Event hive</h1>
           <ul className='flex ml-12'>
             <li className='mt-7 flex   md:dark:hover:text-white hover:underline font-mono' 
-             onClick={()=>navigate('/')}
-             >Home</li>
-            <li className='ml-6 mt-7 flex   md:dark:hover:text-white hover:underline font-mono'
+             onClick={()=>navigate('/company/homepage')}
+             >Hosted Events</li>
+            {/* <li className='ml-6 mt-7 flex   md:dark:hover:text-white hover:underline font-mono'
             onClick={()=>navigate('/user/events')}
-            >Events</li>
+            >Events</li> */}
             {/* <li className='ml-8 mt-7 flex font-mono font-bold text-md md:dark:hover:text-blue-400 hover:underline'>BLOG<IoIosArrowDown className='mt-1 w-3' /></li> */}
             {/* <li className='ml-8 mt-7 flex font-mono font-bold text-md md:dark:hover:text-blue-400 hover:underline'>ABOUT<IoIosArrowDown className='mt-1 w-3' /></li> */}
           </ul>
         </div>
         <div className='flex mt-5 ' >
           {/* <HiMinus /> */}
-          {userInfo ? (<button    onClick={() => setProfile(!profile)}
-         className={`font-mono pr-7 flex font-bold test-sm`}><img src={ userInfo.profileImg !='' ?userInfo.profileImg : image} className='w-12 h-12 ml-6 object-cover rounded-full' alt="" />
-        { liveicon &&<span className="absolute top-5 right-12 flex h-3 w-3">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-3 w-3 bg-red-500"></span>
-            </span>}
-         <PiDotsThreeOutlineVerticalFill className='text-white mt-4' size={20}/></button>) 
-          : ( <Link to={'/user/signup'}><button className=' border border-solid w-[150px] h-10 text-white rounded-full font-bold hover:bg-white hover:text-blue-500 text-sm mr-3'>Signin</button></Link>)}
+          {companyInfo ? (<><button 
+           onClick={onOpenModal}  className='max-sm:p-0 max-sm:text-sm max-sm:h-10 max-sm:mt-4 max-sm:mr-0 pl-3 pr-3 py-2 rounded-full bg-blue-500 border border-white mr-5 text-white
+          hover:bg-white hover:text-blue-500'>
+            Create Your Event
+            </button><button    onClick={() => setProfile(!profile)}
+         className={`font-mono mr-[80px] pl-4 pr-4 py-2 rounded-md text-white mt-1 flex font-bold test-sm`}>{companyInfo.company_name}</button></>) 
+          : ( <Link to={'/company/signup'}><button className=' border border-solid w-[150px] h-10 text-white rounded-full font-bold hover:bg-white  hover:text-blue-500 text-sm'>Signin</button></Link>)}
           {profile && (
           <div className=" mt-14 absolute z-10 text-sm font-medium h-[350px] text-white bg-white w-[300px] right-4  rounded-lg shadow-sm">
             <div className='w-full flex flex-col  h-5 '>
              <span className='text-slate-400 pl-3'>signed as</span>
-             <span className='text-gray-500 mt-2 pl-3'><b>{userInfo ? userInfo.name : 'null'}</b></span>
-             <span className='text-gray-500 mt-2 pl-3'>{userInfo ? userInfo.email : 'null'}</span>
+             <span className='text-gray-500 mt-2 pl-3'><b>{companyInfo ? companyInfo.company_name : 'null'}</b></span>
+             <span className='text-gray-500 mt-2 pl-3'>{companyInfo ? companyInfo.company_email : 'null'}</span>
             </div>
             <div className='mt-20 '>
               <ul className='text-black flex flex-col gap-3'>
@@ -117,4 +107,4 @@ const UserNavbar: React.FC = () => {
   );
 }
 
-export default UserNavbar;
+export default CompanyNavbar;

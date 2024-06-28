@@ -24,7 +24,7 @@ function CompanyList() {
     toast.success('Company blocked successfully');
   };
 
-  const filteredCompanies = company.filter((details) =>
+  const filteredCompanies = company?.filter((details) =>
     details.company_name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
@@ -63,7 +63,7 @@ function CompanyList() {
               </tr>
             </thead>
             <tbody>
-              {filteredCompanies.map((details:any) => (
+              {filteredCompanies?.map((details:any) => (
                 <tr key={details._id}>
                   <td className='p-2 border-b border-blue-gray-200'>
                     <div className="flex items-center gap-3">

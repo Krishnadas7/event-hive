@@ -8,6 +8,7 @@ import UserPrivateRoute from './PrivateRoutes/UserPrivateRoute';
 import UserProfilePage from '../pages/userPages/UserProfile';
 import EventListing from '../pages/userPages/EventListing';
 import SelectedEventPage from '../pages/userPages/SelectedEventPage';
+import PaymentSuccess from '../pages/userPages/PaymentSuccess';
 
 const UserRoute: React.FC = () =>{
   return (
@@ -21,6 +22,8 @@ const UserRoute: React.FC = () =>{
     <Route path='/*'  element={<UserPrivateRoute/>}>
        <Route path='user/profile' element={<UserProfilePage/>}></Route>
        <Route path='user/events' element={<EventListing/>}></Route>
+       <Route path='user/success-page' element={<PaymentSuccess/>}></Route>
+       <Route path='user/checkout-failed' element={<EventListing/>}></Route>
        <Route path='user/selected-event/:eventId' element={<SelectedEventPage/>}></Route>
     </Route>
 

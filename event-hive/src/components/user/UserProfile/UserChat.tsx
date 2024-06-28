@@ -26,7 +26,7 @@ function UserChat() {
   const [searchQuery, setSearchQuery] = useState('');
   const [change,setChange] = useState(false)
 
-  const filteredUsers = allusers.filter(user => 
+  const filteredUsers = allusers?.filter(user => 
     `${user.first_name} ${user.last_name}`.toLowerCase().includes(searchQuery.toLowerCase())
   );
   

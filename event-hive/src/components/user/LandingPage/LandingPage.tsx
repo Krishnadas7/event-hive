@@ -3,8 +3,7 @@ import UserNavbar from '../userNavbar/UserNavbar'
 import image  from '../../../assets/HomeDemoVideo.png'
 import UserFooter from '../UserFooter/UserFooter'
 import { motion } from 'framer-motion';
-import { Grid } from 'react-loader-spinner'
-import homepageBackground from '../../../assets/Blog-Tech-Events.jpg';
+
 
 const  LandingPage:React.FC = ():JSX.Element => {
   return (

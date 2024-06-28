@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useState } from 'react';
 import { companyLogin } from '../../../validations/yupValidation';
 import {useFormik} from 'formik'
@@ -9,10 +9,19 @@ import { setCompany } from '../../../slices/authSlice';
 import { UseSelector,useDispatch } from 'react-redux';
  import image from '../../../assets/company_login_page.png'
  import { Link } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../../app/store';
+
 function CompanyLogin() {
-  const dispatch = useDispatch()
-  
+  const {companyInfo} = useSelector((state:RootState)=>state.auth)
   const navigate = useNavigate()
+
+  useEffect(()=>{
+    if(companyInfo){
+      navigate('/company/homepage')
+    }
+   },[])
+   const dispatch = useDispatch()
   const {values:loginValues,
     handleChange:loginHandleChange,
     handleSubmit:loginHandleSubmit,

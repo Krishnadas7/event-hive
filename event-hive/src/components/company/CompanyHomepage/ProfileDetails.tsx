@@ -28,6 +28,8 @@ function ProfileDetails() {
   useEffect(() => {
     const fetchData = async () => {
       const res = await getCompanyProfileData();
+      console.log('resss from profile company',res);
+      
       setData(res?.data.data);
     };
     fetchData();
@@ -88,7 +90,7 @@ function ProfileDetails() {
     },
   });
   return (
-    <div className='border relative pl-3 w-full bg-white'>
+    <div className='border relative pl-3 mt-8 ml-5 w-full text-black bg-white'>
       <form onSubmit={formik.handleSubmit}>
         <div>
           <h1 className='text-md font-mono'>COMPANY DETAILS</h1>

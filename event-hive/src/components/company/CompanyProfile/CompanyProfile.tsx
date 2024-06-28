@@ -1,11 +1,12 @@
+import CompanyNavbar from '../CompanyNavbar/CompanyNavbar'
 import React from 'react'
-import UserNavbar from '../userNavbar/UserNavbar'
 import { IoIosArrowForward } from "react-icons/io";
-import { TbLivePhoto } from "react-icons/tb";
 import { useState } from "react";
-import UserDetails from './UserDetails';
-import UserChat from './UserChat';
-import Bookings from './Bookings';
+import ShowEvents from '../CompanyHomepage/ShowEvents';
+import ProfileDetails from '../CompanyHomepage/ProfileDetails';
+import EventModal from '../CompanyHomepage/EventModal';
+
+
 import {
   FaRegSmile,
   FaChartBar,
@@ -16,50 +17,58 @@ import {
   FaBell,
   FaCog,
 } from "react-icons/fa";
-import LiveEvents from './LiveEvents';
-
-function UserProfile() {
+function CompanyProfile() {
     const [open, setOpen] = useState(true);
-  const [activeComponent, setActiveComponent] = useState("Profile");
-
-  const Menus = [
-    { title: "Profile", icon: <FaChartBar /> },
-    { title: "Chat", icon: <FaExchangeAlt /> },
-    { title: "Bookings", icon: <FaCreditCard /> },
-    { title: "Live", icon: <TbLivePhoto /> },
-    // { title: "Subscriptions", icon: <FaCalendarAlt /> },
-    // { title: "Debts", icon: <FaBalanceScale /> },
-    // { title: "Legal", icon: <FaBalanceScale /> },
-    // { title: "Notifications", icon: <FaBell /> },
-    // { title: "Setting", icon: <FaCog /> },
-  ];
-
-  const renderComponent = () => {
-    switch (activeComponent) {
-      case "Profile":
-        return <UserDetails/>
-      case "Chat":
-        return <UserChat/>
-      case "Bookings":
-        return <Bookings/>
-      case "Live":
-        return <LiveEvents />
-      case "Debts":
-        return <div className="animate-slideIn">Debts Content</div>;
-      case "Legal":
-        return <div className="animate-slideIn">Legal information Content</div>;
-      case "Notifications":
-        return <div className="animate-slideIn">Notifications Content</div>;
-      case "Setting":
-        return <div className="animate-slideIn">Setting Content</div>;
-      default:
-        return <div className="animate-slideIn">Overview Content</div>;
-    }
-  };
+    const [event,setEvent ]= useState(false)
+    const [activeComponent, setActiveComponent] = useState("Company Profile");
+    const handleCloseModal = () =>{
+        setEvent(!event)
+     }
+    const Menus = [
+      { title: "Company Profile", icon: <FaChartBar /> },
+      { title: "Events", icon: <FaExchangeAlt /> },
+    //   { title: "Loyalty", icon: <FaCreditCard /> },
+    //   { title: "Subscriptions", icon: <FaCalendarAlt /> },
+    //   { title: "Debts", icon: <FaBalanceScale /> },
+    //   { title: "Legal", icon: <FaBalanceScale /> },
+    //   { title: "Notifications", icon: <FaBell /> },
+    //   { title: "Setting", icon: <FaCog /> },
+    ];
+  
+    const renderComponent = () => {
+      switch (activeComponent) {
+        case "Company Profile":
+          return <ProfileDetails/>
+        case "Events":
+          return <ShowEvents/>
+        case "Loyalty":
+          return <div className="animate-slideIn">Loyalty Cards Content</div>;
+        case "Subscriptions":
+          return <div className="animate-slideIn">Subscriptions Content</div>;
+        case "Debts":
+          return <div className="animate-slideIn">Debts Content</div>;
+        case "Legal":
+          return <div className="animate-slideIn">Legal information Content</div>;
+        case "Notifications":
+          return <div className="animate-slideIn">Notifications Content</div>;
+        case "Setting":
+          return <div className="animate-slideIn">Setting Content</div>;
+        default:
+          return <div className="animate-slideIn">Overview Content</div>;
+      }
+    };
+    
+    
+      const handleOpenModal = () => {
+        setEvent(true);
+      };
   return (
     <>
-    <UserNavbar/>
-    <div className="flex mt-10 ">
+    <CompanyNavbar onOpenModal={handleOpenModal}/>
+    {event && (< div className='w-[890px]  delay-[2000ms] border shadow-md h-screen flex ml-[18%] mt-[100px]  bg-[#F6F6F6] rounded-md absolute z-50 '>
+      <EventModal onClose={handleCloseModal} />
+    </div>)}
+    <div className="flex mt-10 " >
       <div
         className={`${
           open ? "w-72" : "w-20 pr-3" 
@@ -111,7 +120,7 @@ function UserProfile() {
           ))}
         </ul>
       </div>
-      <div
+      <div onClick={()=>setEvent(false)}
         className="flex-1 mt-6  h-screen w-full bg-slate-200 text-white transition-all duration-300 ease-in-out overflow-auto"
       >
         {renderComponent()}
@@ -121,4 +130,4 @@ function UserProfile() {
   )
 }
 
-export default UserProfile
+export default CompanyProfile

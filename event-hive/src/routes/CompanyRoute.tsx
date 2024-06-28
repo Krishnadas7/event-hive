@@ -2,8 +2,9 @@ import React from 'react'
 import { Route,Routes } from 'react-router-dom'
 import CompanySignupPage from '../pages/companyPages/CompanySignupPage'
 import CompanyLoginPage from '../pages/companyPages/CompanyLoginPage'
-import CompanyHomePage from '../pages/companyPages/CompanyHomePage'
 import CompanyPrivateRoute from './PrivateRoutes/CompanyPrivateRoute'
+import CompanyProfilePage from '../pages/companyPages/CompanyProfilePage'
+import CompanyHomePage from '../pages/companyPages/CompanyHomePage'
 function CompanyRoute() {
   return (
     <>
@@ -12,6 +13,7 @@ function CompanyRoute() {
       <Route path="signup" element={<CompanySignupPage />} />
         <Route path='*' element={<CompanyPrivateRoute/>}>
                  <Route path='homepage' element={<CompanyHomePage/>}/>
+                 <Route path='profile' element={<CompanyProfilePage/>}/>
         </Route> 
     </Routes>
     </>

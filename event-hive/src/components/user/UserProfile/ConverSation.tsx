@@ -8,6 +8,7 @@ interface UserData{
   qualification:string;
   socialmedialink1:string;
   socialmedialink2:string;
+  createdAt:any;
 }
 
 function ConverSation({conversation,currentUser}) {
@@ -29,8 +30,9 @@ function ConverSation({conversation,currentUser}) {
         <div className=''>
         <img className='w-[40px] rounded-full h-[40px]' src={image} alt="" />
         </div>
-        <div className='flex items-center  justify-center'>
+        <div className='flex flex-col items-center  justify-center'>
             <span className='text-black font-bold'>{user?.first_name} {user?.last_name}</span>
+            <span className='text-black font-bold'>{user?.createdAt}</span>
         </div>
       
     </div>

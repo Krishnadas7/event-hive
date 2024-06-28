@@ -5,57 +5,101 @@ import UserFooter from '../UserFooter/UserFooter';
 import { eventForUser } from '../../../api/userApi';
 import { IEvent } from '../../../types/schema';
 import { Link } from 'react-router-dom';
+import { MdOutlineKeyboardArrowRight } from "react-icons/md";
+import { MdKeyboardArrowLeft } from "react-icons/md";
+import { PiSortDescendingThin } from "react-icons/pi";
+import { CiSearch } from "react-icons/ci";
+import { searchEvent } from '../../../api/userApi';
+import { PiSortAscendingLight } from "react-icons/pi";
+import { toast } from 'react-toastify';
+import { eventTypes } from '../../../utils/data';
+import { filterEvent } from '../../../api/userApi';
+import emptyImage from '../../../assets/empty_image.jpg'
 const options = [
   { value: 'Choose Event Type', label: 'Choose Event Type' },
   { value: 'techevent', label: 'Tech Event' },
   { value: 'hackathon', label: 'Hackathon' },
 ];
 const location = [
-  { value: 'Choose location', label: 'Choose Location' },
-  { value: 'India', label: 'Pakistan' },
-  { value: 'Paksitan', label: 'Paksitan' },
+  { value: 'Choose', label: 'Choose' },
+  { value: 'FREE', label: 'FREE' },
+  { value: 'PAID', label: 'PAID' },
 ];
 
 
 function Event() {
-  const [selectedValue, setSelectedValue] = useState(options[0].value);
-  const [selectedLocation,setSelectedLocation] = useState(location[0].value)
-  const [events,setEvents] = useState<IEvent[]|null>([])
-  const handleChange = (event) => {
+  const [selectedValue, setSelectedValue] = useState('');
+  const [ticket,setTicket] = useState('')
+  const [search,setSearch] = useState<string>('')
+  const [events,setEvents] = useState<IEvent[]>([])
+  const [pagination,setPagination] = useState<number>(0)
+  const [date,setDate]=useState<string>('')
+  const today = new Date();
+const yyyy = today.getFullYear();
+const mm = String(today.getMonth() + 1).padStart(2, '0'); // Months are 0-indexed
+const dd = String(today.getDate()).padStart(2, '0');
+const todayStr = `${yyyy}-${mm}-${dd}`;
+  const handleChange = (event:React.ChangeEvent<HTMLInputElement>) => {
     setSelectedValue(event.target.value);
   };
-  const handleLocation = (event) => {
-    setSelectedLocation(event.target.value)
+  const handleTicket = (event:React.ChangeEvent<HTMLInputElement>) => {
+    setTicket(event.target.value)
   }
   useEffect(()=>{
   const fetchData = async () =>{
-    const res = await eventForUser()
+    const res = await eventForUser(pagination)
     setEvents(res?.data.data)
-    console.log('res from events===',res);
   }
   fetchData()
   
-  },[])
- console.log('===============',events)
+  },[pagination])
+ const handleSearchChange = (e:React.ChangeEvent<HTMLInputElement>)=>{
+  setSearch(e.target.value)
+ }
+ const handleSearch =async ()=>{
+    try {
+      const res = await searchEvent(search)
+      if(res?.data.success){
+        setEvents(res?.data.data)
+      }
+    } catch (error) {
+      toast.error('search is wrong')
+    }
+ }
+ const handleSubmit = async () =>{
+  try {
+    let obj={
+      type:selectedValue,
+      ticket,
+      date
+    }
+    const res = await filterEvent(obj)
+    setEvents(res?.data.data)
+  } catch (error) {
+    toast.error('something wrong')
+  }
+ }
  
   return (
   <>
    <UserNavbar/>
      <div className='w-full bg-ble-400 h-auto mt-24 flex justify-center flex-col items-center' >
        <img src={backGroundImage} className='object-cover w-3/4 h-[400px]  rounded-md shadow-md ' alt="" />
-       <div className='w-2/3 h-auto max-md:flex-col flex-wrap pt-5 pb-5  absolute bottom-[90px]  flex rounded-md justify-around 
+       <div className='w-2/3 h-auto  pt-5 pb-5  absolute bottom-[90px]  
+        xl:grid-cols-2 grid 
+       rounded-md 
         mt-3 bg-blue-600'>
-           <div className='flex max-md:flex-col gap-4 justify-center items-center'>
-               <div className='flex flex-col flex-wrap gap-2 justify-center items-start'>
-                      <label htmlFor="" className='font-bold text-white'>Looking for</label>
+           <div className='grid gap-4  px-3 xl:grid-cols-3 md:grid-cols-3 sm:grid-cols-2'>
+               <div className='flex  flex-col flex-wrap gap-2 justify-center items-start'>
+                      <label htmlFor="" className='font-bold text-white ml-3'>Type</label>
                       <select 
                         value={selectedValue}
-                        onChange={handleChange}
-                        className="p-2 border outline-none border-gray-300 w-64 rounded-md"
+                        onChange={(e)=>handleChange(e)}
+                        className="p-2 bg-transparent outline-none text-white w-full rounded-md"
                          >
                           
-                        {options.map((option, index) => (
-                         <option key={index} value={option.value}>
+                        {eventTypes.map((option, index) => (
+                         <option className='text-blue-500' key={index} value={option.value}>
                         {option.label}
                           </option>
                             ))}
@@ -63,72 +107,132 @@ function Event() {
                </div>
                
                <div className='flex flex-col gap-2 justify-center items-start'>
-                      <label htmlFor="" className='font-bold text-white'>Location</label>
+                      <label htmlFor="" className='font-bold ml-3 text-white'>Ticket</label>
                       <select
-                        value={selectedLocation}
-                        onChange={handleLocation}
-                        className="p-2 border border-gray-300 w-64 rounded-md"
+                        value={ticket}
+                        onChange={(e)=>handleTicket(e)}
+                        className="p-2 text-white w-full outline-none bg-transparent rounded-md"
                          >
                         {location.map((option, index) => (
-                         <option key={index} value={option.value}>
+                         <option className='text-blue-500' key={index} value={option.value}>
                         {option.label}
                           </option>
                             ))}
                          </select>
                </div>
                <div className='flex flex-col gap-2 justify-center items-start'>
-                      <label htmlFor="" className='font-bold text-white'>Start Date</label>
-                      <input type="date" className='p-2 border outline-none border-gray-300 w-64 rounded-md' name="" id="" />
-               </div>
-               
-              
+              <label htmlFor="start-date" className='ml-3 font-bold text-white'>Start Date</label>
+              <input 
+                value={date} 
+                onChange={(e) => {
+                  setDate(e.target.value);
+                  console.log(e.target.value); // Log the value to the console
+                }} 
+                type="date" 
+                min={todayStr} 
+                className='p-2 w-full bg-transparent text-white outline-none rounded-md' 
+                id="start-date" 
+              />
+            </div>
            </div>
-           <div className='flex justify-center items-center'>
-               <button className=' border  h-11 w-40 rounded-md mt-7 text-white bg-blue-600 font-bold 
+           <div className=' px-3   '>
+               <button onClick={()=>handleSubmit()} className=' border w-full  h-11  rounded-md mt-7 text-white bg-blue-600 font-bold 
                hover:bg-white hover:text-blue-600'>search</button>
            </div>
       </div>
-     
      </div>
      <div className='w-full mt-32 '>
       <div className='flex items-start'>
         <p className='ml-36 text-blue-600 text-2xl font-bold'><b>Upcoming</b> <span className='text-amber-500'><b>Events</b></span></p>
       </div>
      </div>
+    <div className='w-full px-28' >
+      <div className='flex justify-end max-sm:-mr-20 max-sm:mt-5'>
+        <span className='mt-2'>you can sort by new&nbsp;</span>
+        <div className='mr-2 flex gap-2  bg-gray-200 px-5 py-1 rounded-md'>
+          <button><PiSortDescendingThin className='text-gray-600 font-bold hover:text-gray-400' size={30}/></button>
+          <button><PiSortAscendingLight className='text-gray-600 font-bold hover:text-gray-400' size={30}/></button>
+        </div>
+      </div>
+    </div>
     
-    
-   <div className='w-full grid md:grid-cols-2 md:px-28 px-10  xl:grid-cols-3 gap-7  grid-cols-1 sm:grid-cols-1 justify-around mt-24'>
+   <div className='w-full grid md:grid-cols-2 md:px-28 px-10  xl:grid-cols-3 gap-7  grid-cols-1 sm:grid-cols-1 justify-around mt-10'>
    {
-    
-    events?.map((event,index)=>( <div key={event._id} className="flex flex-col bg-white border shadow-sm rounded-xl ">
-      <img className=" w-[400px]   h-[230px] p-3  rounded-t-xl " src={event.event_poster} alt="Image Description" />
+    events?.length>0 ?
+    events?.map((event)=>( <div key={event._id} className="flex flex-col  bg-white border shadow-sm rounded-xl ">
+      <img className=" w-[400px]  max-sm:w-full max-md:w-full h-[230px] p-3  rounded-t-xl " src={event.event_poster} alt="Image Description" />
       <div className="p-4 md:p-5 shadow-md ">
-        <h3 className="text-lg font-bold ">
+      <div className='flex justify-between'>
+       <h3 className="text-lg font-bold ">
           {event.event_name}
         </h3>
-        <p className="mt-1 text-gray-500 dark:text-neutral-400 line-clamp-3">
+        <h3 className="text-sm bg-gray-200 border px-2 py-1 rounded-md font-semibold text-blue-500 uppercase">
+          {event.participants}
+        </h3>
+         
+      </div>
+        <p>{event.event_type}</p>
+        <p className="mt-1 text-gray-500 dark:text-neutral-400 line-clamp-1">
          {event.event_description}
         </p>
-        <div className="mt-2 py-2 px-3 flex items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent justify-between text-gray-500  cursor-pointer">
-          <div><span>{event.start_date} - {event.end_date}</span></div>
-           <div>
+        
+        <div className="mt-2 py-2  flex flex-col gap-4  gap-x-2 text-sm font-semibold rounded-lg border border-transparent justify-between text-gray-500  cursor-pointer">
+          <div className='flex flex-col gap-4'><p>starts in - {event.start_date}</p> 
+          <div className='flex justify-between'>
+          <p>close in - {event.end_date}</p>
+
+          <h3 className={`text-lg ${event.ticket == 'free' ? 'text-green-500' : 'text-blue-500'} rounded-md px-4 text-sm pt-1 font-bold`}>
+          {event.ticket}
+        </h3>
+          </div>
+          </div>
+           <div className=' w-full '>
            <Link 
                             to={`/user/selected-event/${event._id}`} 
-                            className='w-36 h-8 text-white rounded-SM hover:text-blue-500 transform transition-transform duration-300 hover:scale-110
-                            hover:bg-white hover:border border-blue-300 rounded-md bg-blue-500 px-2'
+                            className='  rounded-md  transform transition-transform duration-300 hover:scale-110
+                              px-[155px] bg-blue-500 text-white py-2 font-mono '
                         >
-                            REGISTER
+                          EXPLORE
                         </Link>
            </div>
         </div>
       </div>
-    </div>))
+    </div>)) : (<div className='text-black  w-full  flex items-center justify-center'>
+      <div className=' flex    items-center justify-center'>
+         <img className='ml-[900px] shadow-md shadow-slate-300 rounded-full max-sm:ml-[0px] max-md:ml-[0px] ' src={emptyImage} alt="" />
+      </div>
+    </div>)
    }
-   
-
-
 </div>
-
+<div className='w-full  max-md:flex-col  mt-10 flex px-28 max-md:items-center max-md:justify-center max-sm:items-center max-sm:justify-center  items-center justify-center'>
+   
+    <div className="flex  items-center justify-between h-10 w-full bg-gray-200 p-2 rounded-lg">
+      <div>
+      <button 
+        onClick={() => setPagination((pagination) => (pagination > 0 ? pagination - 1 : pagination))} 
+        className="flex items-center bg-gray-200 transition-all duration-100 ease-in-out transform hover:scale-105 p-2 rounded-l-lg"
+      >
+        <MdKeyboardArrowLeft size={20} className="mr-1" />
+        <span>Prev</span>
+      </button>
+      </div>
+      <div><span className="font-bold mx-4">
+       Page No {pagination+1}
+      </span></div>
+      <div>
+      <button 
+        onClick={() => setPagination((pagination) => pagination + 1)} 
+        className="flex items-center bg-gray-200 transition-all duration-300 ease-in-out transform hover:scale-105 p-2 rounded-r-lg"
+      >
+        <span>Next</span>
+        <MdOutlineKeyboardArrowRight size={20} className="ml-1" />
+      </button>
+      </div>
+     
+     
+     
+    </div>
+    </div>
      <UserFooter/>
     
   </>

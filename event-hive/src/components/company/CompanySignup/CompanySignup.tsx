@@ -25,6 +25,11 @@ function CompanySignup() {
   const dispatch = useDispatch()
   const navigate = useNavigate()
   useEffect(()=>{
+    if(companyInfo){
+      navigate('/company/homepage')
+    }
+   },[])
+  useEffect(()=>{
     let interval:NodeJS.Timeout;
     if(isModalOpen && timer > 0){
       interval = setInterval(() =>{
@@ -129,7 +134,7 @@ function CompanySignup() {
         if(res?.data.success){
           setIsModalOpen(false)
           toast.success(res.data.message)
-          navigate('/company/homepage')
+          navigate('/company')
 
         }
        
