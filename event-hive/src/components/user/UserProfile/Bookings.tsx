@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import { allBookings } from '../../../api/userApi';
@@ -31,7 +32,7 @@ function Bookings() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await allBookings(userInfo._id);
+        const res = await allBookings(userInfo?._id as string);
         console.log('Booking data:', res?.data.data);
         setBooking(res?.data.data);
       } catch (error) {
@@ -58,7 +59,7 @@ function Bookings() {
             </tr>
           </thead>
           <tbody>
-            {booking.map((data : any, index) => (
+            {booking.map((data: any, index) => (
               <tr key={index}>
                 <td className='p-2 border-b border-blue-gray-200'>
                   <div className="flex text-black items-center gap-3">

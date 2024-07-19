@@ -162,7 +162,7 @@ function UserChat() {
         {searchQuery && (
           <div className='mt-2 w-[250px] ml-5 bg-white  p-2 rounded-md'>
             {filteredUsers.map((user) => (
-              <div key={user._id} onClick={(e:any)=>handleConversation(user._id as any)} className='flex items-center  p-2  w-full'>
+              <div key={user._id} onClick={()=>handleConversation(user._id as string)} className='flex items-center  p-2  w-full'>
                 <span className='text-black hover:text-gray-500 font-bold'>{user.first_name} {user.last_name} </span>
               </div>
             ))}

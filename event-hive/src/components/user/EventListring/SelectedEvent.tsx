@@ -16,7 +16,7 @@ import TeamAdd from '../../common/TeamAdd';
 import { useNavigate } from 'react-router-dom';
 
 interface Obj {
-    user_id: any;
+    user_id: string;
     event_id: string | undefined;
     company_id: string;
     payment_status: string;
@@ -55,9 +55,11 @@ function SelectedEvent() {
         minute: 'numeric',
         hour12: true
       };
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const formattedDate = dateObj.toLocaleString('en-US', options as any);
     console.log('form ',formattedDate);
     const companyDetails = event.companyDetails ? event.companyDetails[0] : null;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const members:string[]  = JSON.parse(localStorage.getItem('teamData') as any) 
     const handleRegistration = async (e:React.FormEvent,participants:string) =>{
         e.preventDefault();
@@ -84,8 +86,8 @@ function SelectedEvent() {
 
         console.log('evv====',event);
         try {
-            let obj:Obj = {
-                user_id: userInfo._id,
+            const obj:Obj = {
+                user_id: userInfo?._id as string,
                 event_id: event._id,
                 company_id: event.company_id,
                 payment_status: paymentStatus,
@@ -109,6 +111,7 @@ function SelectedEvent() {
                 return
              }
             }
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const session: any  = res;
             if (stripePromise) {
                 stripePromise.redirectToCheckout({

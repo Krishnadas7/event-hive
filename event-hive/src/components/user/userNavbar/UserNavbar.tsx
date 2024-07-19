@@ -25,7 +25,7 @@ const UserNavbar: React.FC = () => {
   useEffect(()=>{
     const fetchData = async () =>{
       // if(userInfo){
-      const res = await liveChecking(userInfo?._id)
+      const res = await liveChecking(userInfo?._id as string)
       if(res?.data.data>0){
         setLiveicon(true)
       }else{

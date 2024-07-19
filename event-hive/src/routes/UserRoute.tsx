@@ -9,7 +9,7 @@ import UserProfilePage from '../pages/userPages/UserProfile';
 import EventListing from '../pages/userPages/EventListing';
 import SelectedEventPage from '../pages/userPages/SelectedEventPage';
 import PaymentSuccess from '../pages/userPages/PaymentSuccess';
-import RoomPage from '../pages/userPages/RoomPage';
+// import RoomPage from '../pages/userPages/RoomPage';
 import NotFoundPage from '../pages/userPages/NotFoundPage';
 import AboutPage from '../pages/userPages/AboutPage';
 
@@ -26,7 +26,7 @@ const UserRoute: React.FC = () => {
         <Route path="/user/events" element={<EventListing />} />
         <Route path="/user/success-page" element={<PaymentSuccess />} />
         <Route path="/user/selected-event/:eventId" element={<SelectedEventPage />} />
-        <Route path="/user/room/:roomId" element={<RoomPage />} />
+        {/* <Route path="/user/room/:roomId" element={<RoomPage />} /> */}
         <Route path="/user/about" element={<AboutPage />} />
         <Route path="/user/checkout-failed" element={<h1>faileddd</h1>} />
       </Route>
