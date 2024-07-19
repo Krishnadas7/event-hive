@@ -2,10 +2,11 @@ import React, { useEffect, useState } from 'react';
 import { IUser } from '../../../types/schema';
 import './all.css'
 import { getUser } from '../../../api/adminApi';
-import { SearchIcon, ArrowDownIcon } from "@heroicons/react/solid";
+import { SearchIcon } from "@heroicons/react/solid";
 const TABLE_HEAD = ["Users", "email", "mobile", "Actions"];
 import { blockUnblock } from '../../../api/adminApi';
 import { toast } from 'react-toastify';
+import image from '../../../assets/navbar-image.webp'
 
 const UsersComponent: React.FC = () => {
   const [users, setUsers] = useState<IUser[]>([])
@@ -15,7 +16,7 @@ const UsersComponent: React.FC = () => {
   useEffect(() => {
     const fetchData = async (): Promise<void> => {
       const datas: any = await getUser()
-      setUsers(datas.data.data)
+      setUsers(datas?.data?.data)
     }
     fetchData()
   }, [flag])
@@ -74,12 +75,12 @@ const UsersComponent: React.FC = () => {
             </thead>
             <tbody>
               {
-                filteredUsers.map((user, index) => (
+                filteredUsers?.map((user) => (
                   <tr key={user.email}>
                     <td className='p-2 border-b border-blue-gray-200'>
                       <div className="flex items-center gap-3">
-                        <img alt='wait...' src={user.profileImage} className="h-[60px] w-[60px] rounded-full object-cover border border-blue-gray-200" />
-                        <span className="text-sm text-blue-gray-700 font-semibold">{user.first_name + " " + user.last_name}</span>
+                        <img alt='wait...' src={user.profileImage ? user.profileImage : image} className="h-[60px] w-[60px] rounded-full object-cover border border-blue-gray-200" />
+                        <span className="text-sm text-blue-gray-700 font-semibold">{user.first_name } {user.last_name ? user.last_name : ''}</span>
                       </div>
                     </td>
                     <td className='p-2 border-b border-blue-gray-200'>

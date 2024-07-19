@@ -1,12 +1,14 @@
-import React, { useEffect, useState } from 'react';
+import  { useEffect, useState } from 'react';
 import { SearchIcon } from "@heroicons/react/solid";
 import { getAllCompany, blockCompany } from '../../../api/adminApi';
 import { toast } from 'react-toastify';
+import { ICompany } from '../../../types/schema';
+import image from '../../../assets/navbar-image.webp'
 
 const TABLE_HEAD = ["name", "email", "url", "country", "contact phone", "contact name", "Actions"];
 
 function CompanyList() {
-  const [company, setCompany] = useState([]);
+  const [company, setCompany] = useState<ICompany[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [flag, setFlag] = useState(false);
 
@@ -21,16 +23,19 @@ function CompanyList() {
   const handleBlock = async (companyId :string) => {
     await blockCompany(companyId);
     setFlag(!flag);
-    toast.success('Company blocked successfully');
+    toast.success('Company status updated');
   };
 
-  const filteredCompanies = company?.filter((details) =>
-    details.company_name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredCompanies = company?.filter((details:ICompany) =>{
+    if(details.company_name){
+     return details.company_name.toLowerCase().includes(searchTerm.toLowerCase())
+    }
+    
+  });
 
   return (
     <>
-      <div className="h-full mt-3 ml-3 mr-3 w-full rounded-lg bg-gray-200 shadow-md p-4">
+      <div className="h-full mt-3 ml-3 mr-3 w-full overflow-hidden rounded-lg bg-gray-200 shadow-md p-4">
         <div className="mb-4 flex flex-col justify-between gap-8 md:flex-row md:items-center">
           <div>
             <h2 className="text-xl font-semibold text-blue-gray-700">COMPANY LIST</h2>
@@ -67,7 +72,7 @@ function CompanyList() {
                 <tr key={details._id}>
                   <td className='p-2 border-b border-blue-gray-200'>
                     <div className="flex items-center gap-3">
-                      <img alt='wait...' src={details.company_logo} className="h-[60px] w-[60px] rounded-full object-cover border border-blue-gray-200" />
+                      <img alt='wait...' src={details.company_logo ? details.company_logo: image} className="h-[60px] w-[60px] rounded-full object-cover border border-blue-gray-200" />
                       <span className="text-sm text-blue-gray-700 font-semibold">{details.company_name}</span>
                     </div>
                   </td>
@@ -75,22 +80,30 @@ function CompanyList() {
                     <span className="text-sm text-blue-gray-700">{details.company_email}</span>
                   </td>
                   <td className='p-2 border-b border-blue-gray-200'>
-                    <span className="text-sm text-blue-gray-700">{details.company_website}</span>
+                    <span className="text-sm text-blue-gray-700">
+                      {details.company_website ? details.company_website : 'Not Added'}
+                      </span>
                   </td>
                   <td className='p-2 border-b border-blue-gray-200'>
-                    <span className="text-sm text-blue-gray-700">{details.country}</span>
+                    <span className="text-sm text-blue-gray-700">
+                      {details.country ? details.country : 'Not Added'}
+                      </span>
                   </td>
                   <td className='p-2 border-b border-blue-gray-200'>
-                    <span className="text-sm text-blue-gray-700">{details.contact_personphone}</span>
+                    <span className="text-sm text-blue-gray-700">
+                      {details.contact_personphone ? details.contact_personphone: 'Not Added'}
+                      </span>
                   </td>
                   <td className='p-2 border-b border-blue-gray-200'>
-                    <span className="text-sm text-blue-gray-700">{details.contact_personname}</span>
+                    <span className="text-sm text-blue-gray-700">
+                      {details.contact_personname ? details.contact_personname : "Not Added" }
+                      </span>
                   </td>
                   <td className='p-2 border-b border-blue-gray-200'>
                     <div className="flex items-center justify-center gap-3">
                       <div className="flex items-center justify-center flex-col">
                         <button onClick={() => handleBlock(details._id)}
-                          className={`w-48 mt-1 h-8 ${details.is_block ? 'bg-green-500' : 'bg-red-600'} rounded-full text-white border border-slate-600`}>
+                          className={`w-36 mt-1 h-8 ${details.is_block ? 'bg-green-500' : 'bg-red-600'} rounded-full text-white border border-slate-600`}>
                           {details.is_block ? 'unblock' : 'block'}
                         </button>
                       </div>
@@ -102,14 +115,14 @@ function CompanyList() {
           </table>
         </div>
 
-        <div className="flex items-center justify-between border-t border-blue-gray-200 p-2">
+        {/* <div className="flex items-center justify-between border-t border-blue-gray-200 p-2">
           <button className="p-2 border border-blue-500 text-blue-500 rounded-md hover:bg-blue-50">
             Previous
           </button>
           <button className="p-2 border border-blue-500 text-blue-500 rounded-md hover:bg-blue-50">
             Next
           </button>
-        </div>
+        </div> */}
       </div>
     </>
   );

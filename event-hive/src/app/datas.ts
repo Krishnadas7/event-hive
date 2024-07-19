@@ -35,7 +35,7 @@ export const countryOptions:CountryOption[]|any = [
     { value: 'singapore', label: 'Singapore' },
     { value: 'thailand', label: 'Thailand' }
   ];
-  export const skillsOptions = [
+  export const skillsOptions:any = [
     { value: 'javascript', label: 'JavaScript' },
     { value: 'python', label: 'Python' },
     { value: 'java', label: 'Java' },
@@ -43,7 +43,7 @@ export const countryOptions:CountryOption[]|any = [
     { value: 'node', label: 'Node.js' },
     { value: 'docker', label: 'Docker' },
   ];
-  export const eventTypesOptions = [
+  export const eventTypesOptions:any = [
     { value: 'workshop', label: 'Workshop' },
     { value: 'hackathon', label: 'Hackathon' },
     { value: 'conference', label: 'Conference' },

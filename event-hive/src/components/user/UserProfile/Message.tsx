@@ -1,4 +1,3 @@
-import React from 'react';
 import image from '../../../assets/user-Profile2 (2).jpg';
 import { formatDistanceToNow } from 'date-fns';
 

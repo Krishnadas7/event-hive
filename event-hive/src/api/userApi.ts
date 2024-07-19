@@ -1,11 +1,12 @@
-
-import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
+import axios, { AxiosInstance } from 'axios';
 import { IUser } from '../types/schema';
-import { Booking, MyError } from '../validations/validationTypes';
-import { number, string } from 'yup';
-
+import { Booking } from '../validations/validationTypes';
+import { Obj } from '../types/schema';
+const USER_API = process.env.USER_API
+console.log(process.env.USER_API,process.env.ADMIN_API)
+const USER_REFRESH_API = process.env.USER_REFRESH_API
 export const userApi: AxiosInstance = axios.create({
-    baseURL: 'http://localhost:3003/api/user'
+    baseURL: USER_API
 });
 
 userApi.interceptors.request.use(
@@ -34,15 +35,12 @@ userApi.interceptors.response.use(
       async (error) => {
         const originalRequest = error.config;
         const refreshToken = localStorage.getItem('userRefreshToken')
-        console.log('dsklklds',originalRequest);
-        console.log('sdklsdjkljds',error.response.status);
         
-        if (error.response.status === 401 && !originalRequest._retry && refreshToken) {
-           console.log('sdkljdskljdsklsd=');
-           
+        
+        if (error?.response.status === 401 && !originalRequest._retry && refreshToken) {
           originalRequest._retry = true;
           try {
-            const response = await userApi.post("http://localhost:3003/api/user/refresh-token", {
+            const response = await userApi.post(USER_REFRESH_API as string, {
               refreshToken
             },{withCredentials:true});
             const newAccessToken = response.data.accessToken;
@@ -95,6 +93,7 @@ export const getProfile = async ()=>{
       
     return res
   } catch (error) {
+    console.log(error);
     
   }
 }
@@ -105,6 +104,7 @@ export const sendOtpToEmail = async ({first_name,email}:{first_name:string,email
     },{withCredentials:true})
     return res
   } catch (error) {
+    console.log(error);
     
   }
 }
@@ -116,11 +116,12 @@ export const otpVerification = async ({otp,email}:{otp:string,email:string}) =>{
     console.log('resss ',res)
     return res
   } catch (error) {
+    console.log(error);
     
   }
 }
 export const googleAuth = async ({name,email,password}:{name:string,email:string,password:string}) =>{
-  let first_name=name
+  const first_name=name
   try {
     const res = await userApi.post('/oauth',{first_name,email,password},{withCredentials:true})
     return res
@@ -247,16 +248,6 @@ export const updateProfile = async ({
       
     }
   }
-  // export const getConversation = async () =>{
-  //   try {
-  //     const res = await userApi.get('/conversation',{withCredentials:true})
-  //     return res
-  //   } catch (error) {
-  //     console.log(error); 
-  //   }
-   
-
-  // }
   export const searchEvent = async (search:string) =>{
     try {
       const res = await userApi.get('/search-event',{
@@ -270,17 +261,6 @@ export const updateProfile = async ({
   export const filterEvent= async ({type,ticket,date}:{type:string,ticket:string,date:string}) =>{
     console.log(type,ticket,date)
     try {
-    
-    //   interface Obj{
-    //     type: string;
-    //     ticket: string;
-    //     date: string;
-    // }
-    // let obj:Obj = {
-    //     type,
-    //     ticket,
-    //     date
-    //   }
       const res = await userApi.get('/filter-events',{
         params:{type:type,
           ticket:ticket,
@@ -344,6 +324,43 @@ export const updateProfile = async ({
       })
       return res
     } catch (error) {
+      console.log(error)
+    }
+  }
+  export const getNotification = async () =>{
+    try {
+      const res = await userApi.get('/user-notification',{
+        withCredentials:true
+      })
+      return res
+    } catch (error) {
+      console.log(error);
+    }
+  }
+  
+  export const landingPageEventCount = async () =>{
+    try {
+       const res = await userApi.get('/landing-page-event-count')
+       return res
+    } catch (error) {
+      console.log(error)
+    }
+  }
+  
+  export const landingPageLiveEventCount = async () =>{
+    try {
+      const res = await userApi.get('/landing-page-live-event-count')
+      return res
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  export const createReport = async (obj:Obj) =>{
+    try{
+      const res = await userApi.post('/create-report',obj)
+      return res
+    }catch(error){
       console.log(error)
     }
   }

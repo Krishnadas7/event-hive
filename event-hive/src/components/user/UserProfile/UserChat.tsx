@@ -1,11 +1,12 @@
-import React, { useEffect, useRef, useState } from 'react';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { useEffect, useRef, useState } from 'react';
 import ConverSation from './ConverSation';
 import Message from './Message';
 import { useSelector } from 'react-redux';
 import axios from 'axios';
 import './userChat.css';
 import { RootState } from '../../../app/store';
-import {io,Socket } from 'socket.io-client'
+import {io} from 'socket.io-client'
 import { IoIosSearch } from "react-icons/io";
 import { allUsers } from '../../../api/userApi';
 import { IUser } from '../../../types/schema';
@@ -16,7 +17,7 @@ import image from '../../../assets/Two hands holding phones with messages in spe
 function UserChat() {
   const [conversation, setConversation] = useState([]);
   const { userInfo } = useSelector((state: RootState) => state.auth);
-  const [currentChat, setCurrentChat] = useState(null);
+  const [currentChat, setCurrentChat] = useState<any>(null);
   const [newMessage, setNewMessage] = useState('');
   const [arrivalmessage,setArrivalMessage] = useState<any>(null)
   const [messages, setMessages] = useState<any>([]);
@@ -25,15 +26,19 @@ function UserChat() {
   const scrollRef = useRef<HTMLDivElement | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [change,setChange] = useState(false)
-
+  const [test,setTest] = useState(false)
+  
+  const testFalse = ()=>{
+    setTest(!test)
+  }
   const filteredUsers = allusers?.filter(user => 
     `${user.first_name} ${user.last_name}`.toLowerCase().includes(searchQuery.toLowerCase())
   );
   
 
       useEffect(()=>{
-          socket.current =io('ws://localhost:8900')
-          socket.current.on('getMessage',(data)=>{
+          socket.current =io('http://localhost:3003')
+          socket.current.on('getMessage',(data:any)=>{
            setArrivalMessage({
             sender:data.senderId,
             text:data.text,
@@ -54,12 +59,12 @@ function UserChat() {
       useEffect(()=>{
        arrivalmessage &&
         currentChat?.members.includes(arrivalmessage.sender) &&
-       setMessages((prev)=>[...prev,arrivalmessage])
+       setMessages((prev:any)=>[...prev,arrivalmessage])
       },[arrivalmessage,currentChat])
 
     useEffect(()=>{
     socket.current.emit("addUser",userInfo._id)
-    socket.current.on("getUser",users=>{
+    socket.current.on("getUser",(users:any)=>{
       console.log('users==',users)
     })
     },[userInfo])
@@ -69,6 +74,7 @@ function UserChat() {
       try {
         const res = await axios.get(`http://localhost:3003/api/conversation?userId=${userInfo._id}`);
         console.log('from conversattion',res.data.data)
+        
         setConversation(res?.data.data);
       } catch (error) {
         console.error('Failed to fetch conversations:', error);
@@ -80,7 +86,9 @@ function UserChat() {
   useEffect(() => {
     const getMessage = async () => {
       try {
-        const res = await axios.get(`http://localhost:3003/api/message?conversationId=${currentChat?._id}`);
+        const res = await axios.get(`http://localhost:3003/api/message?conversationId=${currentChat?._id}`,{
+          withCredentials:true
+        });
         console.log('res from current chat',res.data.data);
         
         setMessages(res.data.data);
@@ -100,8 +108,9 @@ function UserChat() {
     }
   }, [messages]);
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e : any) => {
     e.preventDefault();
+    testFalse()
     const message = {
       conversationId: currentChat._id,
       sender: userInfo._id,
@@ -132,6 +141,8 @@ function UserChat() {
     setSearchQuery('')
     setChange(!change)
   }
+
+  
  
   return (
     <div className='flex rounded-md  gap-4  shadow-lg border border-gray-300 h-screen fixed w-4/5 mt-[17px] p- pr-5'>
@@ -150,16 +161,16 @@ function UserChat() {
         {searchQuery && (
           <div className='mt-2 w-[250px] ml-5 bg-white  p-2 rounded-md'>
             {filteredUsers.map((user) => (
-              <div key={user._id} onClick={(e)=>handleConversation(user._id)} className='flex items-center  p-2  w-full'>
+              <div key={user._id} onClick={(e)=>handleConversation(user._id as any)} className='flex items-center  p-2  w-full'>
                 <span className='text-black hover:text-gray-500 font-bold'>{user.first_name} {user.last_name} </span>
               </div>
             ))}
           </div>
         )}
         </div>
-        {conversation.map((c) => (
+        {conversation.map((c:any) => (
           <div className='mt-2 ' key={c._id} onClick={() => setCurrentChat(c)}>
-            <ConverSation conversation={c} currentUser={userInfo} />
+            <ConverSation test={test} conversation={c}  currentUser={userInfo} />
           </div>
         ))}
       </div>
@@ -167,7 +178,7 @@ function UserChat() {
         {currentChat ? (
           <>
             <div className='flex flex-col h-[480px] overflow-y-auto hide-scrollbar'>
-              {messages.map((m, index) => (
+              {messages.map((m:any, index:number) => (
                 <div key={index} ref={index === messages.length - 1 ? scrollRef : null}>
                   <Message message={m} own={m.sender === userInfo._id} />
                 </div>

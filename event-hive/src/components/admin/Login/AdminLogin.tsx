@@ -1,5 +1,4 @@
-import React,{useEffect} from 'react'
-import { Link } from 'react-router-dom'
+import {useEffect} from 'react'
 import { useFormik } from 'formik'
 import { toast } from 'react-toastify'
 import { setAdminCredentials } from '../../../slices/authSlice'
@@ -8,6 +7,7 @@ import { useNavigate } from 'react-router-dom'
 import { RootState } from '../../../app/store'
 import { FormLogin } from '../../../validations/validationTypes'
 import { login } from '../../../api/adminApi'
+
 function AdminLogin():JSX.Element {
   const dispatch = useDispatch()
   const navigate = useNavigate()
@@ -69,6 +69,7 @@ function AdminLogin():JSX.Element {
                  <div className='flex flex-wrap mt-6 relative flex-col'>
                  <input placeholder="Password"
                  name='password'
+                 type='password'
                  value={values.password}
                  onChange={handleChange}
                       className="peer h-full w-full border-b border-blue-gray-200 bg-transparent pt-4 pb-1.5 font-sans text-sm font-normal text-blue-gray-700 outline outline-0 transition-all placeholder-shown:border-blue-gray-200 focus:border-gray-500 focus:outline-0 disabled:border-0 disabled:bg-blue-gray-50 placeholder:opacity-0 focus:placeholder:opacity-100 text-white" />
@@ -89,12 +90,7 @@ function AdminLogin():JSX.Element {
                 </div>
                  </form> 
         </div>
-        {/* <div className='w-1/2 h-screen flex items-center justify-center flex-col'>
-            <p className='mb-5'>Do you have an Account?</p>
-            <p className='mb-5 text-slate-700'>Let's get you all set up so you can start creating your first onboard experience</p>
-           
-            <Link to={'/signup'}><button className='text-slate-500 border-slate-950 border h-9 w-28 mt-6'>SIGN UP</button></Link> 
-        </div> */}
+        
      </div>
     </>
   )

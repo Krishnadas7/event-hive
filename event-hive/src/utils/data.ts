@@ -2,7 +2,7 @@ export interface EventType  {
     value: string;
     label: string;
     disabled?: boolean;
-  };
+  }
 export interface ParticipanyTypes{
   value:string;
   label:string;

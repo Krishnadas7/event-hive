@@ -1,12 +1,11 @@
-import React, { useEffect } from 'react'
-import { useState } from 'react';
+import  { useEffect } from 'react'
 import { companyLogin } from '../../../validations/yupValidation';
 import {useFormik} from 'formik'
 import {cLogin} from '../../../api/companyApi'
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 import { setCompany } from '../../../slices/authSlice';
-import { UseSelector,useDispatch } from 'react-redux';
+import { useDispatch } from 'react-redux';
  import image from '../../../assets/company_login_page.png'
  import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';

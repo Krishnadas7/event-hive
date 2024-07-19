@@ -1,4 +1,4 @@
-import React,{useEffect,useState} from 'react'
+import {useEffect,useState} from 'react'
 import { FcInfo } from "react-icons/fc";
 import { useFormik } from 'formik';
 import { resetValidation } from '../../validations/yupValidation';
@@ -7,7 +7,7 @@ import { useLocation } from 'react-router-dom';
 import dummyImage from '../../assets/link-expird-for-reset.png'
 import axios from 'axios';
 import { toast } from 'react-toastify';
-// import { jwtDecode } from 'jwt-decode';
+
 interface Obj {
     password: string;
     forgotToken: string ;

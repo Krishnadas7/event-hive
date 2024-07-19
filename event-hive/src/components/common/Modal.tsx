@@ -1,6 +1,6 @@
 import Modal from 'react-modal';
 import "./Modal.css";
-// import { CustomModalProps } from '../../typings/signup/modalPropType';
+
 export interface CustomModalProps {
     isOpen: boolean;
     onRequestClose: () => void;

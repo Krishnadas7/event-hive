@@ -7,19 +7,12 @@ import { IEvent } from '../../../types/schema';
 import { Link } from 'react-router-dom';
 import { MdOutlineKeyboardArrowRight } from "react-icons/md";
 import { MdKeyboardArrowLeft } from "react-icons/md";
-import { PiSortDescendingThin } from "react-icons/pi";
-import { CiSearch } from "react-icons/ci";
-import { searchEvent } from '../../../api/userApi';
-import { PiSortAscendingLight } from "react-icons/pi";
 import { toast } from 'react-toastify';
 import { eventTypes } from '../../../utils/data';
 import { filterEvent } from '../../../api/userApi';
 import emptyImage from '../../../assets/empty_image.jpg'
-const options = [
-  { value: 'Choose Event Type', label: 'Choose Event Type' },
-  { value: 'techevent', label: 'Tech Event' },
-  { value: 'hackathon', label: 'Hackathon' },
-];
+
+
 const location = [
   { value: 'Choose', label: 'Choose' },
   { value: 'FREE', label: 'FREE' },
@@ -30,7 +23,6 @@ const location = [
 function Event() {
   const [selectedValue, setSelectedValue] = useState('');
   const [ticket,setTicket] = useState('')
-  const [search,setSearch] = useState<string>('')
   const [events,setEvents] = useState<IEvent[]>([])
   const [pagination,setPagination] = useState<number>(0)
   const [date,setDate]=useState<string>('')
@@ -53,19 +45,8 @@ const todayStr = `${yyyy}-${mm}-${dd}`;
   fetchData()
   
   },[pagination])
- const handleSearchChange = (e:React.ChangeEvent<HTMLInputElement>)=>{
-  setSearch(e.target.value)
- }
- const handleSearch =async ()=>{
-    try {
-      const res = await searchEvent(search)
-      if(res?.data.success){
-        setEvents(res?.data.data)
-      }
-    } catch (error) {
-      toast.error('search is wrong')
-    }
- }
+ 
+
  const handleSubmit = async () =>{
   try {
     let obj={
@@ -94,7 +75,7 @@ const todayStr = `${yyyy}-${mm}-${dd}`;
                       <label htmlFor="" className='font-bold text-white ml-3'>Type</label>
                       <select 
                         value={selectedValue}
-                        onChange={(e)=>handleChange(e)}
+                        onChange={(e)=>handleChange(e as any)}
                         className="p-2 bg-transparent outline-none text-white w-full rounded-md"
                          >
                           
@@ -110,7 +91,7 @@ const todayStr = `${yyyy}-${mm}-${dd}`;
                       <label htmlFor="" className='font-bold ml-3 text-white'>Ticket</label>
                       <select
                         value={ticket}
-                        onChange={(e)=>handleTicket(e)}
+                        onChange={(e)=>handleTicket(e as any)}
                         className="p-2 text-white w-full outline-none bg-transparent rounded-md"
                          >
                         {location.map((option, index) => (
@@ -137,7 +118,7 @@ const todayStr = `${yyyy}-${mm}-${dd}`;
            </div>
            <div className=' px-3   '>
                <button onClick={()=>handleSubmit()} className=' border w-full  h-11  rounded-md mt-7 text-white bg-blue-600 font-bold 
-               hover:bg-white hover:text-blue-600'>search</button>
+               hover:bg-white hover:text-blue-600'>Apply Filter</button>
            </div>
       </div>
      </div>
@@ -147,13 +128,6 @@ const todayStr = `${yyyy}-${mm}-${dd}`;
       </div>
      </div>
     <div className='w-full px-28' >
-      <div className='flex justify-end max-sm:-mr-20 max-sm:mt-5'>
-        <span className='mt-2'>you can sort by new&nbsp;</span>
-        <div className='mr-2 flex gap-2  bg-gray-200 px-5 py-1 rounded-md'>
-          <button><PiSortDescendingThin className='text-gray-600 font-bold hover:text-gray-400' size={30}/></button>
-          <button><PiSortAscendingLight className='text-gray-600 font-bold hover:text-gray-400' size={30}/></button>
-        </div>
-      </div>
     </div>
     
    <div className='w-full grid md:grid-cols-2 md:px-28 px-10  xl:grid-cols-3 gap-7  grid-cols-1 sm:grid-cols-1 justify-around mt-10'>
@@ -181,8 +155,8 @@ const todayStr = `${yyyy}-${mm}-${dd}`;
           <div className='flex justify-between'>
           <p>close in - {event.end_date}</p>
 
-          <h3 className={`text-lg ${event.ticket == 'free' ? 'text-green-500' : 'text-blue-500'} rounded-md px-4 text-sm pt-1 font-bold`}>
-          {event.ticket}
+          <h3 className={`text-lg ${event.ticket == 'free' ? 'text-green-500' : 'text-blue-500'} rounded-md uppercase px-4 text-sm pt-1 font-bold`}>
+          {event.ticket}&nbsp; Rs.{event.amount}
         </h3>
           </div>
           </div>

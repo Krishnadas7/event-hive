@@ -1,4 +1,3 @@
-import React from 'react'
 import CompanyLogin from '../../components/company/CompanyLogin/CompanyLogin'
 
 function CompanyLoginPage() {

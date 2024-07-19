@@ -118,9 +118,7 @@ const EventList = () => {
                 <p className="text-gray-700">
                   This event planned to showcase our views to all developers...
                 </p>
-                <button className="text-blue-500 hover:underline focus:outline-none">
-                  Hosted Company Details
-                </button>
+                
               </div>
             </div>
           </div>

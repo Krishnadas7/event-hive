@@ -1,26 +1,22 @@
 import {ThreeDots} from 'react-loader-spinner'
 import { motion } from 'framer-motion';
-
 import React, { useState,useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useFormik } from "formik";
 import { signUp } from '../../../api/userApi'
-import { setCredential } from '../../../slices/authSlice'
 import Loader from '../../common/Loader';
 import { useDispatch,useSelector } from 'react-redux'
 import { sendOtpToEmail } from '../../../api/userApi';
 import 'react-toastify/dist/ReactToastify.css';
-import GoogleAuthenticatoin from '../../common/GoogleAuthenticatoin';
 import { validationSchema } from '../../../validations/yupValidation';
-import { setRegister } from '../../../slices/authSlice';
+import { setRegister, UserInfo } from '../../../slices/authSlice';
 import { clearRegister } from '../../../slices/authSlice';
-import * as Yup from 'yup'
-import { MyError } from '../../../validations/validationTypes';
-import { toast } from 'react-toastify';
+import { toast } from 'react-hot-toast';
 import OtpInput from 'react-otp-input'
 import { CustomModal } from '../../common/Modal';
 import { RootState } from '../../../app/store';
 import { otpVerification } from '../../../api/userApi';
+import { IUser } from '../../../types/schema';
 
 const Register: React.FC = () => {
   const [otp, setOtp] = useState("");
@@ -66,8 +62,8 @@ useEffect(()=>{
     },
     validationSchema:validationSchema,
     onSubmit: async (values) =>{
+      
       let currentTime = new Date().getTime()
-      console.log('timeee for register',currentTime)
        dispatch(setRegister({...values,timestamp:currentTime}))
        setSubmit(true)
         try {
@@ -77,48 +73,45 @@ useEffect(()=>{
       } catch (error) {
         setIsModalOpen(false)
         dispatch(clearRegister())
-         toast.error((error as MyError)?.data?.message || (error as MyError)?.error )
+         toast.error('otp error')
       }
     }
   })
   async function handleOTPVerification(){
     const OTP_VALIDITY_DURATION = 60 * 1000; // 60 seconds in milliseconds
     try {
-     
-
       setLoad(true)
       const {email,timestamp}:any = registerInfo
+      
       const currentTime = new Date().getTime();
       const timeElapsed = currentTime - timestamp;
+      console.log(timestamp,'this i timee')
       if (timeElapsed > OTP_VALIDITY_DURATION) {
         toast.error('OTP has expired');
         return;
     }
       const res:any = await otpVerification({otp,email})
        
-         if(res.data.success){
-
-            const {first_name,last_name,email,mobile,password,confirm_password}:any = registerInfo
-            const res:any = await signUp({first_name,last_name,email,mobile,password,confirm_password})
+         if(res?.data.success){
+            if(registerInfo != null){
+              const {first_name,last_name,email,mobile,password,confirm_password}:UserInfo = registerInfo
+            const res:any = await signUp({first_name,last_name,email,mobile,password,confirm_password} as IUser )
             console.log('resssignup',res);
             if(res.data.success){
               setIsModalOpen(false)
-              // toast.success('sdlksdlksd')
               setLoad(false)
              navigate('/user/login')
             }else{
               setLoad(false)
-              // setIsModalOpen(false)
               toast.error('invalid otp')
             }
+            }
          }else{
-          // setIsModalOpen(false)
-          console.log('otp verification failed');
-          
+          toast.error('otp verification failed')
          }
     } catch (error) {
       setIsModalOpen(false)
-      toast.error((error as MyError)?.data?.message || (error as MyError)?.error )
+      toast.error('otp verification failed')
     }
 }
 

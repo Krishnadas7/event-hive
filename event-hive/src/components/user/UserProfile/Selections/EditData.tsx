@@ -1,4 +1,3 @@
-import React from 'react';
 import { updateProfile } from '../../../../api/userApi';
 import { useFormik } from 'formik';
 import { toast } from 'react-toastify';

@@ -1,4 +1,4 @@
-// setCanvasPreview.ts
+
 export const setCanvasPreview = (
     image: HTMLImageElement,
     canvas: HTMLCanvasElement,

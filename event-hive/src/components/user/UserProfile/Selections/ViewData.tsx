@@ -1,34 +1,6 @@
-import React,{useState,useEffect} from 'react'
-import { FaFacebook, FaLinkedin, FaTwitter } from "react-icons/fa";
-import { useSelector } from 'react-redux';
-import { RootState } from '../../../../app/store';
-import { userData } from '../../../../api/userApi';
+import { FaFacebook, FaLinkedin} from "react-icons/fa";
 
-interface UserData {
-    first_name: string;
-    last_name: string;
-    bio: string;
-    email:string;
-    mobile:string;
-    qualification: string;
-    socialmedialink1: string;
-    socialmedialink2: string;
-  }
-
-function ViewData({data}) {
-    const { userInfo } = useSelector((state: RootState) => state.auth);
-    // const [data, setData] = useState<UserData | null>(null);
-
-    // useEffect(() => {
-    //     const fetchData = async () => {
-    //       const res: any = await userData(userInfo.email);
-    //       setData(res.data.data);
-    //       console.log('details from userdetails',res.data.data)
-    //     }; 
-    //     fetchData();
-    //   }, [userInfo.email]);
-//   console.log('dataaa==',d);
-  
+function ViewData({data}) {  
   return (
     <div className="  h-auto p-6 bg-slate-200">
              <div className="space-y-4">

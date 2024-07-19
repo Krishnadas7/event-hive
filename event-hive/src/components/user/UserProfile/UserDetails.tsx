@@ -1,10 +1,6 @@
-import React, { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import image from '../../../assets/user-Profile2 (2).jpg';
-// import { FaFacebook, FaLinkedin, FaTwitter } from "react-icons/fa";
-// import { AiFillInstagram } from "react-icons/ai";
-// import { useFormik } from 'formik';
 import {  userData } from '../../../api/userApi';
-// import { toast } from 'react-toastify';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../../app/store';
 import PencilIcon from '../../common/PencilIcon';
@@ -26,9 +22,7 @@ interface UserData {
 
 
 function UserDetails() {
-  // const [edit, setEdit] = useState(false);
   const { userInfo } = useSelector((state: RootState) => state.auth);
-  // const [imageFile, setImageFile] = useState<File | null>(null);
   const [data, setData] = useState<UserData | null>(null);
   const avatarUrl = useRef(image);
   const [modalOpen, setModalOpen] = useState(false);
@@ -46,38 +40,6 @@ function UserDetails() {
     }; 
     fetchData();
   }, [userInfo.email]);
-
-  // const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-  //   if (e.target.files && e.target.files.length > 0) {
-  //     setImageFile(e.target.files[0]);
-  //   }
-  // };
-
-  // const { values: editValues, handleChange: editChange, handleSubmit: editSubmit, errors: editErrors, touched: editTouched } = useFormik({
-  //   initialValues: {
-  //     first_name: '',
-  //     last_name: '',
-  //     qualification: '',
-  //     bio: '',
-  //     socialmedialink1: '',
-  //     socialmedialink2: '',
-  //   },
-  //   enableReinitialize: true,
-  //   onSubmit: async (values) => {
-  //     try {
-  //       const res = await updateProfile(values);
-  //       if (res.data.success) {
-  //         // setData(res.data.data);
-  //         setEdit(!edit);
-  //         toast.success(res.data.message);
-  //       } else {
-  //         toast.error('Something went wrong');
-  //       }
-  //     } catch (error) {
-  //       toast.error('Error updating profile');
-  //     }
-  //   },
-  // });
 
   return (
     <div className="bg-white shadow-lg border border-gray-300 mb-10 mr-3 mt-[15px]">

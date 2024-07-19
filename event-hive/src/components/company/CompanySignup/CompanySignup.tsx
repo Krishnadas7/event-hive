@@ -63,22 +63,20 @@ function CompanySignup() {
       let currentTime = new Date().getTime()
       console.log('timeee for register',currentTime)
       dispatch(setTimeInfo({timestamp:currentTime}))
-      dispatch(setCompany({...values}))
-      // console.log('values from companySignup ', values);
+      // dispatch(setCompany({...values}))
       try {
-        // if(values.password != values.confirm_password){
-        //   toast.error('password and confirm do not matched')
-        //   return 
-        // }
-        const res = await sendEmail(values)
+        const res:any = await sendEmail(values)
         console.log('log from company signup',res);
         if(res?.data.success){  
           setIsModalOpen(true)
+        }else{
+          toast.error(res?.data.message)
+          return 
         }
       } catch (error) {
         setIsModalOpen(false)
         dispatch(clearTimeInfo())
-        dispatch(clearCompany())
+        // dispatch(clearCompany())
         toast.error('something went wrong try again...')
       }
     }
@@ -88,7 +86,8 @@ function CompanySignup() {
    const resendOtpHandler = async(e:React.FormEvent<HTMLFormElement>)=>{
     e.preventDefault()
     try {
-      
+      let currentTime = new Date().getTime()
+      dispatch(setTimeInfo({timestamp:currentTime}))
       const {company_name,company_email,
         company_website, company_address,industry_type,
         company_description,password
@@ -102,15 +101,16 @@ function CompanySignup() {
         company_description,
         password
       }) 
+      console.log('res from company regist res',res)
+      
       if(res?.data.success){
         toast.success(res.data.message)
       }
       setresendButton(false)
       setTimer(60)
-    } catch (error) {
-      
+    } catch (error) { 
+      // dispatch(clearCompany())
     }
-
    }
    async function handleOTPVerification(){
     console.log('cliced')
@@ -121,25 +121,28 @@ function CompanySignup() {
       console.log(timerInfo);
       
       const {timestamp} = timerInfo
-      console.log(timestamp);
+      console.log('timestamps',timestamp.timestamp);
       
       const currentTime = new Date().getTime();
-      const timeElapsed = currentTime - timestamp;
+      const timeElapsed = currentTime - timestamp.timestamp;
       if (timeElapsed > OTP_VALIDITY_DURATION) {
         toast.error('OTP has expired');
         return;
       }
         const res = await companyRegister(otp)
         console.log('res from otp verification',res)
+
         if(res?.data.success){
           setIsModalOpen(false)
           toast.success(res.data.message)
           navigate('/company')
 
+        }else{
+          toast.error(res?.data.message)
         }
        
      } catch (error) {
-      toast.error('some')
+      toast.error('something went wrong')
      }
    }
   return (
@@ -199,20 +202,14 @@ function CompanySignup() {
           <img src={image} alt="" className=''/>
        </div>
        <div className=' gap-6 flex items-center mt-5 flex-col  md:w-1/2 sm:w-full '>
-         {/* <h1 className='text-3xl font-semibold'>Welcome back :)</h1> */}
-         {/* <div className=''>
-         <p className='w-[450px] text-slate-500 font-semibold'>To keep connected with us please login with your personal information by email address and password</p>
-         </div> */} 
+        
          <div className='p-4 '>
          <form className='w-[500px] max-sm:ml-5 mb-5 h-[500px]' onSubmit={companySubmit}>
           <label className='text-gray-500 font-semibold ' htmlFor="">Company Name</label>
           <div className='flex bg-gray-200 w-full mt-2 mb-3 rounded-md' >
-          {/* <svg className="w-4 h-4 mr-1 ml-3 mt-3  text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 16">
-        <path d="m10.036 8.278 9.258-7.79A1.979 1.979 0 0 0 18 0H2A1.987 1.987 0 0 0 .641.541l9.395 7.737Z"/>
-        <path d="M11.241 9.817c-.36.275-.801.425-1.255.427-.428 0-.845-.138-1.187-.395L0 2.6V14a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V2.5l-8.759 7.317Z"/>
-        </svg> */}
+         
           <input type="text" value={companyValues.company_name}  name='company_name'
-           onChange={companyChange} id="input-group-1" className="bg-gray-200  outline-none border-gray-300 text-black text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full  p-2.5    dark:placeholder-gray-400  dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="enter your email"/>
+           onChange={companyChange} id="input-group-1" className="bg-gray-200  outline-none border-gray-300 text-black text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full  p-2.5    dark:placeholder-gray-400  dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="company name"/>
           </div>
           {companyErrors.company_name && companyTouched.company_name && (
                 <div className="text-red-500 text-sm pb-2 mt-3">{companyErrors.company_name}</div>
@@ -220,29 +217,20 @@ function CompanySignup() {
           <div>
           <label className='text-gray-500 font-semibold ' htmlFor="">Company Email</label>
           <div className='flex bg-gray-200 w-full mt-2 mb-3 rounded-md' >
-          {/* <svg className="w-4 h-4 mr-1 ml-3 mt-3  text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 16">
-        <path d="m10.036 8.278 9.258-7.79A1.979 1.979 0 0 0 18 0H2A1.987 1.987 0 0 0 .641.541l9.395 7.737Z"/>
-        <path d="M11.241 9.817c-.36.275-.801.425-1.255.427-.428 0-.845-.138-1.187-.395L0 2.6V14a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V2.5l-8.759 7.317Z"/>
-        </svg> */}
           <input type="email" value={companyValues.company_email}  name='company_email'
-           onChange={companyChange} id="input-group-1" className="bg-gray-200  outline-none border-gray-300 text-black text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full  p-2.5    dark:placeholder-gray-400  dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="enter your email"/>
+           onChange={companyChange} id="input-group-1" className="bg-gray-200  outline-none border-gray-300 text-black text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full  p-2.5    dark:placeholder-gray-400  dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="company email"/>
           </div>
           {companyErrors.company_email && companyTouched.company_email && (
                 <div className="text-red-500 text-sm pb-2 mt-3">{companyErrors.company_email}</div>
               )}
          </div>
 
-         {/* ======22 */}
         
           <div>
           <label className='text-gray-500 font-semibold ' htmlFor="">Company Address</label>
           <div className='flex bg-gray-200 w-full mt-2 mb-3 rounded-md' >
-          {/* <svg className="w-4 h-4 mr-1 ml-3 mt-3  text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 16">
-        <path d="m10.036 8.278 9.258-7.79A1.979 1.979 0 0 0 18 0H2A1.987 1.987 0 0 0 .641.541l9.395 7.737Z"/>
-        <path d="M11.241 9.817c-.36.275-.801.425-1.255.427-.428 0-.845-.138-1.187-.395L0 2.6V14a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V2.5l-8.759 7.317Z"/>
-        </svg> */}
           <input type="text" value={companyValues.company_address}  name='company_address'
-           onChange={companyChange} id="input-group-1" className="bg-gray-200  outline-none border-gray-300 text-black text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full  p-2.5    dark:placeholder-gray-400  dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="enter your email"/>
+           onChange={companyChange} id="input-group-1" className="bg-gray-200  outline-none border-gray-300 text-black text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full  p-2.5    dark:placeholder-gray-400  dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="address"/>
           </div>
           {companyErrors.company_address && companyTouched.company_address && (
                 <div className="text-red-500 text-sm pb-2 mt-3">{companyErrors.company_address}</div>
@@ -251,12 +239,8 @@ function CompanySignup() {
           <div>
           <label className='text-gray-500 font-semibold ' htmlFor="">Company Website</label>
           <div className='flex bg-gray-200 w-full mt-2 mb-3 rounded-md' >
-          {/* <svg className="w-4 h-4 mr-1 ml-3 mt-3  text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 16">
-        <path d="m10.036 8.278 9.258-7.79A1.979 1.979 0 0 0 18 0H2A1.987 1.987 0 0 0 .641.541l9.395 7.737Z"/>
-        <path d="M11.241 9.817c-.36.275-.801.425-1.255.427-.428 0-.845-.138-1.187-.395L0 2.6V14a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V2.5l-8.759 7.317Z"/>
-        </svg> */}
           <input type="url" value={companyValues.company_website}  name='company_website'
-           onChange={companyChange} id="input-group-1" className="bg-gray-200  outline-none border-gray-300 text-black text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full  p-2.5    dark:placeholder-gray-400  dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="enter your email"/>
+           onChange={companyChange} id="input-group-1" className="bg-gray-200  outline-none border-gray-300 text-black text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full  p-2.5    dark:placeholder-gray-400  dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="website"/>
           </div>
           {companyErrors.company_website && companyTouched.company_website && (
                 <div className="text-red-500 text-sm pb-2 mt-3">{companyErrors.company_website}</div>
@@ -266,12 +250,8 @@ function CompanySignup() {
           <div>
           <label className='text-gray-500 font-semibold ' htmlFor="">Industry Type</label>
           <div className='flex bg-gray-200 w-full mt-2 mb-3 rounded-md' >
-          {/* <svg className="w-4 h-4 mr-1 ml-3 mt-3  text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 16">
-        <path d="m10.036 8.278 9.258-7.79A1.979 1.979 0 0 0 18 0H2A1.987 1.987 0 0 0 .641.541l9.395 7.737Z"/>
-        <path d="M11.241 9.817c-.36.275-.801.425-1.255.427-.428 0-.845-.138-1.187-.395L0 2.6V14a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V2.5l-8.759 7.317Z"/>
-        </svg> */}
           <input type="text" value={companyValues.industry_type}  name='industry_type'
-           onChange={companyChange} id="input-group-1" className="bg-gray-200  outline-none border-gray-300 text-black text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full  p-2.5    dark:placeholder-gray-400  dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="enter your email"/>
+           onChange={companyChange} id="input-group-1" className="bg-gray-200  outline-none border-gray-300 text-black text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full  p-2.5    dark:placeholder-gray-400  dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="industry type"/>
           </div>
           {companyErrors.industry_type && companyTouched.industry_type && (
                 <div className="text-red-500 text-sm pb-2 mt-3">{companyErrors.industry_type}</div>
@@ -280,12 +260,8 @@ function CompanySignup() {
           <div>
           <label className='text-gray-500 font-semibold ' htmlFor="">Company Destiption </label>
           <div className='flex bg-gray-200 w-full mt-2 mb-3 rounded-md' >
-          {/* <svg className="w-4 h-4 mr-1 ml-3 mt-3  text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 16">
-        <path d="m10.036 8.278 9.258-7.79A1.979 1.979 0 0 0 18 0H2A1.987 1.987 0 0 0 .641.541l9.395 7.737Z"/>
-        <path d="M11.241 9.817c-.36.275-.801.425-1.255.427-.428 0-.845-.138-1.187-.395L0 2.6V14a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V2.5l-8.759 7.317Z"/>
-        </svg> */}
           <input type="text" value={companyValues.company_description}  name='company_description'
-           onChange={companyChange} id="input-group-1" className="bg-gray-200  outline-none border-gray-300 text-black text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full  p-2.5    dark:placeholder-gray-400  dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="enter your email"/>
+           onChange={companyChange} id="input-group-1" className="bg-gray-200  outline-none border-gray-300 text-black text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full  p-2.5    dark:placeholder-gray-400  dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="description"/>
           </div>
           {companyErrors.company_description && companyTouched.company_description && (
                 <div className="text-red-500 text-sm pb-2 mt-3">{companyErrors.company_description}</div>
@@ -295,12 +271,8 @@ function CompanySignup() {
           <div>
           <label className='text-gray-500 font-semibold ' htmlFor="">Password </label>
           <div className='flex bg-gray-200 w-full mt-2 mb-3 rounded-md' >
-          {/* <svg className="w-4 h-4 mr-1 ml-3 mt-3  text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 16">
-        <path d="m10.036 8.278 9.258-7.79A1.979 1.979 0 0 0 18 0H2A1.987 1.987 0 0 0 .641.541l9.395 7.737Z"/>
-        <path d="M11.241 9.817c-.36.275-.801.425-1.255.427-.428 0-.845-.138-1.187-.395L0 2.6V14a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V2.5l-8.759 7.317Z"/>
-        </svg> */}
           <input type="password" value={companyValues.password}  name='password'
-           onChange={companyChange} id="input-group-1" className="bg-gray-200  outline-none border-gray-300 text-black text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full  p-2.5    dark:placeholder-gray-400  dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="enter your email"/>
+           onChange={companyChange} id="input-group-1" className="bg-gray-200  outline-none border-gray-300 text-black text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full  p-2.5    dark:placeholder-gray-400  dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="password"/>
           </div>
           {companyErrors.password && companyTouched.password && (
                 <div className="text-red-500 text-sm pb-2 mt-3">{companyErrors.password}</div>
@@ -309,12 +281,8 @@ function CompanySignup() {
           <div className=''>
           <label className='text-gray-500 font-semibold ' htmlFor="">Confirm Password </label>
           <div className='flex bg-gray-200 w-full mt-2 mb-3 rounded-md' >
-          {/* <svg className="w-4 h-4 mr-1 ml-3 mt-3  text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 16">
-        <path d="m10.036 8.278 9.258-7.79A1.979 1.979 0 0 0 18 0H2A1.987 1.987 0 0 0 .641.541l9.395 7.737Z"/>
-        <path d="M11.241 9.817c-.36.275-.801.425-1.255.427-.428 0-.845-.138-1.187-.395L0 2.6V14a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V2.5l-8.759 7.317Z"/>
-        </svg> */}
           <input type="password" value={companyValues.confirm_password}  name='confirm_password'
-           onChange={companyChange} id="input-group-1" className="bg-gray-200  outline-none border-gray-300 text-black text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full  p-2.5    dark:placeholder-gray-400  dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="enter your email"/>
+           onChange={companyChange} id="input-group-1" className="bg-gray-200  outline-none border-gray-300 text-black text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full  p-2.5    dark:placeholder-gray-400  dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="confirm password"/>
           </div>
           {companyErrors.confirm_password && companyTouched.confirm_password && (
                 <div className="text-red-500 text-sm pb-2 mt-3">{companyErrors.confirm_password}</div>
@@ -328,7 +296,6 @@ function CompanySignup() {
         </form>
        </div>
        </div>
-      {/* ======2222 */}
       
     </div>
     </>

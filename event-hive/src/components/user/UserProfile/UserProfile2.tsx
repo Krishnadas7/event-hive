@@ -1,4 +1,4 @@
-import React, { ReactElement, Suspense, lazy, useEffect, useState } from 'react'
+import { ReactElement, Suspense, lazy, useState } from 'react'
 import { TiThMenu } from "react-icons/ti";
 import { useNavigate } from 'react-router-dom';
 import { RootState } from '../../../app/store';
@@ -12,7 +12,6 @@ import { CiUser } from "react-icons/ci";
 import { CiSettings } from "react-icons/ci";
 import { Link } from 'react-router-dom';
 import UserChat from './UserChat';
-import ViewProfile from './ViewProfile';
 import { HiOutlineChatBubbleLeftRight } from "react-icons/hi2";
 
 import UserDetails from './UserDetails';
@@ -122,7 +121,6 @@ function UserProfilee() {
       </div>
     </div>
     <div className={` overflow-y-auto h-screen ${open ? 'ml-[268px]' : 'ml-[125px]' }    rounded-md bg-[#F6F6F6]`} >
-      {/* <h1>dsldslksdkl</h1> */}
       <Suspense fallback={<div></div>}>
       {num ==0 && <UserDetails/>}
       {num ==1 && <UserChat/>}

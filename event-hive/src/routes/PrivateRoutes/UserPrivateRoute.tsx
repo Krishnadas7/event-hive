@@ -1,17 +1,13 @@
-import { useEffect } from "react";
-import { useDispatch,useSelector } from "react-redux";
+import React from 'react';
+import { useSelector } from "react-redux";
 import { RootState } from "../../app/store";
-import { useNavigate,Outlet,Navigate } from "react-router-dom";
+import { Outlet, Navigate } from "react-router-dom";
 
-const UserPrivateRoute:React.FC = () =>{
-    const { userInfo } = useSelector((state: RootState) => state.auth);
-    const dispatch = useDispatch();
-    const navigate = useNavigate();
-
-   
-
-    // Return Outlet if userInfo exists, otherwise return null
-   return userInfo ?<Outlet/> :  <Navigate to="/" replace />
+const UserPrivateRoute: React.FC = () => {
+  const { userInfo } = useSelector((state: RootState) => state.auth);
+  
+  // Return Outlet if userInfo exists, otherwise navigate to login
+  return userInfo ? <Outlet /> : <Navigate to="/user/login" replace />;
 }
 
 export default UserPrivateRoute;

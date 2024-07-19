@@ -11,8 +11,10 @@ import { RootState } from '../../../app/store';
 const public_stripe_key = 'pk_test_51PQWx603Z9ZoAMB6ZQFq8S4avHgFoBDXC8fFv1Yjafo5Py2QAoAECKCI6l1MS15aAUHtEuN0dMvpQtbtPcNoksAw00P3AyZUgd'
 import { ticketBooking } from '../../../api/userApi';
 import { loadStripe } from '@stripe/stripe-js';
-import { toast } from 'react-toastify';
+import { toast } from 'react-hot-toast';
 import TeamAdd from '../../common/TeamAdd';
+import { useNavigate } from 'react-router-dom';
+
 interface Obj {
     user_id: any;
     event_id: string | undefined;
@@ -29,7 +31,7 @@ function SelectedEvent() {
     const [book,setBook] = useState(false)
     const params  = useParams();
     const {userInfo} = useSelector((state:RootState)=>state.auth);
-    
+    const navigate = useNavigate()
     useEffect(() => {
         const fetchData = async () => {
             const res = await selectedEvent(params.eventId as string);
@@ -53,10 +55,10 @@ function SelectedEvent() {
         minute: 'numeric',
         hour12: true
       };
-    const formattedDate = dateObj.toLocaleString('en-US', options);
+    const formattedDate = dateObj.toLocaleString('en-US', options as any);
     console.log('form ',formattedDate);
     const companyDetails = event.companyDetails ? event.companyDetails[0] : null;
-    const members:string[]  = JSON.parse(localStorage.getItem('teamData')) 
+    const members:string[]  = JSON.parse(localStorage.getItem('teamData') as any) 
     const handleRegistration = async (e:React.FormEvent,participants:string) =>{
         e.preventDefault();
         if(participants!='individual'){
@@ -69,8 +71,15 @@ function SelectedEvent() {
         let stripePromise;
         let paymentStatus = 'nill';
         if(event.ticket === 'paid'){
-            stripePromise  = await loadStripe(public_stripe_key);
+            try {
+                stripePromise  =await  loadStripe(public_stripe_key);
+            console.log('stripe opening',stripePromise);
+            
             paymentStatus = 'completed';
+            } catch (error) {
+                console.log('error fron striper open',error)
+            }
+            
         }
 
         console.log('evv====',event);
@@ -88,12 +97,19 @@ function SelectedEvent() {
             }
             console.log('memberssss from obj',obj)
             const res = await ticketBooking(obj);
+            console.log('res',res)
             if(res?.data.success){
              localStorage.removeItem('teamData')
-             toast.success('event booking successfully completed')
+             if(res.data.data){
+                // toast.success(res.data.message)
+               navigate('/user/success-page')
+                return
+             }else{
+                toast.error(res.data.message)
+                return
+             }
             }
-           
-            const session: any = res;
+            const session: any  = res;
             if (stripePromise) {
                 stripePromise.redirectToCheckout({
                     sessionId: session.data.data
@@ -145,15 +161,15 @@ function SelectedEvent() {
                             <p className='text-white font-mono dark:text-white text-5xl'>
                                 {event?.event_name}
                             </p>
-                            <h1 className='mt-8 text-2xl text-white dark:text-white'>
+                            <h1 className='mt-8 text-2xl text-white bg-black bg-opacity-40 dark:text-white'>
                                 {companyDetails?.company_name}
                             </h1>
-                            <p className='max-w-xl max-sm:-ml-16 max-sm:bg-white pb-3 max-sm:px-4 py-4 max-sm:rounded-md mt-4 max-sm:text-black text-white'>
+                            <p className='max-w-xl max-sm:-ml-16 max-sm:bg-white pb-3 max-sm:px-4 bg-black bg-opacity-40 py-4 max-sm:rounded-md mt-4 max-sm:text-black text-white'>
                                 {companyDetails?.company_description}
                             </p>
                         </div>
                         <div className='flex max-sm:mt-1'>
-                            <div className={`w-[300px] rounded-md max-sm:bg-gray-100 max-sm:-ml-16 ml-32 max-md:ml-32 bg-white ${event.ticket === 'paid' ? 'h-[300px]': 'h-[230px]'} `}>
+                            <div className={`w-[300px] rounded-md max-sm:bg-gray-100 max-sm:-ml-16 ml-32 max-md:ml-32 bg-white bg-opacity-65 ${event.ticket === 'paid' ? 'h-[300px]': 'h-[230px]'} `}>
                                 <div className='px-5 py-1 flex flex-col gap-2'>
                                     <span className='font-bold'>Date & Time</span>
                                     <p>{formattedDate}</p>

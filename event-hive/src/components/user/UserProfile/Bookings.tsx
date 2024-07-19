@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import { allBookings } from '../../../api/userApi';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../../app/store';
 import { Booking } from '../../../validations/validationTypes';
 
-const TABLE_HEAD = ["SL/NO", "Booking Date", "Payment Status", "Ticket","Amount"];
+const TABLE_HEAD = ["SL/NO","Event Name","Start Date","End Date", "Booking Date", "Payment Status", "Ticket","Amount"];
 
 // Function to format date in the desired format
 const formatBookingDate = (dateString: string): string => {
@@ -32,7 +32,7 @@ function Bookings() {
     const fetchData = async () => {
       try {
         const res = await allBookings(userInfo._id);
-        console.log('Booking data:', res.data.data);
+        console.log('Booking data:', res?.data.data);
         setBooking(res?.data.data);
       } catch (error) {
         toast.error('Something went wrong while fetching data');
@@ -58,12 +58,21 @@ function Bookings() {
             </tr>
           </thead>
           <tbody>
-            {booking.map((data, index) => (
+            {booking.map((data : any, index) => (
               <tr key={index}>
                 <td className='p-2 border-b border-blue-gray-200'>
                   <div className="flex text-black items-center gap-3">
                     {index + 1}
                   </div>
+                </td>
+                <td className='p-2 border-b border-blue-gray-200'>
+                  <span className="text-sm text-blue-700">{data.events.event_name}</span>
+                </td>
+                <td className='p-2 border-b border-blue-gray-200'>
+                  <span className="text-sm text-blue-700">{data.events.start_date}</span>
+                </td>
+                <td className='p-2 border-b border-blue-gray-200'>
+                  <span className="text-sm text-blue-700">{data.events.end_date}</span>
                 </td>
                 <td className='p-2 border-b border-blue-gray-200'>
                   <span className="text-sm text-blue-700">{formatBookingDate(data.booking_date)}</span>

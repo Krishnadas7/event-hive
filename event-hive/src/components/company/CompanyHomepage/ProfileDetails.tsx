@@ -24,7 +24,6 @@ function ProfileDetails() {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);  // New state to hold the file
   const [data, setData] = useState<CompanyData | null>(null);
-  // const [chek,setCheck] = useState(false)
   useEffect(() => {
     const fetchData = async () => {
       const res = await getCompanyProfileData();

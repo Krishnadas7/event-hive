@@ -1,11 +1,12 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { allMembers } from '../../api/companyApi';
 import { IUser } from '../../types/schema';
 import { PiUsersFourThin } from "react-icons/pi";
 import { IoIosClose } from "react-icons/io";
 import image from '../../assets/user-Profile2 (2).jpg'
 
-const MembersModal = ({ eventId }) => {
+const MembersModal = ({ eventId ,type}:{eventId:string,type:string}) => {
+  console.log('typeeee',type)
   const [isOpen, setIsOpen] = useState(false);
   const [users, setUsers] = useState<IUser[]>([]);
   const [team, setTeam] = useState(false);
@@ -66,7 +67,7 @@ const MembersModal = ({ eventId }) => {
                       <img className="w-10 h-10 rounded-full" src={data.profileImage ? data.profileImage : image} alt="User" />
                       <p className="text-gray-800 font-semibold">{data.first_name} {data.last_name}</p>
                     </div>
-                    {data.team && data.team.length > 0 ? (
+                    {type !=='individual' && data.team && data.team.length > 0 ? (
                       <div className="relative">
                         <button onClick={toggleTeam} className="bg-blue-600 text-white px-4 py-1 rounded-md font-semibold">Team</button>
                         {team && (

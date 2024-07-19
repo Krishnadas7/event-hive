@@ -1,9 +1,8 @@
 import React from 'react'
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import {  Routes, Route } from "react-router-dom";
 import AdminHomePage from '../pages/adminPages/adminHomePage';
 import AdminLoginPage from '../pages/adminPages/adminLoginPage';
 import AdminPrivateRoute from './PrivateRoutes/AdminPrivateRoute';
-// import AdminPrivateRoute from './PrivateRoutes/AdminPrivateRoute';
 const AdminRoute :React.FC= () =>{
   return (
     <>

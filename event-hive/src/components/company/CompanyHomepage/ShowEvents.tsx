@@ -3,7 +3,6 @@ import { getEvent } from '../../../api/companyApi';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../../app/store';
 import { IEvent } from '../../../types/schema';
-import image from '../../../assets/event Image.jpg';
 
 function ShowEvents() {
     const { companyInfo } = useSelector((state: RootState) => state.auth);
@@ -46,9 +45,15 @@ function ShowEvents() {
                         <div className="flex flex-col gap-5 text-black">
                             <div className="flex flex-col">
                                 <span className="font-bold">{event.event_name}</span>
-                                <div className="flex justify-between">
+                                <div className='bg-gray-200'>
+                                <div className="flex justify-between  px-2 rounded-md">
                                     <span className="text-gray-500">{event.start_date} {event.starting_time}</span>
-                                    {/* <span className="bg-green-500 pl-3 pr-3 rounded-md text-white">Active</span> */}
+                                    <span className=" pl-3 pr-3 rounded-md text-gray-500">{event.end_date} {event.ending_time}</span>
+                                </div>
+                                <div className="flex justify-between  px-2 rounded-md">
+                                    <span className="text-gray-500">{event.ticket} </span>
+                                    <span className=" pl-3 pr-3 rounded-md text-gray-500">Rs.{event.amount}</span>
+                                </div>
                                 </div>
                             </div>
                         </div>

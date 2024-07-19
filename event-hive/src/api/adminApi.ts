@@ -1,17 +1,20 @@
-import axios,{AxiosInstance,AxiosRequestConfig,AxiosResponse} from 'axios'
+import axios,{AxiosInstance} from 'axios'
+console.log('User API:', process.env.USER_API);
+console.log('Admin API:', process.env.ADMIN_API);
+
+
+const ADMIN_API = process.env.ADMIN_API
+const ADMIN_REFRESH_API = process.env.ADMIN_REFRESH_API
 
 const adminApi : AxiosInstance = axios.create({
-    baseURL:'http://localhost:3003/api/admin'
+    baseURL:ADMIN_API
 })
 
 adminApi.interceptors.request.use(
   (config) => {
     const accessToken = localStorage.getItem('adminAccessToken');
-    // console.log('acess from request interceptors',accessToken);
-    
     if (accessToken) {
       config.headers.Authorization = `Bearer ${accessToken}`;
-      
     }
     return config;
   },
@@ -33,7 +36,7 @@ adminApi.interceptors.request.use(
         if (error.response.status === 401 && !originalRequest._retry && refreshToken) {
           originalRequest._retry = true;
           try {
-            const response = await adminApi.post("http://localhost:3003/api/admin/refresh-token", {
+            const response = await adminApi.post(ADMIN_REFRESH_API as string, {
               refreshToken
             },{withCredentials:true});
             const newAccessToken = response.data.accessToken;
@@ -65,9 +68,7 @@ adminApi.interceptors.request.use(
     }
   }
   export const getUser = async () =>{
-     try {
-      console.log('getusre jkbbk');
-      
+     try {  
         const res = await adminApi.get('/get-user',{withCredentials:true})
         console.log('res fro adapter',res)
         return res
@@ -77,9 +78,7 @@ adminApi.interceptors.request.use(
      }
   }
   export const blockUnblock = async (_id:string) =>{
-    try {
-      console.log('admin apiiii');
-      
+    try { 
       const res = await adminApi.patch(`/user/block-unblock?_id=${_id}`)
       return res
     } catch (error) {
@@ -90,8 +89,6 @@ adminApi.interceptors.request.use(
   export const getEventWithCompany = async () =>{
     try {
        const res = await adminApi.get('/get-events-with-company')
-
-       console.log('res from event ==',res);
        return res
     } catch (error) {
       console.log(error)
@@ -116,6 +113,88 @@ adminApi.interceptors.request.use(
   export const blockCompany = async (companyId:string) =>{
     try {
       const res = await adminApi.patch('/block-company',{companyId:companyId})
+      return res
+    } catch (error) {
+      console.log(error);
+      
+    }
+  }
+  export const usersCount = async () =>{
+    try {
+      const res = await adminApi.get('/users-count')
+      return res
+    } catch (error) {
+      console.log(error);
+      
+    }
+  }
+  export const eventCount = async () =>{
+    try {
+      const res = await adminApi.get('/event-count')
+      return res
+    } catch (error) {
+      console.log(error);
+      
+    }
+  }
+  export const liveEventCounts = async () =>{
+    try {
+      const res = await adminApi.get('/live-event-count')
+      return res
+    } catch (error) {
+      console.log(error);
+      
+    }
+  }
+  export const piechartData = async () =>{
+    try {
+      const res = await adminApi.get('/pie-chart-data')
+      return res
+    } catch (error) {
+      console.log(error);
+      
+    }
+  }
+  export const filterUsers = async () =>{
+    try {
+      const res = await adminApi.get('/filter-users')
+      return res
+    } catch (error) {
+      console.log(error);
+      
+    }
+  }
+  export const todaySales = async () =>{
+    try {
+       const res = await adminApi.get('/today-sales')
+      return res
+       
+    } catch (error) {
+      console.log(error);
+    }
+  }
+  export const totalSales = async () =>{
+    try {
+      const res = await adminApi.get('/total-sales')
+      return res
+    } catch (error) {
+      console.log(error)
+    }
+  }
+  export const filterSalesReport = async (pagination:number) =>{
+    try {
+      const res = await adminApi.get('/filter-sales-report',{
+        params:{pagination:pagination}
+      })
+
+      return res
+    } catch (error) {
+      console.log(error)
+    }
+  }
+  export const completeReport =async () =>{
+    try {
+      const res = await adminApi.get('/complete-report')
       return res
     } catch (error) {
       console.log(error);

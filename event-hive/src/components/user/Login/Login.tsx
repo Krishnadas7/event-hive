@@ -14,7 +14,8 @@ import { forgotPassword } from '../../../api/userApi';
 import { useSelector,useDispatch } from 'react-redux';
 import { FcInfo } from "react-icons/fc";
 import { RootState } from '../../../app/store';
-import { toast } from 'react-toastify';
+// import { toast } from 'react-toastify';
+import {toast} from 'react-hot-toast'
 
 interface DecodedCredential{
      name:string;
@@ -48,11 +49,11 @@ const Login: React.FC = () => {
        onSubmit: async (values) => {
             try {
                  const response :any = await login(values)
+                 toast.success(response.data.message)
                  console.log('response from login page',response);  
                  localStorage.setItem("userAccessToken",response.data.userAccessToken)  
                  localStorage.setItem("userRefreshToken",response.data.userRefreshToken)  
                 
-                 
                  dispatch(setCredential({...response.data.data}))
                        navigate('/')
             } catch (error : any) {
@@ -227,7 +228,7 @@ const Login: React.FC = () => {
                          localStorage.setItem("userRefreshToken",res.data.userRefreshToken)  
                          console.log('res from googleAuth ',res);
                          dispatch(setCredential({...res.data.data}))
-                         navigate('/user')  
+                         navigate('/')  
                     } catch (error) {
                          console.log('ee',error);
                     }

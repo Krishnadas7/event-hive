@@ -4,7 +4,6 @@ import ReactCrop, {
   convertToPixelCrop,
   makeAspectCrop,
   Crop,
-  PixelCrop,
 } from "react-image-crop";
 import { setCredential } from "../../slices/authSlice";
 import { useDispatch } from "react-redux";

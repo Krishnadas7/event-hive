@@ -1,5 +1,4 @@
 import CompanyNavbar from '../CompanyNavbar/CompanyNavbar'
-import React from 'react'
 import { IoIosArrowForward } from "react-icons/io";
 import { useState } from "react";
 import ShowEvents from '../CompanyHomepage/ShowEvents';
@@ -8,14 +7,8 @@ import EventModal from '../CompanyHomepage/EventModal';
 
 
 import {
-  FaRegSmile,
   FaChartBar,
   FaExchangeAlt,
-  FaCreditCard,
-  FaCalendarAlt,
-  FaBalanceScale,
-  FaBell,
-  FaCog,
 } from "react-icons/fa";
 function CompanyProfile() {
     const [open, setOpen] = useState(true);
@@ -80,22 +73,7 @@ function CompanyProfile() {
           } transition-transform duration-300 ease-in-out`}
           onClick={() => setOpen(!open)}
         ><IoIosArrowForward className='text-white font-bold'/></div>
-        {/* <div className="flex gap-x-4 items-center"> */}
-          {/* <div
-            className={`cursor-pointer  duration-500 h-[30px] w-[30px] rounded-full bg-white flex items-center justify-center ${
-              open && "rotate-[360deg]"
-            }`}
-          >
-            <FaRegSmile />
-          </div> */}
-          {/* <h1
-            className={`text-white ml-3 origin-left font-medium text-xl duration-200 transition-all ${
-              !open && ""
-            }`}
-          >
-           {open ? 'EventHive' : 'E'} 
-          </h1> */}
-        {/* </div> */}
+       
         <ul className="pt-6">
           {Menus.map((Menu, index) => (
             <li

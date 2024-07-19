@@ -1,5 +1,6 @@
 import {createSlice} from '@reduxjs/toolkit';
 import { PayloadAction } from '@reduxjs/toolkit';
+import { io, Socket } from 'socket.io-client';
 
 export interface UserInfo{
     _id?: string;
@@ -11,6 +12,10 @@ export interface UserInfo{
     mobile?: string;
     password?: string;
     createdAt?:string;
+    confirm_password?:string;
+}
+export interface SocketState {
+  socket: Socket | null;
 }
 interface InitialState {
     userInfo:  UserInfo | null|any // UserInfo | null;
@@ -18,6 +23,7 @@ interface InitialState {
     registerInfo: UserInfo | null
     timerInfo:any
     companyInfo: any
+    socket: any,
 }
 
 const userInfoFromLocalStorage = localStorage.getItem('userInfo');
@@ -34,7 +40,8 @@ const initialState: InitialState = {
     ? JSON.parse(registerInfoFromLocalStorage)
     : null,
     timerInfo: timerInfoFromLocalStorage ? JSON.parse(timerInfoFromLocalStorage) : null,
-    companyInfo: companyInfoFromLocalStorage ?JSON.parse(companyInfoFromLocalStorage):null
+    companyInfo: companyInfoFromLocalStorage ?JSON.parse(companyInfoFromLocalStorage):null,
+    socket:null
 };
 
 
@@ -82,6 +89,18 @@ const authSlice = createSlice({
             state.adminInfo = action.payload;
             localStorage.setItem("adminInfo", JSON.stringify(action.payload));
           },
+          connectSocket(state) {
+            if (!state.socket) {
+              state.socket = io('ws://localhost:8900');
+             
+            }
+          },
+          disconnectSocket(state) {
+            if (state.socket) {
+              state.socket.disconnect();
+              state.socket = null;
+            }
+          },
         }
 })
 export const {
@@ -95,6 +114,8 @@ export const {
     setCompany,
     clearCompany,
     clearTimeInfo,
+    connectSocket,
+    disconnectSocket
 } = authSlice.actions;
 
 export default authSlice.reducer;

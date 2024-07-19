@@ -1,4 +1,3 @@
-import React from 'react'
 import './GoogleAuthentication.css'
 function GoogleAuthenticatoin() {
   return (

@@ -2,8 +2,9 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import dotenv from 'dotenv'
 import path from 'path'
-const envFile = path.resolve(__dirname,'.././.env')
+const envFile = path.resolve(__dirname,'./.env')
 dotenv.config({path:envFile})
+
 
 // const { BASE_URL } = process.env;
 // https://vitejs.dev/config/

@@ -48,5 +48,6 @@ export interface FormValues {
     is_block?:boolean;
     event_poster?:string;
     company_id?:string; 
+    participants?:string;
   }
   

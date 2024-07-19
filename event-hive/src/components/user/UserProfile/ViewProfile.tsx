@@ -62,7 +62,10 @@ function ViewProfile() {
   const formik = useFormik({
     initialValues,
     onSubmit: async (values) => {
-      const res = await updateProfile(values)
+      let res = await updateProfile(values as any)
+      if(res){
+        console.log('values')
+      }
     },
   });
 
@@ -191,7 +194,7 @@ function ViewProfile() {
                   </label>
                   <Select
                     name="country"
-                    value={countryOptions.find(option => option.value === formik.values.country)}
+                    value={countryOptions.find((option:any) => option.value === formik.values.country)}
                     onChange={(option: CountryOption | null) =>
                       formik.setFieldValue('country', option ? option.value : '')
                     }

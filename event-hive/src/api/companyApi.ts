@@ -1,14 +1,16 @@
-import axios,{AxiosInstance,AxiosRequestConfig,AxiosResponse} from 'axios'
+import axios,{AxiosInstance} from 'axios'
+
+
+const COMPANY_API = process.env.COMPANY_API
+const COMPANY_REFRESH_API = process.env.COMPANY_REFRESH_API
 
 const companyApi : AxiosInstance = axios.create({
-    baseURL:'http://localhost:3003/api/company'
+    baseURL:COMPANY_API
 })
 
 companyApi.interceptors.request.use(
   (config) => {
-    const accessToken = localStorage.getItem('companyAccessToken');
-    // console.log('acess from request interceptors',accessToken);
-    
+    const accessToken = localStorage.getItem('companyAccessToken');    
     if (accessToken) {
       config.headers.Authorization = `Bearer ${accessToken}`;
       
@@ -33,11 +35,9 @@ companyApi.interceptors.request.use(
         if (error.response.status === 401 && !originalRequest._retry && refreshToken) {
           originalRequest._retry = true;
           try {
-            const response = await companyApi.post("http://localhost:3003/api/company/refresh-token", {
+            const response = await companyApi.post(COMPANY_REFRESH_API as string, {
               refreshToken
             },{withCredentials:true});
-            console.log('ress from refre',response);
-            
             const newAccessToken = response.data.accessToken;
             localStorage.setItem('companyAccessToken', newAccessToken);
             originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
@@ -66,29 +66,7 @@ companyApi.interceptors.request.use(
         
     }
   }
-//   export const getUser = async () =>{
-//      try {
-//       console.log('getusre jkbbk');
-      
-//         const res = await adminApi.get('/get-user',{withCredentials:true})
-//         console.log('res fro adapter',res)
-//         return res
-//      } catch (error) {
-//       console.log(error);
-      
-//      }
-//   }
-//   export const blockUnblock = async (_id:string) =>{
-//     try {
-//       console.log('admin apiiii');
-      
-//       const res = await adminApi.patch(`/user/block-unblock?_id=${_id}`)
-//       return res
-//     } catch (error) {
-//       console.log(error);
-      
-//     }
-//   }
+
 export const sendEmail = async (values:any)=>{
     try {
         const res = await companyApi.post('/send-email',values)
@@ -178,4 +156,14 @@ export const closeEvent = async (eventId:string) =>{
     
   }
 }
+export const sendNotification = async (eventId:string,url:string) =>{
+  try {
+    const res = await companyApi.post('/send-bulk-email',{eventId:eventId,url:url})
+    return res
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+
 
