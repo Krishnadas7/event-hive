@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {ThreeDots} from 'react-loader-spinner'
 import { motion } from 'framer-motion';
 import React,{useEffect, useState} from 'react'
@@ -14,7 +15,6 @@ import { forgotPassword } from '../../../api/userApi';
 import { useSelector,useDispatch } from 'react-redux';
 import { FcInfo } from "react-icons/fc";
 import { RootState } from '../../../app/store';
-// import { toast } from 'react-toastify';
 import {toast} from 'react-hot-toast'
 
 interface DecodedCredential{
@@ -33,6 +33,7 @@ const Login: React.FC = () => {
             navigate('/')
        }
    
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   },[])
  
   const {values:loginValues,
@@ -56,6 +57,7 @@ const Login: React.FC = () => {
                 
                  dispatch(setCredential({...response.data.data}))
                        navigate('/')
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             } catch (error : any) {
                  toast.error('wrong password or email')
             }

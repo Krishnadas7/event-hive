@@ -18,7 +18,7 @@ function TeamAdd() {
         }
     }, []);
 
-    const handleChange = async (e) => {
+    const handleChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
         console.log('event___valueee', e.target.value);
         setExist(false);
         try {
@@ -64,7 +64,7 @@ function TeamAdd() {
                     />
                     {exist && <p className='text-red-500'>already added this user</p>}
                     {reach && <p className='text-red-500'>only 4 members allowed in a group</p>}
-                    <p className='ml-6 mt-2 font-bold mb-2'>{userInfo.email} Add your team</p>
+                    <p className='ml-6 mt-2 font-bold mb-2'>{userInfo?.email} Add your team</p>
                 </div>
                 <button onClick={handleMembers} className='text-white w-auto px-3 hover:bg-white hover:border-blue-500 hover:text-blue-500 bg-blue-400 h-11 rounded-md border'>
                     <IoAddCircleSharp size={30}/>

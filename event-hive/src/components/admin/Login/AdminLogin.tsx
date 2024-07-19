@@ -25,11 +25,12 @@ function AdminLogin():JSX.Element {
    password: ""
   }
 
-  const {values,handleChange,handleSubmit,errors,touched} = useFormik({
+  const {values,handleChange,handleSubmit} = useFormik({
     initialValues:initialValues,
     onSubmit: async (values) =>{
       try {
         const {email,password}= values
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const res:any = await login({email,password})
         console.log('res from admin login',res)
         localStorage.setItem("adminAccessToken",res.data.adminAccessToken)  

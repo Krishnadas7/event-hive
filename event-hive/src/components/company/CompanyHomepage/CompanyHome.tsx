@@ -30,6 +30,7 @@ function CompanyHome() {
         setData(res?.data.data);
 
         // Initialize countdowns for each event
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const initialCountdowns = res?.data.data.reduce((acc: any, event: Event) => {
           acc[event._id as string] = calculateTimeLeft(event.end_date as string, event.ending_time as string);
           return acc;
@@ -40,7 +41,8 @@ function CompanyHome() {
       }
     };
     fetchData();
-  }, [companyInfo._id, change]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [companyInfo._id, change,event]);
 
   useEffect(() => {
     const intervalId = setInterval(() => {

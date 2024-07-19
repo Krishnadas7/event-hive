@@ -11,10 +11,12 @@ interface UserData{
   qualification:string;
   socialmedialink1:string;
   socialmedialink2:string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   createdAt:any;
 }
 
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function ConverSation({conversation,currentUser,test}:{conversation:any,currentUser:any,test:boolean}) {
   const [user,setUser] = useState<UserData| null>(null)
   const [notificationCount,setNotificationCount] = useState<number>(0);
@@ -29,6 +31,7 @@ function ConverSation({conversation,currentUser,test}:{conversation:any,currentU
     console.log('res from getuser from chat',res?.data.data)
   }
   getUser()
+ // eslint-disable-next-line react-hooks/exhaustive-deps
  },[])
  useEffect(()=>{
   const fetchData = async () =>{
@@ -50,6 +53,7 @@ function ConverSation({conversation,currentUser,test}:{conversation:any,currentU
 
   }
   fetchData()
+ // eslint-disable-next-line react-hooks/exhaustive-deps
  },[user,test])
  
   return (

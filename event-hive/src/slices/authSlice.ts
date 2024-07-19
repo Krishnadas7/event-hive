@@ -9,6 +9,7 @@ export interface UserInfo{
     first_name?:string;
     last_name?:string;
     ProfileImg?:string;
+    profileImg?:string;
     mobile?: string;
     password?: string;
     createdAt?:string;
@@ -18,11 +19,14 @@ export interface SocketState {
   socket: Socket | null;
 }
 interface InitialState {
-    userInfo:  UserInfo | null|any // UserInfo | null;
+    userInfo:  UserInfo | null // UserInfo | null;
     adminInfo: UserInfo | null
     registerInfo: UserInfo | null
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     timerInfo:any
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     companyInfo: any
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     socket: any,
 }
 

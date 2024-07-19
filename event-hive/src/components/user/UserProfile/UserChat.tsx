@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useRef, useState } from 'react';
 import ConverSation from './ConverSation';
@@ -63,7 +64,7 @@ function UserChat() {
       },[arrivalmessage,currentChat])
 
     useEffect(()=>{
-    socket.current.emit("addUser",userInfo._id)
+    socket.current.emit("addUser",userInfo?._id)
     socket.current.on("getUser",(users:any)=>{
       console.log('users==',users)
     })
@@ -72,7 +73,7 @@ function UserChat() {
   useEffect(() => {
     const getData = async () => {
       try {
-        const res = await axios.get(`http://localhost:3003/api/conversation?userId=${userInfo._id}`);
+        const res = await axios.get(`http://localhost:3003/api/conversation?userId=${userInfo?._id}`);
         console.log('from conversattion',res.data.data)
         
         setConversation(res?.data.data);
@@ -81,7 +82,7 @@ function UserChat() {
       }
     };
     getData();
-  }, [userInfo._id,change]);
+  }, [userInfo?._id,change]);
 
   useEffect(() => {
     const getMessage = async () => {
@@ -113,12 +114,12 @@ function UserChat() {
     testFalse()
     const message = {
       conversationId: currentChat._id,
-      sender: userInfo._id,
+      sender: userInfo?._id,
       text: newMessage
     };
-    const receiverId = currentChat.members.find((member:string)=>member!==userInfo._id)
+    const receiverId = currentChat.members.find((member:string)=>member!==userInfo?._id)
      socket.current.emit('sendMessage',{
-      senderId:userInfo._id,
+      senderId:userInfo?._id,
       receiverId,
       text:newMessage
      })
@@ -133,7 +134,7 @@ function UserChat() {
   };
   const handleConversation = async (userId:string) =>{
     const obj={
-      senderId:userInfo._id,
+      senderId:userInfo?._id,
       receiverId:userId
     }
     const res = await axios.post('http://localhost:3003/api/conversation',obj)
@@ -161,7 +162,7 @@ function UserChat() {
         {searchQuery && (
           <div className='mt-2 w-[250px] ml-5 bg-white  p-2 rounded-md'>
             {filteredUsers.map((user) => (
-              <div key={user._id} onClick={(e)=>handleConversation(user._id as any)} className='flex items-center  p-2  w-full'>
+              <div key={user._id} onClick={(e:any)=>handleConversation(user._id as any)} className='flex items-center  p-2  w-full'>
                 <span className='text-black hover:text-gray-500 font-bold'>{user.first_name} {user.last_name} </span>
               </div>
             ))}
@@ -180,7 +181,7 @@ function UserChat() {
             <div className='flex flex-col h-[480px] overflow-y-auto hide-scrollbar'>
               {messages.map((m:any, index:number) => (
                 <div key={index} ref={index === messages.length - 1 ? scrollRef : null}>
-                  <Message message={m} own={m.sender === userInfo._id} />
+                  <Message message={m} own={m.sender === userInfo?._id} />
                 </div>
               ))}
             </div>

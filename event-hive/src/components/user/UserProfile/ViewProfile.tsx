@@ -47,9 +47,13 @@ function ViewProfile() {
     }
     const formData = new FormData();
     formData.append('image', imageFile);
-    formData.append('id', userInfo._id);
+    if(userInfo && userInfo._id){
+      formData.append('id', userInfo._id);
+    }
+    
 
     try {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const response: any = await profileImageUpload(formData);
       if (response.data.success) {
         toast.success(response.data.message);
@@ -62,7 +66,8 @@ function ViewProfile() {
   const formik = useFormik({
     initialValues,
     onSubmit: async (values) => {
-      let res = await updateProfile(values as any)
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const res = await updateProfile(values as any)
       if(res){
         console.log('values')
       }
@@ -194,6 +199,7 @@ function ViewProfile() {
                   </label>
                   <Select
                     name="country"
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
                     value={countryOptions.find((option:any) => option.value === formik.values.country)}
                     onChange={(option: CountryOption | null) =>
                       formik.setFieldValue('country', option ? option.value : '')

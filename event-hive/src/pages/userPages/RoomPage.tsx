@@ -1,9 +1,9 @@
-import Room from '../../components/user/UserProfile/Room'
+// import Room from '../../components/user/UserProfile/Room'
 
-function RoomPage() {
-  return (
-    <Room/>
-  )
-}
+// function RoomPage() {
+//   return (
+//     <Room/>
+//   )
+// }
 
-export default RoomPage
+// export default RoomPage

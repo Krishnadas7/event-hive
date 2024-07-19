@@ -1,7 +1,8 @@
 import image from '../../../assets/user-Profile2 (2).jpg';
 import { formatDistanceToNow } from 'date-fns';
 
-function Message({ message, own }) {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function Message({ message, own }:any) {
   const timeAgo = formatDistanceToNow(new Date(message.createdAt), { addSuffix: true });
   return (
     <div className={own ? '' : 'flex justify-end'}>

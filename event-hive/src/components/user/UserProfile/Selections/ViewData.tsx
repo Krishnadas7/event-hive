@@ -1,6 +1,7 @@
 import { FaFacebook, FaLinkedin} from "react-icons/fa";
 
-function ViewData({data}) {  
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function ViewData({data}:any) {  
   return (
     <div className="  h-auto p-6 bg-slate-200">
              <div className="space-y-4">

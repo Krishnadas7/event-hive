@@ -37,11 +37,7 @@ export const EventCreationValidation = Yup.object({
   users_limit: Yup.string().required('Enter limit'),
   event_description: Yup.string().required('Type description for events'),
   ticket_type: Yup.string().required('Select ticket type'),
-  ticket_amount: Yup.string().when('ticket_type', {
-    is: (val: any) => val === 'paid',
-    then: Yup.string().required('Enter ticket amount'),
-    otherwise: Yup.string().notRequired(),
-  }),
+  ticket_amount: Yup.string().required('select'),
 });
 function EventModal({onClose}:EventModalProps) {
     const [selectedImage,setSelectedImage] = useState<string | null>(null)
@@ -78,7 +74,10 @@ function EventModal({onClose}:EventModalProps) {
           console.log('particiapntsss',values)
             const formData = new FormData()
             Object.keys(values).forEach(key =>{
-                formData.append(key,values[key as keyof EventData])
+              const value = values[key as keyof EventData];
+              if (value !== undefined) {
+                  formData.append(key, value);
+              }
             })
             if(imageFile){
                 formData.append('event_poster',imageFile)

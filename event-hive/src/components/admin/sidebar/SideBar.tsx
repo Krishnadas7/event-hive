@@ -1,4 +1,4 @@
-import { ReactElement, Suspense, lazy, useEffect, useState } from 'react'
+import { ReactElement, Suspense, lazy, useState } from 'react'
 import { TiThMenu } from "react-icons/ti";
 import { IoClose } from "react-icons/io5";
 import { RiDashboard3Fill } from "react-icons/ri";

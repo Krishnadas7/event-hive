@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useState, useRef } from 'react';
 import image from '../../../assets/user-Profile2 (2).jpg';
 import {  userData } from '../../../api/userApi';
@@ -34,18 +35,22 @@ function UserDetails() {
 
   useEffect(() => {
     const fetchData = async () => {
-      const res: any = await userData(userInfo.email);
-      setData(res.data.data);
-      console.log('details from userdetails',res.data.data)
+      if(userInfo){
+        const res: any = await userData(userInfo.email);
+        setData(res?.data.data);
+        console.log('details from userdetails',res?.data.data)
+      }
+      
+     
     }; 
     fetchData();
-  }, [userInfo.email]);
+  }, [userInfo]);
 
   return (
     <div className="bg-white shadow-lg border border-gray-300 mb-10 mr-3 mt-[15px]">
       <div className="flex items-center justify-center"
        style={{
-        backgroundImage: `url(${userInfo.profileImg})`,
+        backgroundImage: `url(${userInfo?.ProfileImg})`,
         backgroundPosition: 'center',
         backgroundSize: 'cover',
         backgroundRepeat: 'no-repeat',

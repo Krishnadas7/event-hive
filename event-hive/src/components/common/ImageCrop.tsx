@@ -64,9 +64,13 @@ const ImageCropper: React.FC<ImageCropperProps> = ({ closeModal, updateAvatar })
      
       const formData = new FormData();
       formData.append('image', fileWithCorrectMimeType);
-      formData.append('id', userInfo._id);
+      if(userInfo && userInfo._id && userInfo.email){
+         formData.append('id', userInfo._id);
       formData.append('email',userInfo.email)
+      }
+     
       const prof = async (formData: FormData) => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const res:any = await profileImageUpload(formData);
         dispatch(setCredential({...res.data.data}))
         console.log('res from image crop', res);
@@ -79,7 +83,8 @@ const ImageCropper: React.FC<ImageCropperProps> = ({ closeModal, updateAvatar })
     return () => {
       imageElement.removeEventListener("load", handleImageLoad);
     };
-  }, [imgSrc, error, userInfo._id]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [imgSrc, error, userInfo?._id]);
 
   const onImageLoad = useCallback((e: React.SyntheticEvent<HTMLImageElement>) => {
     const { width, height } = e.currentTarget;
@@ -131,7 +136,7 @@ const ImageCropper: React.FC<ImageCropperProps> = ({ closeModal, updateAvatar })
         <div className="flex flex-col items-center">
           <ReactCrop
             crop={crop}
-            onChange={(pixelCrop, percentCrop) => setCrop(percentCrop)}
+            onChange={( percentCrop) => setCrop(percentCrop)}
             circularCrop
             keepSelection
             aspect={ASPECT_RATIO}

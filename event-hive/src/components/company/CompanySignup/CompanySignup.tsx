@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useFormik } from 'formik';
 import React,{useState,useEffect} from 'react';
 import { companyRegisterValidation } from '../../../validations/yupValidation';
@@ -12,8 +13,6 @@ import { setTimeInfo } from '../../../slices/authSlice';
 import { clearTimeInfo } from '../../../slices/authSlice';
 import { RootState } from '../../../app/store';
 import { companyRegister } from '../../../api/companyApi';
-import { setCompany } from '../../../slices/authSlice';
-import { clearCompany } from '../../../slices/authSlice';
 import { Link } from 'react-router-dom';
 function CompanySignup() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -60,11 +59,12 @@ function CompanySignup() {
     },
     validationSchema: companyRegisterValidation,
     onSubmit:async (values) => {
-      let currentTime = new Date().getTime()
+      const currentTime:number = new Date().getTime()
       console.log('timeee for register',currentTime)
       dispatch(setTimeInfo({timestamp:currentTime}))
       // dispatch(setCompany({...values}))
       try {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const res:any = await sendEmail(values)
         console.log('log from company signup',res);
         if(res?.data.success){  
@@ -86,7 +86,7 @@ function CompanySignup() {
    const resendOtpHandler = async(e:React.FormEvent<HTMLFormElement>)=>{
     e.preventDefault()
     try {
-      let currentTime = new Date().getTime()
+      const currentTime:number = new Date().getTime()
       dispatch(setTimeInfo({timestamp:currentTime}))
       const {company_name,company_email,
         company_website, company_address,industry_type,

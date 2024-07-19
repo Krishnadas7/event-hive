@@ -1,6 +1,4 @@
 import axios,{AxiosInstance} from 'axios'
-console.log('User API:', process.env.USER_API);
-console.log('Admin API:', process.env.ADMIN_API);
 
 
 const ADMIN_API = process.env.ADMIN_API

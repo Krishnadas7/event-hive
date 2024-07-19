@@ -130,6 +130,7 @@ export const googleAuth = async ({name,email,password}:{name:string,email:string
     
   }
 }
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const profileImageUpload = async (formData :any) =>{
   try {
     console.log('data from usreprofile update',formData)

@@ -10,14 +10,15 @@ interface UserProfile {
     email: string;
     first_name: string;
     last_name: string;
-    profileImg: string;
+    profileImg: string|undefined;
   }
   
-function EditData({ data,setData }) {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function EditData({ data,setData }:any) {
 
   const {userInfo} = useSelector((state:RootState)=>state.auth)
   const dispatch = useDispatch()
-  const { values: editValues, handleChange: editChange, handleSubmit: editSubmit, errors: editErrors, touched: editTouched } = useFormik({
+  const { values: editValues, handleChange: editChange, handleSubmit: editSubmit} = useFormik({
     initialValues: {
       first_name: data.first_name,
       last_name: data.last_name,
@@ -30,21 +31,23 @@ function EditData({ data,setData }) {
     enableReinitialize: true,
     onSubmit: async (values) => {
       try {
-        
         const res = await updateProfile(values);
         if (res.data.success) {
 
             console.log('data from edit page===',res.data.data)
             setData(res.data.data)
-            let obj:UserProfile={
+            if(userInfo && userInfo.ProfileImg){
+              const obj:UserProfile={
                 _id:res.data.data._id,
                 email:res.data.data.email,
                 first_name:res.data.data.first_name,
                 last_name:res.data.data.last_name,
-                profileImg:userInfo.profileImg
+                profileImg:userInfo?.profileImg
             }
             dispatch(setCredential({...obj}))
             console.log('=====objData',obj)
+            }
+           
           toast.success(res.data.message);
         } else {
           toast.error('Something went wrong');

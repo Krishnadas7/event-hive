@@ -1,4 +1,4 @@
-import { ReactElement, Suspense, lazy, useState } from 'react'
+import { ReactElement, Suspense, useState } from 'react'
 import { TiThMenu } from "react-icons/ti";
 import { useNavigate } from 'react-router-dom';
 import { RootState } from '../../../app/store';
@@ -15,7 +15,7 @@ import UserChat from './UserChat';
 import { HiOutlineChatBubbleLeftRight } from "react-icons/hi2";
 
 import UserDetails from './UserDetails';
-const viewProfile = lazy(()=> import('./ViewProfile'))
+// const viewProfile = lazy(()=> import('./ViewProfile'))
 
 function UserProfilee() {
     const [profile, setProfile] = useState(false);
@@ -91,7 +91,7 @@ function UserProfilee() {
             <TiThMenu className='text-white' onClick={()=>setOpen(!open)} size={30}/>
             <div  className={`w-12 h-11 mb-1  fixed rounded-xl ${open ? 'right-[150px]':'right-48'} `}>
                {userInfo?(<button onClick={() => setProfile(!profile)}  className={`font-semibold ${open ? 'ml-[100px]' : 'ml-[140px]'} h-10  rounded-sm  mb-4 w-28`}>
-               <img src={ userInfo.profileImg !='' ?userInfo.profileImg : image} className='w-12 h-12 ml-6 rounded-full' alt="" />
+               <img src={ userInfo?.profileImg !='' ?userInfo.profileImg : image} className='w-12 h-12 ml-6 rounded-full' alt="" />
                </button>)
                :(<button className='border border-solid w-[150px] h-10 text-white rounded-full font-bold hover:bg-white hover:text-blue-500 text-sm'>Signup</button>)}
                {profile && (

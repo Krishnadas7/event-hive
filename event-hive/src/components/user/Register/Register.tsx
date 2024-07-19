@@ -1,3 +1,5 @@
+/* eslint-disable no-empty */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {ThreeDots} from 'react-loader-spinner'
 import { motion } from 'framer-motion';
 import React, { useState,useEffect } from 'react'
@@ -25,9 +27,13 @@ const Register: React.FC = () => {
   const [timer,setTimer] = useState(60)
   const [resendButton,setresendButton] = useState(false)
   const {userInfo} = useSelector((state:RootState)=>state.auth)
+  const [isSumbit, setSubmit] = useState(false)
   const dispatch = useDispatch()
   const navigate = useNavigate()
-  const [isSumbit, setSubmit] = useState(false)
+
+  if(load){}
+  if(isSumbit){}
+
   const {registerInfo} = useSelector((state :RootState)=>state.auth)
   useEffect(()=>{
     if(userInfo){
@@ -63,12 +69,15 @@ useEffect(()=>{
     validationSchema:validationSchema,
     onSubmit: async (values) =>{
       
-      let currentTime = new Date().getTime()
+      const currentTime:number = new Date().getTime()
        dispatch(setRegister({...values,timestamp:currentTime}))
        setSubmit(true)
         try {
           const { first_name, email } = values;
               const response:any = await sendOtpToEmail({first_name,email})
+                  if(response){
+
+                  }
                   setIsModalOpen(true)
       } catch (error) {
         setIsModalOpen(false)
@@ -119,7 +128,7 @@ const resendOtpHandler = async (e:React.FormEvent<HTMLFormElement>)=>{
   e.preventDefault()
   try {
     const {first_name,last_name,email,mobile,password,confirm_password}:any = registerInfo
-    let currentTime = new Date().getTime()
+    const currentTime:number = new Date().getTime()
     console.log('timeee for register',currentTime)
      dispatch(setRegister({first_name,last_name,email,mobile,password,confirm_password,timestamp:currentTime}))
      const response:any = await sendOtpToEmail({first_name,email})

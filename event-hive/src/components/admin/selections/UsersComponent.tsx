@@ -15,6 +15,7 @@ const UsersComponent: React.FC = () => {
 
   useEffect(() => {
     const fetchData = async (): Promise<void> => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const datas: any = await getUser()
       setUsers(datas?.data?.data)
     }
@@ -23,9 +24,13 @@ const UsersComponent: React.FC = () => {
 
   const handleBlock = async (_id: string) => {
     try {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const res: any = await blockUnblock(_id);
-      setFlag(!flag)
-      toast.success('updated successfully');
+      if(res){
+        setFlag(!flag)
+        toast.success('updated successfully');
+      }
+      
     } catch (error) {
       toast.error('something went wrong');
     }

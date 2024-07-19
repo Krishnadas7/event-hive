@@ -27,6 +27,7 @@ function NewPassword() {
     }
      
       fetchData()
+   // eslint-disable-next-line react-hooks/exhaustive-deps
    },[])
     console.log('forgot token',forgotToken)
     const {values:resetValues,
@@ -44,12 +45,17 @@ function NewPassword() {
                     forgotToken: forgotToken || ''
                 };
                  try {
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
                     const res:any = await resetPassword(obj)
-                    toast.success('passowrd reset successfully')
+                    if(res){
+                      toast.success('passowrd reset successfully')
+                    }
+                   
                 //    const decode = jwtDecode()
                     // console.log('res from reset password',res);
                     
                  } catch (error) {
+                    console.log(error);
                     
                  }
              }

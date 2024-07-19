@@ -24,10 +24,11 @@ export interface FormValues {
     user_id?: string;                 // Reference to the user making the booking
     event_id?: string;                // Reference to the event being booked
     company_id?: string;              // Reference to the company hosting the event
-    booking_date?: any;           // Date when the booking was made (ISO format)
+    booking_date?: string;           // Date when the booking was made (ISO format)
     payment_status?: string; // Status of the payment
     payment_amount?: string;         // Amount paid for the booking
     ticket_type?: string;   // Type of ticket (free or paid)
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     eventDetails?:any;
   }
 

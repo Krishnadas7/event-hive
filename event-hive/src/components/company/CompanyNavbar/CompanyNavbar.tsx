@@ -43,7 +43,10 @@ interface CompanyNavbarProps {
   }
   const handleProfile= async ()=>{
     const res = await getProfile()
-    navigate('/company/profile')
+    if(res){
+      navigate('/company/profile')
+    }
+   
   }
 
   
