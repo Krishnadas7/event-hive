@@ -59,7 +59,7 @@ function Bookings() {
             </tr>
           </thead>
           <tbody>
-            {booking.map((data: any, index) => (
+            {booking?.map((data: any, index) => (
               <tr key={index}>
                 <td className='p-2 border-b border-blue-gray-200'>
                   <div className="flex text-black items-center gap-3">

@@ -38,7 +38,7 @@ const  LandingPage:React.FC = ():JSX.Element => {
     <UserNavbar/>
     
     <div className='bg-cover bg-center mt-26 bg-blue-500' >
-      <div className='flex  w-full pt-[200px] max-sm:px-4 flex-col items-center justify-center '>
+      <div className='flex  w-full pt-[200px] max-md:px-4 max-sm:px-4 flex-col items-center justify-center '>
         <p className='text-4xl  font-bold text-white'>All-in-one Event Registration and  Marketing Platform</p>
         <p className='mt-9 text-gray-200  font-semibold '>Create and manage everything in one place for live,virtual or hybrid events</p>
       </div>
@@ -67,13 +67,13 @@ const  LandingPage:React.FC = ():JSX.Element => {
       transition={{ duration: 2, ease: "easeOut" }}
       className="sm:w-full max-md:flex-col md:flex-row flex sm:flex-col p-10  backdrop-sepia-0 bg-[#F4F7F8] animate-fade-up"
     >
-     <div className='animate-fade-up sm:w-full max-md:flex-col md:flex-row  flex sm:flex-col p-10  backdrop-sepia-0 bg-[#F4F7F8] ' >
-        <div className='w-1/2 sm:w-full p-6 gap-7 flex-col'>
+     <div className='animate-fade-up  max-md:flex-col md:flex-row  flex sm:flex-col p-10  backdrop-sepia-0 bg-[#F4F7F8] ' >
+        <div className='w-1/2 max-md:w-full max-sm:w-full flex   p- gap-7 flex-col'>
            <p className='text-4xl  mt-14 font-bold'>Modern Event Management Software for Exceptional Events</p>
            <p className='mt-8 mb-3 text-slate-400'>Watch 2-minute our overview now to see how you can effortlessly plan, promote, and execute successful events with Event Hive</p>
              <button onClick={()=>navigate('/company')} className='w-[200px] h-14  bg-blue-500 text-white rounded-md border border-solid'>create event</button>
         </div>
-        <div className='w-1/2 max-sm:w-full p-10'>
+        <div className='w-1/2 max-md:w-full max-sm:w-full max-sm:mt-10'>
         
         <img  className='object-contain   'src={image} alt="" />
         </div>

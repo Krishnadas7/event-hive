@@ -11,6 +11,7 @@ import { AiOutlineLogout } from "react-icons/ai";
 import { liveChecking } from '../../../api/userApi';
 import NavbarImage from '../../../assets/navbar-image.webp'
 import { FaAsymmetrik } from "react-icons/fa";
+import { TiThMenu } from "react-icons/ti";
 
 
 
@@ -19,6 +20,7 @@ const UserNavbar: React.FC = () => {
   const [profile, setProfile] = useState(false);
   const [liveicon,setLiveicon] = useState(false)
   const {userInfo} = useSelector((state:RootState)=>state.auth)
+  const [menu,setMenu] = useState(false)
   
   const dispatch = useDispatch()
   const navigate = useNavigate()
@@ -69,7 +71,11 @@ const UserNavbar: React.FC = () => {
   return (
     <header className={`h-20 top-0 fixed w-full transition-all  z-10 duration-300 ${scrolled ? ' bg-blue-500': 'bg-blue-500'}`}>
       <div className='flex justify-between w-full'>
-        <div className='flex justify-center items-center text-white'>
+        <div className='sm:hidden  h-20 w-24 flex items-center justify-center'>
+           <TiThMenu onClick={()=>setMenu(!menu)} className='mt-2 mr-4 text-white' size={33}/>
+           
+        </div>
+        <div className='flex justify-center items-center max-sm:hidden text-white'>
           <div className='flex justify-center ml-4 gap-2 items-center '>
           <FaAsymmetrik size={30} className='mt-5 ' />
           <h1 className=' font-bold mt-6  '>Event hive</h1>
@@ -118,6 +124,28 @@ const UserNavbar: React.FC = () => {
             </div>
           </div>
         )}
+        </div>
+      </div>
+      <div
+        className={`overflow-hidden transition-all duration-700 ease-in-out  rounded-md ${
+          menu ? 'h-48' : 'h-0'
+        }`}
+        
+        style={{ width: '100%' }}
+      >
+        <div className='bg-white h-44 rounded-md'>
+        <ul className='flex ml-12 flex-col gap-'>
+            <li className='mt-7 flex   md:dark:hover:text-white hover:underline font-bold' 
+             onClick={()=>navigate('/')}
+             >Home</li>
+            <li className=' mt-7 flex   md:dark:hover:text-white hover:underline font-bold'
+            onClick={()=>navigate('/user/events')}
+            >Events</li>
+            <li className=' mt-7 flex   md:dark:hover:text-white hover:underline font-bold'
+            onClick={()=>navigate('/user/about')}
+            >About</li>
+           
+          </ul>
         </div>
       </div>
     </header>
