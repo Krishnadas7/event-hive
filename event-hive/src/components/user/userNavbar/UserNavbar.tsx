@@ -129,7 +129,8 @@ const UserNavbar: React.FC = () => {
       <div
         className={`overflow-hidden transition-all duration-700 ease-in-out  rounded-md ${
           menu ? 'h-48' : 'h-0'
-        }`}
+        }`} 
+        
         
         style={{ width: '100%' }}
       >
