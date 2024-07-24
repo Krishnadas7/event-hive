@@ -41,6 +41,7 @@ function Bookings() {
     };
     fetchData();
   }, []);
+  
 
   return (
     <div className="bg-white shadow-lg border border-gray-300 mb-10 mr-3 mt-[50px] ml-5">
