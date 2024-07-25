@@ -28,7 +28,8 @@ const formatBookingDate = (dateString: string): string => {
 function Bookings() {
   const { userInfo } = useSelector((state: RootState) => state.auth);
   const [booking, setBooking] = useState<Booking[]>([]);
- 
+  const [searchQuery, setSearchQuery] = useState<string>('');
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -41,12 +42,26 @@ function Bookings() {
     };
     fetchData();
   }, []);
-  
+
+  // Filter bookings based on searchQuery
+  const filteredBookings = booking?.filter((data: any) => {
+    return data?.events.event_name.toLowerCase().includes(searchQuery.toLowerCase());
+  });
 
   return (
     <div className="bg-white shadow-lg border border-gray-300 mb-10 mr-3 mt-[50px] ml-5">
       <div className='flex justify-center items-center py-2'>
         <h1 className='text-2xl text-black font-bold'>Bookings</h1>
+      </div>
+      {/* Search input field */}
+      <div className="p-2 mb-2 mx-3 flex justify-end">
+        <input
+          type="text"
+          placeholder="Search by Event Name"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          className="px-3 py-1 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
+        />
       </div>
       <div className="overflow-auto">
         <table className="w-full table-auto text-left">
@@ -60,7 +75,7 @@ function Bookings() {
             </tr>
           </thead>
           <tbody>
-            {booking?.map((data: any, index) => (
+            {filteredBookings.map((data: any, index) => (
               <tr key={index}>
                 <td className='p-2 border-b border-blue-gray-200'>
                   <div className="flex text-black items-center gap-3">
@@ -80,7 +95,7 @@ function Bookings() {
                   <span className="text-sm text-blue-700">{formatBookingDate(data.booking_date)}</span>
                 </td>
                 <td className='p-2 border-b border-blue-gray-200'>
-                  <span className={`text-sm text-blue-700 ${data.payment_status=='completed' ? 'text-green-500' : 'text-red-600'}`}>{data.payment_status}</span>
+                  <span className={`text-sm text-blue-700 ${data.payment_status === 'completed' ? 'text-green-500' : 'text-red-600'}`}>{data.payment_status}</span>
                 </td>
                 <td className='p-2 border-b border-blue-gray-200'>
                   <div className="flex items-center justify-center gap-3">

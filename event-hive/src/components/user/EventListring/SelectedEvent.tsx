@@ -14,6 +14,7 @@ import { loadStripe } from '@stripe/stripe-js';
 import { toast } from 'react-hot-toast';
 import TeamAdd from '../../common/TeamAdd';
 import { useNavigate } from 'react-router-dom';
+import { LineWave } from 'react-loader-spinner';
 
 interface Obj {
     user_id: string;
@@ -42,7 +43,20 @@ function SelectedEvent() {
     }, []);
 
     if (!event) {
-        return <div>Loading...</div>;
+        return <div className='w-full h-screen flex items-center justify-center'>
+            <LineWave 
+                    visible={true}
+                    height="100"
+                    width="100"
+                    color="#4fa94d"
+                    ariaLabel="line-wave-loading"
+                    wrapperStyle={{}}
+                    wrapperClass=""
+                    firstLineColor=""
+                    middleLineColor=""
+                    lastLineColor=""
+                    />
+        </div>;
     }
 
     const dateObj = new Date(event.start_date);
@@ -64,15 +78,15 @@ function SelectedEvent() {
     const handleRegistration = async (e:React.FormEvent,participants:string) =>{
         e.preventDefault();
         if(participants!='individual'){
-        if(members && members.length < 3){
+        if(!members || members && members.length < 3){
           setBook(true)
           return
         }}
-        console.log('dskdskl',event.ticket);
+        
 
         let stripePromise;
         let paymentStatus = 'nill';
-        if(event.ticket === 'paid'){
+        if(event.ticket == 'paid'){
             try {
                 stripePromise  =await  loadStripe(public_stripe_key);
             console.log('stripe opening',stripePromise);

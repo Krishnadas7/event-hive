@@ -70,6 +70,7 @@ function EventModal({onClose}:EventModalProps) {
             ticket_type: 'free',
             ticket_amount: ''
         },
+        
         onSubmit: async (values:EventData) =>{
           console.log('particiapntsss',values)
             const formData = new FormData()

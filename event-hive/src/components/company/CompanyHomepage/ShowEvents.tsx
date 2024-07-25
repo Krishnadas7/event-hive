@@ -26,34 +26,32 @@ function ShowEvents() {
     );
 
     return (
-        <div className="border relative pl-3 w-full mt-3 bg-white">
-            <div className="flex justify-center my-4 px-9">
+        <div className="border p-4 w-full mt-3 bg-white">
+            <div className="flex justify-center mb-6">
                 <input
                     type="text"
                     placeholder="Search events..."
                     value={searchTerm}
                     onChange={handleSearch}
-                    className="p-2 border border-black w-full text-black rounded-md outline-none"
+                    className="p-2 border border-gray-300 w-full text-gray-700 rounded-md focus:outline-none focus:border-blue-500"
                 />
             </div>
-            <div className="grid grid-cols-3 max-sm:grid-cols-1 max-md:grid-cols-2 gap-6 mt-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {filteredEvents?.map((event, index) => (
-                    <div key={index} className="flex flex-col gap-2 bg-white p-3">
-                        <div>
-                            <img className="w-full h-[200px]" src={event.event_poster} alt="" />
-                        </div>
-                        <div className="flex flex-col gap-5 text-black">
-                            <div className="flex flex-col">
-                                <span className="font-bold">{event.event_name}</span>
-                                <div className='bg-gray-200'>
-                                <div className="flex justify-between  px-2 rounded-md">
-                                    <span className="text-gray-500">{event.start_date} {event.starting_time}</span>
-                                    <span className=" pl-3 pr-3 rounded-md text-gray-500">{event.end_date} {event.ending_time}</span>
+                    <div key={index} className="bg-white shadow-md rounded-lg overflow-hidden">
+                        <img className="w-full h-48 object-cover" src={event.event_poster} alt={event.event_name} />
+                        <div className="p-4">
+                            <h2 className="text-lg font-bold text-gray-800">{event.event_name}</h2>
+                            <div className="mt-2 bg-gray-100 rounded-md p-2 border border-gray-200">
+                                <div className="flex justify-between items-center text-gray-600">
+                                    <span>Starts: {event.start_date} {event.starting_time}</span>
                                 </div>
-                                <div className="flex justify-between  px-2 rounded-md">
-                                    <span className="text-gray-500">{event.ticket} </span>
-                                    <span className=" pl-3 pr-3 rounded-md text-gray-500">Rs.{event.amount}</span>
+                                <div className="flex justify-between items-center text-gray-600">
+                                    <span>Ends: {event.end_date} {event.ending_time}</span>
                                 </div>
+                                <div className="flex justify-between items-center text-gray-600">
+                                    <span>Ticket: {event.ticket}</span>
+                                    <span>Price: Rs.{event.amount}</span>
                                 </div>
                             </div>
                         </div>
