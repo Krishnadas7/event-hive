@@ -71,11 +71,11 @@ const UserNavbar: React.FC = () => {
   return (
     <header className={`h-20 top-0 fixed w-full transition-all  z-10 duration-300 ${scrolled ? ' bg-blue-500': 'bg-blue-500'}`}>
       <div className='flex justify-between w-full'>
-        <div className='h-20 w-24 flex items-center justify-center md:hidden'>
+        <div className='sm:hidden  h-20 w-24 flex items-center justify-center'>
            <TiThMenu onClick={()=>setMenu(!menu)} className='mt-2 mr-4 text-white' size={33}/>
            
         </div>
-        <div className='flex justify-center items-center sm:hidden text-white'>
+        <div className='flex justify-center items-center max-sm:hidden text-white'>
           <div className='flex justify-center ml-4 gap-2 items-center '>
           <FaAsymmetrik size={30} className='mt-5 ' />
           <h1 className=' font-bold mt-6  '>Event hive</h1>
@@ -96,7 +96,7 @@ const UserNavbar: React.FC = () => {
         </div>
         <div className='flex mt-5 ' >
           {/* <HiMinus /> */}
-          {userInfo ? (<button onClick={() => setProfile(!profile)}
+          {userInfo ? (<button  onClick={() => setProfile(!profile)}
          className={`font-mono pr-7 flex font-bold test-sm`}><img src={ userInfo.profileImg !='' ?userInfo.profileImg : NavbarImage} className='w-12 h-12 ml-6 object-cover rounded-full' alt="" />
         { liveicon &&<span className="absolute top-5 right-12 flex h-3 w-3">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
