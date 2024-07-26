@@ -24,7 +24,7 @@ function ConverSation({conversation,currentUser,test}:{conversation:any,currentU
    console.log('userdatassss',user);
    
  useEffect(()=>{
-  const friendId = conversation.members.find((m:string)=>m!==currentUser?._id)
+  const friendId = conversation?.members?.find((m:string)=>m!==currentUser?._id)
   const getUser = async ()=>{
     const res = await getRandomUser(friendId)
     setUser(res?.data.data)
@@ -46,7 +46,7 @@ function ConverSation({conversation,currentUser,test}:{conversation:any,currentU
      console.log('user listtt',userList,idd);
      
     // Find the specific user ID
-    const id = userList.find((ids: string) => idd === ids);
+    const id = userList?.find((ids: string) => idd === ids);
     console.log("active user==========",id);
     
     // Set the notification count for the specific user ID
