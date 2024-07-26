@@ -8,7 +8,7 @@ import { IEvent } from '../../../types/schema';
 import { FaInfoCircle } from "react-icons/fa";
 import { useSelector } from 'react-redux';
 import { RootState } from '../../../app/store';
-const public_stripe_key = 'pk_test_51PQWx603Z9ZoAMB6ZQFq8S4avHgFoBDXC8fFv1Yjafo5Py2QAoAECKCI6l1MS15aAUHtEuN0dMvpQtbtPcNoksAw00P3AyZUgd'
+const public_stripe_key = 'pk_live_51PQWx603Z9ZoAMB6ZQFq8S4avHgFoBDXC8fFv1Yjafo5Py2QAoAECKCI6l1MS15aAUHtEuN0dMvpQtbtPcNoksAw00P3AyZUgd'
 import { ticketBooking } from '../../../api/userApi';
 import { loadStripe } from '@stripe/stripe-js';
 import { toast } from 'react-hot-toast';
