@@ -94,12 +94,12 @@ function UserDetails() {
             >
               Edit
             </button>
-            <button
+            {/* <button
               className={`tab w-[300px] flex items-center justify-center text-black ${activeTab === 2 ? 'border-b-8 border-slate-500' : ''} p-4`}
               onClick={() => setActiveTab(2)}
             >
               Cover
-            </button>
+            </button> */}
           </div>
           <div className="tab-content">
             {activeTab === 0 && (
