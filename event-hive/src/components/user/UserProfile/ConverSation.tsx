@@ -21,14 +21,12 @@ function ConverSation({conversation,currentUser,test}:{conversation:any,currentU
   const [user,setUser] = useState<UserData| null>(null)
   const [notificationCount,setNotificationCount] = useState<number>(0);
   const idd = user?._id
-   console.log('userdatassss',user);
    
  useEffect(()=>{
   const friendId = conversation?.members?.find((m:string)=>m!==currentUser?._id)
   const getUser = async ()=>{
     const res = await getRandomUser(friendId)
     setUser(res?.data.data)
-    console.log('res from getuser from chat',res?.data.data)
   }
   getUser()
  // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -43,11 +41,9 @@ function ConverSation({conversation,currentUser,test}:{conversation:any,currentU
        userList = Object.keys(responseData);
     }
     
-     console.log('user listtt',userList,idd);
      
     // Find the specific user ID
     const id = userList?.find((ids: string) => idd === ids);
-    console.log("active user==========",id);
     
     // Set the notification count for the specific user ID
     if (id) {
