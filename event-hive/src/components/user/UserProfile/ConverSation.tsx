@@ -24,7 +24,7 @@ function ConverSation({conversation,currentUser,test}:{conversation:any,currentU
    console.log('userdatassss',user);
    
  useEffect(()=>{
-  const friendId = conversation.members.find((m:string)=>m!==currentUser._id)
+  const friendId = conversation.members.find((m:string)=>m!==currentUser?._id)
   const getUser = async ()=>{
     const res = await getRandomUser(friendId)
     setUser(res?.data.data)
@@ -37,8 +37,12 @@ function ConverSation({conversation,currentUser,test}:{conversation:any,currentU
   const fetchData = async () =>{
     const res = await getNotification()
     const responseData = res?.data?.data?.chat;
-
-    const userList = Object.keys(responseData);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    let userList:any
+    if(responseData){
+       userList = Object.keys(responseData);
+    }
+    
      console.log('user listtt',userList,idd);
      
     // Find the specific user ID

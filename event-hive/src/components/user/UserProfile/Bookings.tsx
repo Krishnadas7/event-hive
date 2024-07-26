@@ -41,6 +41,7 @@ function Bookings() {
       }
     };
     fetchData();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Filter bookings based on searchQuery

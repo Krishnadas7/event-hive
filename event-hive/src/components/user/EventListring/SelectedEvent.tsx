@@ -40,6 +40,7 @@ function SelectedEvent() {
             setEvent(res?.data.data[0]);
         }
         fetchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     if (!event) {
