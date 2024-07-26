@@ -88,7 +88,7 @@ function SelectedEvent() {
         let paymentStatus = 'nill';
         if(event.ticket == 'paid'){
             try {
-                stripePromise  =await  loadStripe(public_stripe_key);
+                stripePromise = await loadStripe(public_stripe_key);
             console.log('stripe opening',stripePromise);
             
             paymentStatus = 'completed';
