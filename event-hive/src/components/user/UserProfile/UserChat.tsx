@@ -38,7 +38,7 @@ function UserChat() {
   
 
       useEffect(()=>{
-          socket.current =io('http://localhost:3003')
+          socket.current =io('https://www.shoecrops.online')
           socket.current.on('getMessage',(data:any)=>{
            setArrivalMessage({
             sender:data.senderId,
@@ -73,7 +73,7 @@ function UserChat() {
   useEffect(() => {
     const getData = async () => {
       try {
-        const res = await axios.get(`http://localhost:3003/api/conversation?userId=${userInfo?._id}`);
+        const res = await axios.get(`https://www.shoecrops.online/api/conversation?userId=${userInfo?._id}`);
         console.log('from conversattion',res.data.data)
         
         setConversation(res?.data.data);
@@ -87,7 +87,7 @@ function UserChat() {
   useEffect(() => {
     const getMessage = async () => {
       try {
-        const res = await axios.get(`http://localhost:3003/api/message?conversationId=${currentChat?._id}`,{
+        const res = await axios.get(`https://www.shoecrops.online/api/message?conversationId=${currentChat?._id}`,{
           withCredentials:true
         });
         console.log('res from current chat',res.data.data);
@@ -125,7 +125,7 @@ function UserChat() {
      })
 
     try {
-      const res = await axios.post('http://localhost:3003/api/message', message);
+      const res = await axios.post('https://www.shoecrops.online/api/message', message);
       setMessages([...messages, res.data.data]);
       setNewMessage('');
     } catch (error) {
@@ -137,7 +137,7 @@ function UserChat() {
       senderId:userInfo?._id,
       receiverId:userId
     }
-    const res = await axios.post('http://localhost:3003/api/conversation',obj)
+    const res = await axios.post('https://www.shoecrops.online/api/conversation',obj)
     console.log('res from rsss===',res)
     setSearchQuery('')
     setChange(!change)
