@@ -26,6 +26,7 @@ export interface EventData {
     ticket_amount?: string;
 }
 
+
 export const EventCreationValidation = Yup.object({
   event_name: Yup.string().required('Please enter event name'),
   event_type: Yup.string().required('Select an event type'),
