@@ -13,7 +13,7 @@ import { ticketBooking } from '../../../api/userApi';
 import { loadStripe } from '@stripe/stripe-js';
 import { toast } from 'react-hot-toast';
 import TeamAdd from '../../common/TeamAdd';
-import { useNavigate } from 'react-router-dom';
+// import { useNavigate } from 'react-router-dom';
 import { LineWave } from 'react-loader-spinner';
 
 interface Obj {
@@ -32,7 +32,7 @@ function SelectedEvent() {
     const [book,setBook] = useState(false)
     const params  = useParams();
     const {userInfo} = useSelector((state:RootState)=>state.auth);
-    const navigate = useNavigate()
+    // const navigate = useNavigate()
     useEffect(() => {
         const fetchData = async () => {
             const res = await selectedEvent(params.eventId as string);
@@ -118,7 +118,7 @@ function SelectedEvent() {
              localStorage.removeItem('teamData')
              if(res.data.data){
                 // toast.success(res.data.message)
-               navigate('/user/success-page')
+            //    navigate('/user/success-page')
                 return
              }else{
                 toast.error(res.data.message)
