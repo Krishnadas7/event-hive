@@ -8,12 +8,11 @@ import { IEvent } from '../../../types/schema';
 import { FaInfoCircle } from "react-icons/fa";
 import { useSelector } from 'react-redux';
 import { RootState } from '../../../app/store';
-// const public_stripe_key = 'pk_test_51PQWx603Z9ZoAMB6ZQFq8S4avHgFoBDXC8fFv1Yjafo5Py2QAoAECKCI6l1MS15aAUHtEuN0dMvpQtbtPcNoksAw00P3AyZUgd'
 import { ticketBooking } from '../../../api/userApi';
 import { loadStripe,Stripe } from '@stripe/stripe-js';
 import { toast } from 'react-hot-toast';
 import TeamAdd from '../../common/TeamAdd';
-// import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { LineWave } from 'react-loader-spinner';
 
 interface Options extends Intl.DateTimeFormatOptions {
@@ -41,7 +40,7 @@ function SelectedEvent() {
     const [book,setBook] = useState(false)
     const params  = useParams();
     const {userInfo} = useSelector((state:RootState)=>state.auth);
-    // const navigate = useNavigate()
+    const navigate = useNavigate()
     useEffect(() => {
         const fetchData = async () => {
             const res = await selectedEvent(params.eventId as string);
@@ -122,8 +121,8 @@ function SelectedEvent() {
             if(res?.success){
              localStorage.removeItem('teamData')
              if(res.data){
-                toast.success(res.message)
-            //    navigate('/user/success-page')
+                console.log(res.message)
+               navigate('/user/success-page')
                 
              }else{
                 toast.error(res.message)
