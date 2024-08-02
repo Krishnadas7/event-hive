@@ -12,7 +12,7 @@ import { ticketBooking } from '../../../api/userApi';
 import { loadStripe,Stripe } from '@stripe/stripe-js';
 import { toast } from 'react-hot-toast';
 import TeamAdd from '../../common/TeamAdd';
-import { useNavigate } from 'react-router-dom';
+// import { useNavigate } from 'react-router-dom';
 import { LineWave } from 'react-loader-spinner';
 
 interface Options extends Intl.DateTimeFormatOptions {
@@ -40,7 +40,7 @@ function SelectedEvent() {
     const [book,setBook] = useState(false)
     const params  = useParams();
     const {userInfo} = useSelector((state:RootState)=>state.auth);
-    const navigate = useNavigate()
+    // const navigate = useNavigate()
     useEffect(() => {
         const fetchData = async () => {
             const res = await selectedEvent(params.eventId as string);
@@ -122,9 +122,8 @@ function SelectedEvent() {
              localStorage.removeItem('teamData')
              if(res.data){
                 console.log(res.message)
-                if(event.ticket != 'paid'){
-               navigate('/user/success-page')
-                  
+                if(event.ticket !== 'paid'){
+                    toast.success(res?.message)
                 }
                 
              }else{
