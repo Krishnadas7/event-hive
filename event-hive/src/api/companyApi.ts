@@ -1,6 +1,15 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import axios,{AxiosInstance} from 'axios'
+import { AxiosResponse } from 'axios'
+import { ICompany } from '../types/schema'
+import { EventData } from '../components/company/CompanyHomepage/EventModal'
 
+interface Error {
+  response?: {
+      data?: {
+          message: string,
+      }
+  }
+}
 
 const COMPANY_API = process.env.COMPANY_API
 const COMPANY_REFRESH_API = process.env.COMPANY_REFRESH_API
@@ -58,111 +67,106 @@ companyApi.interceptors.request.use(
     password:string;
   }) =>{
     try {
-        const res = await companyApi.post('/login',{company_email,password},{
+        const res :AxiosResponse = await companyApi.post('/login',{company_email,password},{
             withCredentials:true
         })
-        return res
+        return res.data
     } catch (error) {
-        console.log(error);
+      return (error as Error).response?.data;
         
     }
   }
 
-export const sendEmail = async (values:any)=>{
+export const sendEmail = async (values:ICompany)=>{
     try {
-        const res = await companyApi.post('/send-email',values)
-    return res
+        const res :AxiosResponse = await companyApi.post('/send-email',values)
+    return res.data
     } catch (error) {
-        console.log(error);
+      return (error as Error).response?.data;
         
     }
     
 }
 export const companyRegister = async (otp:string) =>{
     try {
-        console.log('company apiii')
-        const res = await companyApi.post('/signup',{otp})
-        console.log('res from registe api',res)
-        return res
+        const res :AxiosResponse = await companyApi.post('/signup',{otp})
+        return res.data
     } catch (error) {
-        console.log(error)
+      return (error as Error).response?.data;
     }
 }
 export const getCompanyProfileData = async () =>{
   try {
-    const res = await companyApi.get('/get-company-profile',{withCredentials:true})
-    return res
+    const res:AxiosResponse = await companyApi.get('/get-company-profile',{withCredentials:true})
+    return res?.data
   } catch (error) {
-    console.log(error)
+    return (error as Error).response?.data;
   }
  
 } 
-export const companyProfileEdit = async (formData:any) =>{
+export const companyProfileEdit = async (formData:ICompany) =>{
   try {
-    console.log('values from apii')
-    console.log('form data fromapi',formData);
-    
-      const res = await companyApi.post('/company-profile-edit',formData,{headers: {
+      const res:AxiosResponse = await companyApi.post('/company-profile-edit',formData,{headers: {
         'Content-Type': 'multipart/form-data'}})
-      return res
+      return res?.data
   } catch (error) {
-    console.log(error)
+    return (error as Error).response?.data;
   }
 }
-export const createEvent = async (formData:any) =>{
+export const createEvent = async (formData:EventData) =>{
   try {
-    const res = await companyApi.post('/event-creation',formData,{headers: {
+    const res:AxiosResponse = await companyApi.post('/event-creation',formData,{headers: {
       'Content-Type': 'multipart/form-data'}})
-      return res
+      return res?.data
   } catch (error) {
-    console.log(error)
+    return (error as Error).response?.data;
   }
 }
 export const getEvent = async (companyId:string) =>{
   try {
-    const res = await companyApi.get(`/get-all-event?companyId=${companyId}`)
-    return res
+    const res:AxiosResponse = await companyApi.get(`/get-all-event?companyId=${companyId}`)
+    return res?.data
   } catch (error) {
-    console.log(error);
+    return (error as Error).response?.data;
     
   }
 }
 export const liveEvents = async (companyId:string) =>{
   try {
-     const res = await companyApi.get(`/live-events?companyId=${companyId}`)
-     return res
+     const res:AxiosResponse = await companyApi.get(`/live-events?companyId=${companyId}`)
+     return res.data
   } catch (error) {
-    console.log(error)
+    return (error as Error).response?.data;
   }
 }
 export const allMembers = async (eventId:string) =>{
   try {
-    const res = await companyApi.get('/all-members',{
+    const res:AxiosResponse = await companyApi.get('/all-members',{
       params:{
         eventId:eventId
       }
     })
-    return res
+    return res?.data
   } catch (error) {
-    console.log(error);
+    return (error as Error).response?.data;
     
   }
 }
 export const closeEvent = async (eventId:string) =>{
   try {
-    const res = await companyApi.post('/close-event',{eventId:eventId})
-    return res
+    const res:AxiosResponse = await companyApi.post('/close-event',{eventId:eventId})
+    return res.data
   } catch (error) {
-    console.log(error);
+    return (error as Error).response?.data;
     
   }
 }
 export const sendNotification = async (eventId:string,url:string) =>{
   try {
     const res = await companyApi.post('/send-bulk-email',{eventId:eventId,url:url})
-    return res
+    return res?.data
   } catch (error) {
-    console.log(error)
+    return (error as Error).response?.data;
   }
 }
 

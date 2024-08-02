@@ -13,16 +13,16 @@ interface EventModalProps {
   onClose: () => void;
 }
 export interface EventData {
-    event_name:string;
-    event_type:string;
-    start_date:string;
-    starting_time:string;
-    end_date:string;
-    ending_time:string;
-    users_limit:string;
+    event_name?:string;
+    event_type?:string;
+    start_date?:string;
+    starting_time?:string;
+    end_date?:string;
+    ending_time?:string;
+    users_limit?:string;
     participants?:string;
-    event_description:string;
-    ticket_type: string;
+    event_description?:string;
+    ticket_type?: string;
     ticket_amount?: string;
 }
 
@@ -42,11 +42,9 @@ export const EventCreationValidation = Yup.object({
 });
 function EventModal({onClose}:EventModalProps) {
     const [selectedImage,setSelectedImage] = useState<string | null>(null)
-    const [imageFile,setimageFile] = useState<File | null>()
+    const [imageFile,setimageFile] = useState<File | null >()
     const {companyInfo} = useSelector((state:RootState)=>state.auth)
-    console.log('infoooooooooooooo',companyInfo)
   
-   
       const handleImageChange = (e: React.ChangeEvent<HTMLInputElement> | null) =>{
         if(e && e.target.files && e.target.files.length>0){
             const file = e.target.files[0]
@@ -73,7 +71,6 @@ function EventModal({onClose}:EventModalProps) {
         },
         
         onSubmit: async (values:EventData) =>{
-          console.log('particiapntsss',values)
             const formData = new FormData()
             Object.keys(values).forEach(key =>{
               const value = values[key as keyof EventData];
@@ -82,17 +79,18 @@ function EventModal({onClose}:EventModalProps) {
               }
             })
             if(imageFile){
+              if(companyInfo && companyInfo._id){
                 formData.append('event_poster',imageFile)
                 formData.append('company_id',companyInfo._id)
+              } 
             }
-            const res = await createEvent(formData)
-            if(res?.data.success){
+            const res = await createEvent(formData as EventData)
+            if(res?.success){
               onClose()
-              toast.success(res?.data.message)
+              toast.success(res?.message)
             }else{
-              toast.error(res?.data.message)
+              toast.error(res?.message)
             }
-            console.log('formdata',formData)
         }
       })
   return (

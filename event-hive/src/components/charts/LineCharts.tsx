@@ -1,22 +1,19 @@
 import { useEffect, useState } from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { filterUsers } from '../../api/adminApi';
-import { formatData } from './chartData';
-
-
+import { formatData,FormattedData } from './chartData';
 
 
 const BarChartComponent = () => {
   const [filter, setFilter] = useState('monthly');
-  const [data, setData] = useState([]);
+  const [data, setData] = useState<FormattedData[]>([]);
 
- 
+
   useEffect(()=>{
     const fetchData = async () =>{
         const res = await filterUsers()
-        // console.log('data from filters======',res?.data.data);
-        if(res?.data.data){
-        const { yearlyData, monthlyData, weeklyData } = res?.data?.data
+        if(res?.data){
+        const { yearlyData, monthlyData, weeklyData } = res.data
         switch (filter) {
           case 'monthly':
             setData(formatData(monthlyData, 'monthly'));

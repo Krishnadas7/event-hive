@@ -8,14 +8,23 @@ import { IEvent } from '../../../types/schema';
 import { FaInfoCircle } from "react-icons/fa";
 import { useSelector } from 'react-redux';
 import { RootState } from '../../../app/store';
-const public_stripe_key = 'pk_test_51PQWx603Z9ZoAMB6ZQFq8S4avHgFoBDXC8fFv1Yjafo5Py2QAoAECKCI6l1MS15aAUHtEuN0dMvpQtbtPcNoksAw00P3AyZUgd'
+// const public_stripe_key = 'pk_test_51PQWx603Z9ZoAMB6ZQFq8S4avHgFoBDXC8fFv1Yjafo5Py2QAoAECKCI6l1MS15aAUHtEuN0dMvpQtbtPcNoksAw00P3AyZUgd'
 import { ticketBooking } from '../../../api/userApi';
-import { loadStripe } from '@stripe/stripe-js';
+import { loadStripe,Stripe } from '@stripe/stripe-js';
 import { toast } from 'react-hot-toast';
 import TeamAdd from '../../common/TeamAdd';
 // import { useNavigate } from 'react-router-dom';
 import { LineWave } from 'react-loader-spinner';
 
+interface Options extends Intl.DateTimeFormatOptions {
+    weekday?: "long" | "short" | "narrow";
+    year?: "numeric" | "2-digit";
+    month?: "long" | "short" | "narrow" | "numeric" | "2-digit";
+    day?: "numeric" | "2-digit";
+    hour?: "numeric" | "2-digit";
+    minute?: "numeric" | "2-digit";
+    hour12?: boolean;
+  }
 interface Obj {
     user_id: string;
     event_id: string | undefined;
@@ -36,8 +45,10 @@ function SelectedEvent() {
     useEffect(() => {
         const fetchData = async () => {
             const res = await selectedEvent(params.eventId as string);
-            console.log('====', res?.data.data);
-            setEvent(res?.data.data[0]);
+            if(res?.success){
+                console.log('selected events ',res.data)
+            setEvent(res?.data);
+            }
         }
         fetchData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -61,7 +72,7 @@ function SelectedEvent() {
     }
 
     const dateObj = new Date(event.start_date);
-    const options = {
+    const options:Options = {
         weekday: 'long',
         year: 'numeric',
         month: 'long',
@@ -70,14 +81,12 @@ function SelectedEvent() {
         minute: 'numeric',
         hour12: true
       };
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const formattedDate = dateObj.toLocaleString('en-US', options as any);
-    console.log('form ',formattedDate);
-    const companyDetails = event.companyDetails ? event.companyDetails[0] : null;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const members:string[]  = JSON.parse(localStorage.getItem('teamData') as any) 
-    const handleRegistration = async (e:React.FormEvent,participants:string) =>{
-        e.preventDefault();
+    const formattedDate = dateObj.toLocaleString('en-US',options);
+    const companyDetails = event.companyDetails
+    console.log('company details',companyDetails[0])
+    const members: string[] = JSON.parse(localStorage.getItem('teamData') ?? '[]');
+    const handleRegistration = async (participants:string) =>{
+      
         if(participants!='individual'){
         if(!members || members && members.length < 3){
           setBook(true)
@@ -85,21 +94,17 @@ function SelectedEvent() {
         }}
         
 
-        let stripePromise;
+        let stripePromise:Stripe | null=null
         let paymentStatus = 'nill';
         if(event.ticket == 'paid'){
             try {
-                stripePromise = await loadStripe(public_stripe_key);
-            console.log('stripe opening',stripePromise);
-            
+                stripePromise = await loadStripe('pk_test_51PjGVyRvyVQuhEWLXrXA1qgxiuoBD0sQcQTe1r7qzh8PoECE840nnI8LvANZxizBNP0mgj7DQrVrfVy6P9vLFzS700UZ0LHC63');
+                console.log('stripe is opening',stripePromise)
             paymentStatus = 'completed';
             } catch (error) {
                 console.log('error fron striper open',error)
             }
-            
         }
-
-        console.log('evv====',event);
         try {
             const obj:Obj = {
                 user_id: userInfo?._id as string,
@@ -112,25 +117,26 @@ function SelectedEvent() {
             if(event.participants!='individual'){
                 obj.team = members
             }
-            console.log('memberssss from obj',obj)
             const res = await ticketBooking(obj);
-            console.log('res',res)
-            if(res?.data.success){
+            console.log('res from tickt booking',res)
+            if(res?.success){
              localStorage.removeItem('teamData')
-             if(res.data.data){
-                // toast.success(res.data.message)
+             if(res.data){
+                toast.success(res.message)
             //    navigate('/user/success-page')
-                return
+                
              }else{
-                toast.error(res.data.message)
+                toast.error(res.message)
                 return
              }
             }
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            const session: any  = res;
-            if (stripePromise) {
+            
+            const session  = res;
+            console.log(session,'secssdion')
+            if (stripePromise) { 
+
                 stripePromise.redirectToCheckout({
-                    sessionId: session.data.data
+                    sessionId: session.data
                 });
             } else {
                 console.error('Failed to initialize Stripe');
@@ -179,11 +185,12 @@ function SelectedEvent() {
                             <p className='text-white font-mono dark:text-white text-5xl'>
                                 {event?.event_name}
                             </p>
-                            <h1 className='mt-8 text-2xl text-white bg-black bg-opacity-40 dark:text-white'>
-                                {companyDetails?.company_name}
+                            <h1 className='mt-8 text-2xl py-2 px-3 rounded-md   text-black bg-white bg-opacity-65'>
+                                {companyDetails[0]?.company_name}
                             </h1>
-                            <p className='max-w-xl max-sm:-ml-16 max-sm:bg-white pb-3 max-sm:px-4 bg-black bg-opacity-40 py-4 max-sm:rounded-md mt-4 max-sm:text-black text-white'>
-                                {companyDetails?.company_description}
+                            <p className='max-w-xl max-sm:-ml-16 max-sm:bg-white pb-3 max-sm:px-4  max-sm:rounded-md mt-4 max-sm:text-black 
+                            py-2 px-3 rounded-md   black bg-white bg-opacity-75'>
+                                {companyDetails[0]?.company_description}
                             </p>
                         </div>
                         <div className='flex max-sm:mt-1'>
@@ -222,7 +229,7 @@ function SelectedEvent() {
                                   </motion.div>
                                 )}
                                 <div className='px-5 flex flex-col gap-3 mt-3'>
-                                    <button onClick={(e)=>handleRegistration(e,event.participants)} className='h-10 text-white w-full bg-blue-500 rounded-md hover:bg-white hover:text-blue-500 hover:border border-blue-500'>BOOK NOW</button>
+                                    <button onClick={()=>handleRegistration(event.participants)} className='h-10 text-white w-full bg-blue-500 rounded-md hover:bg-white hover:text-blue-500 hover:border border-blue-500'>BOOK NOW</button>
                                     {event.ticket === 'paid' && (<button className='h-10 pb-3 text-gray-500'>No Refund</button>)}
                                 </div>
                             </div>

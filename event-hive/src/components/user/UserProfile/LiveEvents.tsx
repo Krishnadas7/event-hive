@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 
 import { useEffect,  useState } from 'react';
 import { useSelector} from 'react-redux';
@@ -45,14 +44,14 @@ function LiveEvents() {
     const fetchData = async () => {
       if(userInfo && userInfo._id){
         const res = await liveListing(userInfo?._id);
-        if (res?.data.success) {
-          setBooking(res.data.data);
+        if (res?.success) {
+          setBooking(res?.data);
         }
-        console.log('====dsdsds=====', res?.data.data);
       }
      
     };
     fetchData();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   
@@ -62,7 +61,7 @@ function LiveEvents() {
       {booking?.map((event) => (
         <div key={event._id} className='px-3 relative flex py-3'>
           <div>
-            <img className='object-contain  h-[300px] w-[400px]' src={event.eventDetails.event_poster} alt="" />
+            <img className='object-contain  h-[300px] w-[400px]' src={event.eventDetails && event.eventDetails.event_poster} alt="" />
           </div>
           <div className='pl-4'>
             <ul className='gap-3 flex flex-col mt-7'>

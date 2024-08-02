@@ -1,3 +1,5 @@
+import { IEvent } from "../types/schema";
+
 export interface FormValues {
     first_name: string;
     last_name:string;
@@ -20,6 +22,7 @@ export interface FormValues {
   }
 
   export interface Booking {
+    events?: IEvent;
     _id?: string;                   
     user_id?: string;                 // Reference to the user making the booking
     event_id?: string;                // Reference to the event being booked
@@ -28,8 +31,7 @@ export interface FormValues {
     payment_status?: string; // Status of the payment
     payment_amount?: string;         // Amount paid for the booking
     ticket_type?: string;   // Type of ticket (free or paid)
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    eventDetails?:any;
+    eventDetails?:IEvent;
   }
 
   export interface Event{

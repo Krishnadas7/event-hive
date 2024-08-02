@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useFormik } from 'formik';
 import React,{useState,useEffect} from 'react';
 import { companyRegisterValidation } from '../../../validations/yupValidation';
@@ -6,10 +5,11 @@ import { sendEmail } from '../../../api/companyApi';
 import { CustomModal } from '../../common/Modal';
 import { useNavigate } from 'react-router-dom';
 import OtpInput from 'react-otp-input'
+import { OTP_EXPIRED } from '../../../config/toastMessages';
 import image from '../../../assets/company_login_page.png'
-import { toast } from 'react-toastify';
+import { toast } from 'react-hot-toast';
 import { useDispatch,useSelector } from 'react-redux';
-import { setTimeInfo } from '../../../slices/authSlice';
+import { setCompany, setTimeInfo } from '../../../slices/authSlice';
 import { clearTimeInfo } from '../../../slices/authSlice';
 import { RootState } from '../../../app/store';
 import { companyRegister } from '../../../api/companyApi';
@@ -27,6 +27,7 @@ function CompanySignup() {
     if(companyInfo){
       navigate('/company/homepage')
     }
+   // eslint-disable-next-line react-hooks/exhaustive-deps
    },[])
   useEffect(()=>{
     let interval:NodeJS.Timeout;
@@ -60,90 +61,69 @@ function CompanySignup() {
     validationSchema: companyRegisterValidation,
     onSubmit:async (values) => {
       const currentTime:number = new Date().getTime()
-      console.log('timeee for register',currentTime)
       dispatch(setTimeInfo({timestamp:currentTime}))
-      // dispatch(setCompany({...values}))
+      dispatch(setCompany({...values}))
       try {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const res:any = await sendEmail(values)
-        console.log('log from company signup',res);
-        if(res?.data.success){  
+        const res = await sendEmail(values)
+        if(res?.success){  
           setIsModalOpen(true)
         }else{
-          toast.error(res?.data.message)
+          toast.error(res?.message)
           return 
         }
       } catch (error) {
         setIsModalOpen(false)
         dispatch(clearTimeInfo())
-        // dispatch(clearCompany())
-        toast.error('something went wrong try again...')
       }
     }
   });
 
   
-   const resendOtpHandler = async(e:React.FormEvent<HTMLFormElement>)=>{
+   const resendOtpHandler = async(e:React.MouseEvent<HTMLButtonElement, MouseEvent>)=>{
+    setTimer(60)
+    setresendButton(false)
     e.preventDefault()
-    try {
       const currentTime:number = new Date().getTime()
       dispatch(setTimeInfo({timestamp:currentTime}))
-      const {company_name,company_email,
-        company_website, company_address,industry_type,
-        company_description,password
-      }=companyInfo
-      const res =  await sendEmail({
-        company_name,
-        company_email,
-        company_website,
-        company_address,
-        industry_type,
-        company_description,
-        password
-      }) 
-      console.log('res from company regist res',res)
-      
-      if(res?.data.success){
-        toast.success(res.data.message)
-      }
-      setresendButton(false)
-      setTimer(60)
-    } catch (error) { 
-      // dispatch(clearCompany())
-    }
+      if(companyInfo && companyInfo.company_name && 
+        companyInfo.company_email && companyInfo.company_website &&
+         companyInfo.company_address && companyInfo.industry_type && 
+         companyInfo.company_description && companyInfo.password){
+          const {company_name,company_email,
+            company_website, company_address,industry_type,
+            company_description,password
+          }=companyInfo
+          const obj ={company_name,company_email,
+            company_website, company_address,industry_type,
+            company_description,password
+          }
+          const res =  await sendEmail(obj) 
+          
+          if(res?.success){
+            toast.success(res.message)
+          }else{
+            toast.error(res?.message)
+          }
+         }
    }
    async function handleOTPVerification(){
-    console.log('cliced')
     const OTP_VALIDITY_DURATION = 60 * 1000;
-    console.log(OTP_VALIDITY_DURATION);
     
-     try {
-      console.log(timerInfo);
-      
-      const {timestamp} = timerInfo
-      console.log('timestamps',timestamp.timestamp);
-      
+      const {timestamp} = timerInfo 
       const currentTime = new Date().getTime();
-      const timeElapsed = currentTime - timestamp.timestamp;
+      const timeElapsed = currentTime - timestamp;
       if (timeElapsed > OTP_VALIDITY_DURATION) {
-        toast.error('OTP has expired');
+        toast.error(OTP_EXPIRED);
         return;
       }
         const res = await companyRegister(otp)
-        console.log('res from otp verification',res)
-
-        if(res?.data.success){
+        if(res?.success){
           setIsModalOpen(false)
-          toast.success(res.data.message)
+          toast.success(res?.message)
           navigate('/company')
-
         }else{
-          toast.error(res?.data.message)
+          toast.error(res?.message)
         }
-       
-     } catch (error) {
-      toast.error('something went wrong')
-     }
    }
   return (
     <>
@@ -175,7 +155,8 @@ function CompanySignup() {
        </div>
        <div className="flex justify-between w-full">
            <p>Remaining Time: {timer}</p>
-          {resendButton && (<button onClick={(e:React.MouseEvent<HTMLButtonElement, MouseEvent>)=>resendOtpHandler(e as any)} className="text-blue-500">Resend OTP?</button>) } 
+          {resendButton && 
+          (<button onClick={(e: React.MouseEvent<HTMLButtonElement, MouseEvent>)=>resendOtpHandler(e)} className="text-blue-500">Resend OTP?</button>) } 
        </div>
        <div className="flex justify-between w-full gap-4">
            <button 

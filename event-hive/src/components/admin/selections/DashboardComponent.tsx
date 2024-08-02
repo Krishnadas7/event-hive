@@ -13,41 +13,33 @@ function DashboardComponent() {
   const [usercount,setuserCount] = useState(0)
   const [eventcount,setEventCount] = useState(0)
   const [liveEventCount,setLiveEventCount] = useState(0)
-
+  
   useEffect(()=>{
     const fetchDat = async () =>{
-      try {
         const res = await usersCount()
-        setuserCount(res?.data.data)
-       console.log('users count ',usercount);
-      } catch (error) {
-        
-      }
+        if(res.success){
+        setuserCount(res?.data)  
+        }
     }
     fetchDat()
   },[])
   useEffect(()=>{
     const fetchData = async () =>{
-      try {
         const res = await eventCount()
-        setEventCount(res?.data.data)
-       console.log('users count ',usercount);
-      } catch (error) {
-        
-      }
+        if(res?.success){
+        setEventCount(res?.data)
+          
+        }
     }
     fetchData()
   },[])
   useEffect(()=>{
-    try {
       const fetchData = async ()=>{
       const res = await liveEventCounts()
-      setLiveEventCount(res?.data.data)
+      setLiveEventCount(res?.data)
       }
       fetchData()
-    } catch (error) {
-      
-    }
+    
   },[])
   return (
     <>

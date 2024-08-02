@@ -48,13 +48,9 @@ function LiveStreaming() {
 
     useEffect(() => {
         const fetchData = async () => {
-            console.log('mail sending dsdfs');
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
             const res = await sendNotification(eventId as string, url);
-            if (res?.data.success) {
-                console.log('success===');
-            } else {
-                console.log('failed');
-            }
+            
         };
         fetchData();
     }, [eventId, url]);

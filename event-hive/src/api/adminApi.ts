@@ -1,5 +1,5 @@
 import axios,{AxiosInstance} from 'axios'
-
+import { AxiosResponse } from 'axios'
 
 const ADMIN_API = process.env.ADMIN_API
 const ADMIN_REFRESH_API = process.env.ADMIN_REFRESH_API
@@ -7,6 +7,13 @@ const ADMIN_REFRESH_API = process.env.ADMIN_REFRESH_API
 const adminApi : AxiosInstance = axios.create({
     baseURL:ADMIN_API
 })
+interface Error {
+  response?: {
+      data?: {
+          message: string,
+      }
+  }
+}
 
 adminApi.interceptors.request.use(
   (config) => {
@@ -56,146 +63,144 @@ adminApi.interceptors.request.use(
     password:string;
   }) =>{
     try {
-        const res = await adminApi.post('/admin-login',{email,password},{
+        const res:AxiosResponse = await adminApi.post('/admin-login',{email,password},{
             withCredentials:true
         })
-        return res
+        return res.data
     } catch (error) {
-        console.log(error);
+      return (error as Error).response?.data;
         
     }
   }
   export const getUser = async () =>{
      try {  
-        const res = await adminApi.get('/get-user',{withCredentials:true})
+        const res:AxiosResponse = await adminApi.get('/get-user',{withCredentials:true})
         console.log('res fro adapter',res)
-        return res
+        return res.data
      } catch (error) {
-      console.log(error);
+      return (error as Error).response?.data;
       
      }
   }
   export const blockUnblock = async (_id:string) =>{
     try { 
-      const res = await adminApi.patch(`/user/block-unblock?_id=${_id}`)
-      return res
+      const res:AxiosResponse = await adminApi.patch(`/user/block-unblock?_id=${_id}`)
+      return res.data
     } catch (error) {
-      console.log(error);
+      return (error as Error).response?.data;
       
     }
   }
   export const getEventWithCompany = async () =>{
     try {
-       const res = await adminApi.get('/get-events-with-company')
-       return res
+       const res:AxiosResponse = await adminApi.get('/get-events-with-company')
+       return res.data
     } catch (error) {
-      console.log(error)
+      return (error as Error).response?.data;
     }
   }
   export const blockEvent = async (eventId : string) =>{
     try {
-      const res = await adminApi.patch('/event-block',{eventId:eventId})
-      return res
+      const res:AxiosResponse = await adminApi.patch('/event-block',{eventId:eventId})
+      return res.data
     } catch (error) {
-      console.log(error);
+      return (error as Error).response?.data;
     }
   }
   export const getAllCompany  = async () =>{
     try {
-       const res = await adminApi.get('/all-company')
-       return res
+       const res:AxiosResponse = await adminApi.get('/all-company')
+       return res.data
     } catch (error) {
-      console.log(error)
+      return (error as Error).response?.data;
     }
   }
   export const blockCompany = async (companyId:string) =>{
     try {
-      const res = await adminApi.patch('/block-company',{companyId:companyId})
-      return res
+      const res:AxiosResponse = await adminApi.patch('/block-company',{companyId:companyId})
+      return res.data
     } catch (error) {
-      console.log(error);
+      return (error as Error).response?.data;
       
     }
   }
   export const usersCount = async () =>{
     try {
-      const res = await adminApi.get('/users-count')
-      return res
+      const res:AxiosResponse = await adminApi.get('/users-count')
+      return res.data
     } catch (error) {
-      console.log(error);
+      return (error as Error).response?.data;
       
     }
   }
   export const eventCount = async () =>{
     try {
-      const res = await adminApi.get('/event-count')
-      return res
+      const res :AxiosResponse = await adminApi.get('/event-count')
+      return res.data
     } catch (error) {
-      console.log(error);
-      
+      return (error as Error).response?.data;
     }
   }
   export const liveEventCounts = async () =>{
     try {
-      const res = await adminApi.get('/live-event-count')
-      return res
+      const res :AxiosResponse = await adminApi.get('/live-event-count')
+      return res.data
     } catch (error) {
-      console.log(error);
+      return (error as Error).response?.data;
       
     }
   }
   export const piechartData = async () =>{
     try {
       const res = await adminApi.get('/pie-chart-data')
-      return res
+      return res?.data
     } catch (error) {
-      console.log(error);
-      
+      return (error as Error).response?.data;
     }
   }
   export const filterUsers = async () =>{
     try {
-      const res = await adminApi.get('/filter-users')
-      return res
+      const res:AxiosResponse = await adminApi.get('/filter-users')
+      return res.data
     } catch (error) {
-      console.log(error);
+      return (error as Error).response?.data;
       
     }
   }
   export const todaySales = async () =>{
     try {
-       const res = await adminApi.get('/today-sales')
-      return res
+       const res:AxiosResponse = await adminApi.get('/today-sales')
+      return res.data
        
     } catch (error) {
-      console.log(error);
+      return (error as Error).response?.data;
     }
   }
   export const totalSales = async () =>{
     try {
       const res = await adminApi.get('/total-sales')
-      return res
+      return res.data
     } catch (error) {
-      console.log(error)
+      return (error as Error).response?.data;
     }
   }
   export const filterSalesReport = async (pagination:number) =>{
     try {
-      const res = await adminApi.get('/filter-sales-report',{
+      const res:AxiosResponse = await adminApi.get('/filter-sales-report',{
         params:{pagination:pagination}
       })
 
-      return res
+      return res?.data
     } catch (error) {
-      console.log(error)
+      return (error as Error).response?.data;
     }
   }
   export const completeReport =async () =>{
     try {
-      const res = await adminApi.get('/complete-report')
-      return res
+      const res:AxiosResponse = await adminApi.get('/complete-report')
+      return res?.data
     } catch (error) {
-      console.log(error);
+      return (error as Error).response?.data;
       
     }
   }

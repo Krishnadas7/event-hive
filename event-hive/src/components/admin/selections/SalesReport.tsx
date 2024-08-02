@@ -18,8 +18,8 @@ const SalesReport: React.FC = () => {
   useEffect(() => {
     const fetchData = async () => {
       const res = await todaySales();
-      if (res?.data.success) {
-        setTodayAmount(res.data.data);
+      if (res?.success) {
+        setTodayAmount(res?.data);
       }
     };
     fetchData();
@@ -28,8 +28,8 @@ const SalesReport: React.FC = () => {
   useEffect(() => {
     const fetchDat = async () => {
       const res = await totalSales();
-      if (res?.data.success) {
-        setTotalSalesAmount(res?.data.data);
+      if (res?.success) {
+        setTotalSalesAmount(res?.data);
       }
     };
     fetchDat();
@@ -38,8 +38,8 @@ const SalesReport: React.FC = () => {
   useEffect(() => {
     const fetchData = async () => {
       const res = await filterSalesReport(pagination);
-      if (res?.data.success) {
-        setSalesReport(res.data.data);
+      if (res?.success) {
+        setSalesReport(res?.data);
       }
     };
     fetchData();

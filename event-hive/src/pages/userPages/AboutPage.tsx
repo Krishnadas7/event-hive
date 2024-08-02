@@ -11,24 +11,22 @@ import {toast} from 'react-hot-toast'
 function AboutPage() {
     const [contact,setContact] = useState('')
     const {userInfo} = useSelector((state:RootState)=>state.auth)
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const handleSubmit =async (e:any) =>{
+    const handleSubmit =async (e: React.MouseEvent<HTMLButtonElement>) =>{
         e.preventDefault()
         
         if(userInfo){
             const obj:Obj={
-                userEmail:userInfo.email,
+                userEmail:userInfo.email as string,
                 report:contact
             }
             const res = await createReport(obj)
-            console.log('res from report',res)
-            if(res?.data.success){
+            if(res?.success){
                 setContact('')
-                toast.success(res.data.message)
+                toast.success(res?.message)
             }else{
-                toast.error('try after sometimes..')
+                toast.error(res?.message)
+                return
             }
-            console.log('res from about page',res);
             
         }  
     }

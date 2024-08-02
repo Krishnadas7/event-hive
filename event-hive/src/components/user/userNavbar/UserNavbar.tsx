@@ -6,7 +6,6 @@ import { useSelector } from 'react-redux';
 import { userLogOut } from '../../../slices/authSlice';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { getProfile } from '../../../api/userApi';
 import { AiOutlineLogout } from "react-icons/ai";
 import { liveChecking } from '../../../api/userApi';
 import NavbarImage from '../../../assets/navbar-image.webp'
@@ -26,14 +25,14 @@ const UserNavbar: React.FC = () => {
   const navigate = useNavigate()
   useEffect(()=>{
     const fetchData = async () =>{
-      // if(userInfo){
       const res = await liveChecking(userInfo?._id as string)
-      if(res?.data.data>0){
-        setLiveicon(true)
-      }else{
-        setLiveicon(false)
+      if(res.success){
+        if(res?.data>0){
+          setLiveicon(true)
+        }else{
+          setLiveicon(false)
+        }
       }
-    // }
     }
     fetchData()
   },[userInfo])
@@ -61,11 +60,7 @@ const UserNavbar: React.FC = () => {
     }
   }
   const handleProfile= async ()=>{
-    const res = await getProfile()
-    if(res){
       navigate('/user/profile')
-    }
-    
   }
 
   return (

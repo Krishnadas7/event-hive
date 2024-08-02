@@ -11,11 +11,15 @@ function ShowEvents() {
 
     useEffect(() => {
         const fetchData = async () => {
-            const res = await getEvent(companyInfo._id);
-            setData(res?.data.data);
+            if(companyInfo && companyInfo._id){
+                const res = await getEvent(companyInfo._id);
+                setData(res?.data);
+            }
+            
         };
         fetchData();
-    }, [companyInfo._id]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [companyInfo?._id]);
 
     const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
         setSearchTerm(e.target.value);

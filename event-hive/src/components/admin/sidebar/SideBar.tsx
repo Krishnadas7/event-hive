@@ -11,6 +11,7 @@ import EventList from '../selections/EventList';
 import { MdEmojiEvents } from "react-icons/md";
 import { AiOutlineBank } from "react-icons/ai"
 import { SiWebmoney } from "react-icons/si";
+import { LineWave } from 'react-loader-spinner';
 import CompanyList from '../selections/companyList';
 import { MdOutlineReportGmailerrorred } from "react-icons/md";
 const DashboardComponent = lazy(()=> import('../selections/DashboardComponent'))
@@ -118,7 +119,20 @@ function SideBar() {
       </div>
     </div>
     <div className={` overflow-y-auto h-auto ${open ? 'ml-[268px]'  : 'ml-[125px]' } max-sm:ml-0 max-sm:px-3 max-sm:mt-8   mr-3 mt-3 rounded-md bg-gray-50`} >
-      <Suspense fallback={<div>loading...</div>}>
+      <Suspense fallback={<div className='w-full absolute h-screen flex items-center justify-center'>
+       <LineWave 
+               visible={true}
+               height="100"
+               width="100"
+               color="#4fa94d"
+               ariaLabel="line-wave-loading"
+               wrapperStyle={{}}
+               wrapperClass=""
+               firstLineColor=""
+               middleLineColor=""
+               lastLineColor=""
+               />
+   </div>}>
       {num ==0 && <DashboardComponent/>}
       {num ==1 && <UsersComponent/>}
       {num ==2 && <EventList/>}

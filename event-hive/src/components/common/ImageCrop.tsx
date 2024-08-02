@@ -70,10 +70,11 @@ const ImageCropper: React.FC<ImageCropperProps> = ({ closeModal, updateAvatar })
       }
      
       const prof = async (formData: FormData) => {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const res:any = await profileImageUpload(formData);
-        dispatch(setCredential({...res.data.data}))
-        console.log('res from image crop', res);
+        const res = await profileImageUpload(formData);
+        if(res?.success){
+          dispatch(setCredential({...res?.data}))
+        }
+        
       };
       prof(formData);
     };

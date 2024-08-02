@@ -30,8 +30,11 @@ function AdminLogin():JSX.Element {
     onSubmit: async (values) =>{
       try {
         const {email,password}= values
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const res:any = await login({email,password})
+        const res = await login({email,password})
+        if(!res.success){
+          toast.error(res.message)
+          return
+        }
         console.log('res from admin login',res)
         localStorage.setItem("adminAccessToken",res.data.adminAccessToken)  
         localStorage.setItem("adminRefreshToken",res.data.adminRefreshToken)  

@@ -1,8 +1,12 @@
 import CloseIcon from "./CloseIcon";
 import ImageCropper from "./ImageCrop";
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const Modal = ({ updateAvatar, closeModal }:any) => {
+interface ModalProps {
+  updateAvatar: (imgSrc: string) => void;
+  closeModal: () => void;
+}
+
+const Modal: React.FC<ModalProps> = ({ updateAvatar, closeModal }) => {
   return (
     <div
       className="relative z-10 "

@@ -4,7 +4,6 @@ import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { getProfile } from '../../../api/userApi';
 import { AiOutlineLogout } from "react-icons/ai";
 import { clearCompany } from '../../../slices/authSlice';
 
@@ -42,10 +41,9 @@ interface CompanyNavbarProps {
     }
   }
   const handleProfile= async ()=>{
-    const res = await getProfile()
-    if(res){
+   
       navigate('/company/profile')
-    }
+    
    
   }
 

@@ -1,9 +1,11 @@
 import {createSlice} from '@reduxjs/toolkit';
 import { PayloadAction } from '@reduxjs/toolkit';
+import { ICompany } from '../types/schema';
+
 
 export interface UserInfo{
     _id?: string;
-    email: string;
+    email: string|null;
     name?: string;
     first_name?:string;
     last_name?:string;
@@ -13,17 +15,15 @@ export interface UserInfo{
     password?: string;
     createdAt?:string;
     confirm_password?:string;
+    timestamp?:number|null;
 }
 
 interface InitialState {
     userInfo:  UserInfo | null // UserInfo | null;
     adminInfo: UserInfo | null
     registerInfo: UserInfo | null
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    timerInfo:any
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    companyInfo: any
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    timerInfo:number | null;
+    companyInfo: ICompany | null
 }
 
 const userInfoFromLocalStorage = localStorage.getItem('userInfo');

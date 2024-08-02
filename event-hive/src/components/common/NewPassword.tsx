@@ -8,6 +8,7 @@ import dummyImage from '../../assets/link-expird-for-reset.png'
 import axios from 'axios';
 import { toast } from 'react-toastify';
 
+
 interface Obj {
     password: string;
     forgotToken: string ;
@@ -20,7 +21,7 @@ function NewPassword() {
    useEffect(()=>{
     const fetchData = async ()=>{
          const valid =await axios.post('http://localhost:3003/api/user/token-validation',{forgotToken:forgotToken})
-         if(valid.data.success){
+         if(valid?.data?.success){
            setValidation(true)
          }
         //    console.log('from reset useEffect',valid); 
@@ -44,20 +45,12 @@ function NewPassword() {
                     password: values.password,
                     forgotToken: forgotToken || ''
                 };
-                 try {
-                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                    const res:any = await resetPassword(obj)
-                    if(res){
-                      toast.success('passowrd reset successfully')
+                    const res = await resetPassword(obj)
+                    if(res?.success){
+                      toast.success(res?.message)
+                    }else{
+                     toast.error(res?.message)
                     }
-                   
-                //    const decode = jwtDecode()
-                    // console.log('res from reset password',res);
-                    
-                 } catch (error) {
-                    console.log(error);
-                    
-                 }
              }
         })
   return (

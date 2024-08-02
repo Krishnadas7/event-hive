@@ -17,32 +17,27 @@ function CompanyHome() {
   const [change, setChange] = useState(false);
   const [data, setData] = useState<Event[]>([]);
   const [countdowns, setCountdowns] = useState<{ [key: string]: { days: number; hours: number; minutes: number; seconds: number } }>({});
-  console.log(companyInfo,companyInfo._id,'detailfffffff')
   const handleOpenModal = () => {
     setEvent(true);
   };
 
   useEffect(() => {
     const fetchData = async () => {
-      try {
-        const res = await liveEvents(companyInfo._id);
-        console.log(companyInfo,companyInfo._id,'detailfffffff')
-        setData(res?.data.data);
-
-        // Initialize countdowns for each event
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const initialCountdowns = res?.data.data.reduce((acc: any, event: Event) => {
+        if(companyInfo && companyInfo?._id){
+          const res = await liveEvents(companyInfo._id);
+        if(res.success){
+          setData(res?.data);
+        const initialCountdowns = res?.reduce((acc: { [x: string]: { days: number; hours: number; minutes: number; seconds: number; }; }, event: Event) => {
           acc[event._id as string] = calculateTimeLeft(event.end_date as string, event.ending_time as string);
           return acc;
         }, {});
         setCountdowns(initialCountdowns);
-      } catch (error) {
-        toast.error('something error');
-      }
-    };
-    fetchData();
+        }
+    }
+    }
+    fetchData(); 
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [companyInfo._id, change,event]);
+  }, [companyInfo?._id, change,event]);
 
   useEffect(() => {
     const intervalId = setInterval(() => {
@@ -59,15 +54,14 @@ function CompanyHome() {
   }, [data]);
 
   const handleClosing = async (eventId: string) => {
-    try {
+
       const res = await closeEvent(eventId);
-      if (res?.data.success) {
+      if (res?.success) {
         setChange(!change);
+      }else{
+        toast.error(res?.message)
       }
-      console.log(res?.data.data);
-    } catch (error) {
-      toast.error('something error');
-    }
+      
   };
 
   // Function to calculate the remaining time

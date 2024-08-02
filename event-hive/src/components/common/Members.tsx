@@ -13,12 +13,11 @@ const MembersModal = ({ eventId ,type}:{eventId:string,type:string}) => {
 
   useEffect(() => {
     const fetchData = async () => {
-      try {
+      
         const res = await allMembers(eventId);
-        setUsers(res?.data?.data[0]?.userDetails || []);
-      } catch (error) {
-        console.error('Error fetching members:', error);
-      }
+        if(res?.success){
+          setUsers(res?.data[0]?.userDetails || []);
+        }    
     };
     fetchData();
   }, [eventId]);

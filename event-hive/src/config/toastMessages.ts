@@ -1,0 +1,6 @@
+export const  INVALID_OTP = 'invalid otp'
+export const OTP_VERIFICATION_FAILED = 'otp verification failed'
+export const OTP_EXPIRED = 'otp expired'
+export const ERROR_MESSAGING = 'error in messaging'
+export const PASSWORD_SUCCESS = 'pasword updated successfully'
+export const SOMETHING_ERROR = 'something error'

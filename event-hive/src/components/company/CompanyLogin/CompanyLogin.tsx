@@ -2,7 +2,7 @@ import  { useEffect } from 'react'
 import { companyLogin } from '../../../validations/yupValidation';
 import {useFormik} from 'formik'
 import {cLogin} from '../../../api/companyApi'
-import { toast } from 'react-toastify';
+import { toast } from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
 import { setCompany } from '../../../slices/authSlice';
 import { useDispatch } from 'react-redux';
@@ -20,6 +20,7 @@ function CompanyLogin() {
       navigate('/company/homepage')
     }
    },[])
+
    const dispatch = useDispatch()
   const {values:loginValues,
     handleChange:loginHandleChange,
@@ -33,23 +34,16 @@ function CompanyLogin() {
   },
   validationSchema:companyLogin,
   onSubmit: async (values) =>{
-    console.log('values form company login',values)
-    try {
       const res = await cLogin(values)
-      console.log('res from company login',res)
-      if(res?.data.success){
+      if(res?.success){
         localStorage.setItem("companyAccessToken",res.data.companyAccessToken)  
         localStorage.setItem("companyRefreshToken",res.data.companyRefreshToken)  
-        toast.success(res?.data.message)
-        dispatch(setCompany({...res.data.data}))
+        toast.success(res?.message)
+        dispatch(setCompany({...res.data}))
         navigate('/company/homepage')
       }else{
-        toast.error('something went wrong in you details')
+        toast.error(res?.message)
       }
-    } catch (error) {
-      console.log(error);
-      
-    }
    
   }
 })
@@ -61,9 +55,7 @@ function CompanyLogin() {
        </div>
        <div className=' gap-6 flex items-center justify-center flex-col md:w-1/2 sm:w-full '>
          <h1 className='text-3xl font-semibold'>Welcome back :)</h1>
-         {/* <div className=''>
-         <p className='w-[450px] text-slate-500 font-semibold'>To keep connected with us please login with your personal information by email address and password</p>
-         </div> */}
+         
          <div className='p-10'>
         <form action="" className='w-[350px] ' onSubmit={loginHandleSubmit}>
           <label className='text-gray-500 font-semibold ' htmlFor="">Email</label>
@@ -91,7 +83,7 @@ function CompanyLogin() {
           {loginErrors.password && loginTouched.password && (
                 <div className="text-red-500 text-sm pb-2 mt-3">{loginErrors.password}</div>
               )}
-          {/* <button className='mt-2  font-normal text-gray-500'>forgot password?</button> */}
+
           <div className='flex mt-9 justify-between mb-9'>
             <button type='submit' className='pl-4 w-full pr-4 h-10 hover:bg-gray-100 bg-blue-500 hover:text-gray-500 text-gray-50 rounded-full'>Login Now</button>
            

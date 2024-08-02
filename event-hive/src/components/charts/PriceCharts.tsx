@@ -4,13 +4,21 @@ import { piechartData } from '../../api/adminApi';
 import { EventStatus } from '../../types/schema';
 import { transformEventStatusData } from './chartData';
 
+interface LabelProps {
+  cx: number;
+  cy: number;
+  midAngle: number;
+  innerRadius: number;
+  outerRadius: number;
+  percent: number;
+}
+
 
 
 const COLORS = ['#00C49F','#0088FE'];
 
 const RADIAN = Math.PI / 180;
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent }:any) => {
+const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent }:LabelProps) => {
   const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
   const x = cx + radius * Math.cos(-midAngle * RADIAN);
   const y = cy + radius * Math.sin(-midAngle * RADIAN);
@@ -33,8 +41,11 @@ const PriceChart = () => {
   useEffect(()=>{
     const fetchData = async () =>{
       const res =await piechartData()
-      const transformedData = transformEventStatusData(res?.data.data);
+      if(res?.success){
+        const transformedData = transformEventStatusData(res?.data);
       setData(transformedData);
+      }
+      
     }
     fetchData()
   },[])

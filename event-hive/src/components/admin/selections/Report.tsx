@@ -10,10 +10,10 @@ function Report() {
   useEffect(() => {
     const fetchData = async () => {
       const res = await completeReport();
-      console.log('report data', res?.data.data[0].reports);
-      if (res?.data.success) {
-        setReports(res?.data.data[0].reports);
-        setFilteredReports(res?.data.data[0].reports);
+      console.log('report data', res?.data[0].reports);
+      if (res?.success) {
+        setReports(res?.data[0].reports);
+        setFilteredReports(res?.data[0].reports);
       }
     };
     fetchData();
@@ -39,8 +39,8 @@ function Report() {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {filteredReports.map((report, index) => (
           <div key={index} className="bg-white p-4 rounded-lg shadow-lg">
-            <h3 className="text-lg font-semibold text-blue-500">{report.userEmail}</h3>
-            <p className="text-gray-700 mt-2 line-clamp-2">{report.report}</p>
+            <h3 className="text-lg font-semibold text-blue-500">{report?.userEmail}</h3>
+            <p className="text-gray-700 mt-2 line-clamp-2">{report?.report}</p>
           </div>
         ))}
       </div>

@@ -1,10 +1,9 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useRef, useState } from 'react';
 import ConverSation from './ConverSation';
 import Message from './Message';
 import { useSelector } from 'react-redux';
 import axios from 'axios';
+import { Socket } from 'socket.io-client';
 import './userChat.css';
 import { RootState } from '../../../app/store';
 import {io} from 'socket.io-client'
@@ -13,17 +12,29 @@ import { allUsers } from '../../../api/userApi';
 import { IUser } from '../../../types/schema';
 import { BsFillSendFill } from "react-icons/bs";
 import image from '../../../assets/Two hands holding phones with messages in speech bubbles.jpg'
+import { IMessages } from '../../../types/schema';
+import { toast } from 'react-toastify';
+import { ERROR_MESSAGING } from '../../../config/toastMessages';
+
+interface Users{
+  userId:string;
+  socketId:string;
+}
+export interface IConversation {
+  _id?: string;
+  members: string[];
+}
 
 
 function UserChat() {
-  const [conversation, setConversation] = useState([]);
+  const [conversation, setConversation] = useState<IConversation[]>([]);
   const { userInfo } = useSelector((state: RootState) => state.auth);
-  const [currentChat, setCurrentChat] = useState<any>(null);
+  const [currentChat, setCurrentChat] = useState<IConversation|null>(null);
   const [newMessage, setNewMessage] = useState('');
-  const [arrivalmessage,setArrivalMessage] = useState<any>(null)
-  const [messages, setMessages] = useState<any>([]);
+  const [arrivalmessage,setArrivalMessage] = useState<IMessages|null>(null)
+  const [messages, setMessages] = useState<IMessages[]>([]);
   const [allusers,setAllUsers] = useState<IUser[]>([])
-  const socket = useRef<any>(undefined);
+  const socket = useRef<Socket | null>(null);
   const scrollRef = useRef<HTMLDivElement | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [change,setChange] = useState(false)
@@ -39,7 +50,8 @@ function UserChat() {
 
       useEffect(()=>{
           socket.current =io('https://www.shoecrops.online')
-          socket.current.on('getMessage',(data:any)=>{
+          socket.current.on('getMessage',(data)=>{
+            console.log('get message',data)
            setArrivalMessage({
             sender:data.senderId,
             text:data.text,
@@ -50,35 +62,39 @@ function UserChat() {
         useEffect(()=>{
         const fetchData = async () =>{
           const res = await allUsers()
-          console.log('users from chat collections',res?.data.data)
-          setAllUsers(res?.data.data);
-
+          if(res?.success){
+            setAllUsers(res?.data);
+          }
         }
         fetchData()
         },[])
-        console.log('all users===',allusers)
-      useEffect(()=>{
-       arrivalmessage &&
-        currentChat?.members.includes(arrivalmessage.sender) &&
-       setMessages((prev:any)=>[...prev,arrivalmessage])
-      },[arrivalmessage,currentChat])
+
+        useEffect(() => {
+          if (arrivalmessage?.sender && currentChat?.members.includes(arrivalmessage.sender)) {
+            setMessages((prev) => [...prev, arrivalmessage]);
+          }
+        }, [arrivalmessage, currentChat]);
+        
 
     useEffect(()=>{
-    socket.current.emit("addUser",userInfo?._id)
-    socket.current.on("getUser",(users:any)=>{
-      console.log('users==',users)
-    })
+      if(socket.current){
+        socket.current.emit("addUser",userInfo?._id)
+        socket.current.on("getUser",(users:Users[])=>{
+          console.log('users==',users)
+        })
+      }
+   
     },[userInfo])
 
   useEffect(() => {
     const getData = async () => {
       try {
         const res = await axios.get(`https://www.shoecrops.online/api/conversation?userId=${userInfo?._id}`);
-        console.log('from conversattion',res.data.data)
-        
-        setConversation(res?.data.data);
+        if(res?.data?.success){
+        setConversation(res?.data?.data);
+        }
       } catch (error) {
-        console.error('Failed to fetch conversations:', error);
+        toast.error(ERROR_MESSAGING)
       }
     };
     getData();
@@ -90,11 +106,12 @@ function UserChat() {
         const res = await axios.get(`https://www.shoecrops.online/api/message?conversationId=${currentChat?._id}`,{
           withCredentials:true
         });
-        console.log('res from current chat',res.data.data);
-        
-        setMessages(res.data.data);
+         if(res?.data?.success){
+        setMessages(res?.data?.data);
+           
+         }
       } catch (error) {
-        console.error('Failed to fetch messages:', error);
+        toast.error(ERROR_MESSAGING)
       }
     };
 
@@ -109,27 +126,33 @@ function UserChat() {
     }
   }, [messages]);
 
-  const handleSubmit = async (e : any) => {
+  const handleSubmit = async (e: { preventDefault: () => void; } ) => {
     e.preventDefault();
     testFalse()
     const message = {
-      conversationId: currentChat._id,
+      conversationId: currentChat?._id,
       sender: userInfo?._id,
       text: newMessage
     };
-    const receiverId = currentChat.members.find((member:string)=>member!==userInfo?._id)
-     socket.current.emit('sendMessage',{
-      senderId:userInfo?._id,
-      receiverId,
-      text:newMessage
-     })
+    const receiverId = currentChat?.members.find((member:string)=>member!==userInfo?._id)
+    if(socket.current){
+      socket.current.emit('sendMessage',{
+        senderId:userInfo?._id,
+        receiverId,
+        text:newMessage
+       })
+    }
+     
 
     try {
       const res = await axios.post('https://www.shoecrops.online/api/message', message);
-      setMessages([...messages, res.data.data]);
+      if(res?.data?.success){
+      setMessages([...messages, res?.data?.data]);
+        
+      }
       setNewMessage('');
     } catch (error) {
-      console.error('Failed to send message:', error);
+      toast.error(ERROR_MESSAGING)
     }
   };
   const handleConversation = async (userId:string) =>{
@@ -137,10 +160,13 @@ function UserChat() {
       senderId:userInfo?._id,
       receiverId:userId
     }
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const res = await axios.post('https://www.shoecrops.online/api/conversation',obj)
-    console.log('res from rsss===',res)
+    if(res?.data?.success){
     setSearchQuery('')
     setChange(!change)
+    }
+   
   }
 
   
@@ -161,7 +187,7 @@ function UserChat() {
         <div className='mt-2 absolute top-8 z-50  '>
         {searchQuery && (
           <div className='mt-2 w-[250px] ml-5 bg-white  p-2 rounded-md'>
-            {filteredUsers.map((user) => (
+            {filteredUsers?.map((user) => (
               <div key={user._id} onClick={()=>handleConversation(user._id as string)} className='flex items-center  p-2  w-full'>
                 <span className='text-black hover:text-gray-500 font-bold'>{user.first_name} {user.last_name} </span>
               </div>
@@ -169,7 +195,7 @@ function UserChat() {
           </div>
         )}
         </div>
-        {conversation.map((c:any) => (
+        {userInfo && conversation?.map((c) => (
           <div className='mt-2 ' key={c._id} onClick={() => setCurrentChat(c)}>
             <ConverSation test={test} conversation={c}  currentUser={userInfo} />
           </div>
@@ -179,7 +205,7 @@ function UserChat() {
         {currentChat ? (
           <>
             <div className='flex flex-col h-[480px] overflow-y-auto hide-scrollbar'>
-              {messages.map((m:any, index:number) => (
+              {messages?.map((m, index:number) => (
                 <div key={index} ref={index === messages.length - 1 ? scrollRef : null}>
                   <Message message={m} own={m.sender === userInfo?._id} />
                 </div>

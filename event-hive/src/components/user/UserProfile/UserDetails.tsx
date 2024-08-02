@@ -1,61 +1,62 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useState, useRef } from 'react';
 import image from '../../../assets/user-Profile2 (2).jpg';
-import {  userData } from '../../../api/userApi';
+import { userData } from '../../../api/userApi';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../../app/store';
 import PencilIcon from '../../common/PencilIcon';
 import Modal from '../../common/ImageCropModal';
 import ViewData from './Selections/ViewData';
 import EditData from './Selections/EditData';
-
-interface UserData {
+// Define UserProfile interface
+interface UserProfile {
+  _id?: string;
+  email: string; // Removed null and undefined to ensure email is always a string
   first_name: string;
   last_name: string;
-  bio: string;
-  email:string;
-  mobile:string;
-  qualification: string;
-  socialmedialink1: string;
-  socialmedialink2: string;
+  profileImg?: string;
+  qualification?: string;
+  bio?: string;
+  socialmedialink1?: string;
+  socialmedialink2?: string;
 }
 
 
-
+// Component for displaying and editing user details
 function UserDetails() {
   const { userInfo } = useSelector((state: RootState) => state.auth);
-  const [data, setData] = useState<UserData | null>(null);
+  const [data, setData] = useState<UserProfile | null>(null);
   const avatarUrl = useRef(image);
   const [modalOpen, setModalOpen] = useState(false);
   const [activeTab, setActiveTab] = useState(0);
 
-  const updateAvatar = (imgSrc: any) => {
+  const updateAvatar = (imgSrc: string) => {
     avatarUrl.current = imgSrc;
   };
 
   useEffect(() => {
     const fetchData = async () => {
-      if(userInfo){
-        const res: any = await userData(userInfo.email);
-        setData(res?.data.data);
-        console.log('details from userdetails',res?.data.data)
+      if (userInfo) {
+        const res = await userData(userInfo.email as string);
+        if(res?.success){
+        setData(res?.data);
+        }
       }
-      
-     
-    }; 
+    };
     fetchData();
   }, [userInfo]);
 
   return (
     <div className="bg-white shadow-lg border border-gray-300 mb-10 mr-3 mt-[15px]">
-      <div className="flex items-center justify-center"
-       style={{
-        backgroundImage: `url(${userInfo?.ProfileImg})`,
-        backgroundPosition: 'center',
-        backgroundSize: 'cover',
-        backgroundRepeat: 'no-repeat',
-        width: '100%',
-      }}>
+      <div
+        className="flex items-center justify-center"
+        style={{
+          backgroundImage: `url(${userInfo?.profileImg})`,
+          backgroundPosition: 'center',
+          backgroundSize: 'cover',
+          backgroundRepeat: 'no-repeat',
+          width: '100%',
+        }}
+      >
         <div className="flex flex-col items-center">
           <div className="relative">
             <img
@@ -94,25 +95,10 @@ function UserDetails() {
             >
               Edit
             </button>
-            {/* <button
-              className={`tab w-[300px] flex items-center justify-center text-black ${activeTab === 2 ? 'border-b-8 border-slate-500' : ''} p-4`}
-              onClick={() => setActiveTab(2)}
-            >
-              Cover
-            </button> */}
           </div>
           <div className="tab-content">
-            {activeTab === 0 && (
-             <ViewData data={data}/>
-           
-            
-            )}
-            {activeTab === 1 && (
-              <EditData data={data} setData={setData}/>
-            )}
-            {activeTab === 2 && (
-              <div className="bg-slate-100 h-[300px]">Tab content 3</div>
-            )}
+            {data && activeTab === 0 && <ViewData data={data} />}
+            {data && activeTab === 1 && <EditData data={data} setData={setData} />}
           </div>
         </div>
       </div>

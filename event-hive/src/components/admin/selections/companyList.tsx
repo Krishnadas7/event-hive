@@ -1,9 +1,10 @@
 import  { useEffect, useState } from 'react';
 import { SearchIcon } from "@heroicons/react/solid";
 import { getAllCompany, blockCompany } from '../../../api/adminApi';
-import { toast } from 'react-toastify';
+import { toast } from 'react-hot-toast';
 import { ICompany } from '../../../types/schema';
 import image from '../../../assets/navbar-image.webp'
+import { LineWave } from 'react-loader-spinner';
 
 const TABLE_HEAD = ["name", "email", "url", "country", "contact phone", "contact name", "Actions"];
 
@@ -11,19 +12,27 @@ function CompanyList() {
   const [company, setCompany] = useState<ICompany[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [flag, setFlag] = useState(false);
+  const [loading,setLoading] = useState(false)
 
   useEffect(() => {
     const fetchData = async () => {
       const res = await getAllCompany();
-      setCompany(res?.data.data);
+      setCompany(res?.data);
     };
     fetchData();
-  }, [flag]);
+  }, [flag,loading]);
 
   const handleBlock = async (companyId :string) => {
-    await blockCompany(companyId);
+    setLoading(true)
+    const res = await blockCompany(companyId);
+    if(!res.success){
+      toast.error(res?.message)
+      return
+    }
     setFlag(!flag);
-    toast.success('Company status updated');
+      toast.success(res?.message);
+      setLoading(false)
+    
   };
 
   const filteredCompanies = company?.filter((details:ICompany) =>{
@@ -35,8 +44,24 @@ function CompanyList() {
 
   return (
     <>
-      <div className="h-full mt-3 ml-3 mr-3 w-full overflow-hidden rounded-lg bg-gray-200 shadow-md p-4">
-        <div className="mb-4 flex flex-col justify-between gap-8 md:flex-row md:items-center">
+      <div className={` ${loading ? 'opacity-45' : ''}h-full relative mt-3 ml-3 mr-3 w-full overflow-hidden rounded-lg bg-gray-200 shadow-md p-4`}>
+      {loading && (
+       <div className='w-full absolute h-screen flex items-center justify-center'>
+       <LineWave 
+               visible={true}
+               height="100"
+               width="100"
+               color="#4fa94d"
+               ariaLabel="line-wave-loading"
+               wrapperStyle={{}}
+               wrapperClass=""
+               firstLineColor=""
+               middleLineColor=""
+               lastLineColor=""
+               />
+   </div>
+    )}
+        <div className={`${loading ? 'opacity-45' : ''} mb-4 flex flex-col justify-between gap-8 md:flex-row md:items-center`}>
           <div>
             <h2 className="text-xl font-semibold text-blue-gray-700">COMPANY LIST</h2>
           </div>
@@ -56,7 +81,7 @@ function CompanyList() {
           </div>
         </div>
 
-        <div className="overflow-auto">
+        <div className={`${loading ? 'opacity-45' : ''} h-[400px] overflow-auto`}>
           <table className="w-full table-auto text-left">
             <thead>
               <tr>
@@ -68,7 +93,7 @@ function CompanyList() {
               </tr>
             </thead>
             <tbody>
-              {filteredCompanies?.map((details:any) => (
+              {filteredCompanies?.map((details) => (
                 <tr key={details._id}>
                   <td className='p-2 border-b border-blue-gray-200'>
                     <div className="flex items-center gap-3">
@@ -102,7 +127,7 @@ function CompanyList() {
                   <td className='p-2 border-b border-blue-gray-200'>
                     <div className="flex items-center justify-center gap-3">
                       <div className="flex items-center justify-center flex-col">
-                        <button onClick={() => handleBlock(details._id)}
+                        <button onClick={() => handleBlock(details._id as string)}
                           className={`w-36 mt-1 h-8 ${details.is_block ? 'bg-green-500' : 'bg-red-600'} rounded-full text-white border border-slate-600`}>
                           {details.is_block ? 'unblock' : 'block'}
                         </button>
@@ -114,15 +139,6 @@ function CompanyList() {
             </tbody>
           </table>
         </div>
-
-        {/* <div className="flex items-center justify-between border-t border-blue-gray-200 p-2">
-          <button className="p-2 border border-blue-500 text-blue-500 rounded-md hover:bg-blue-50">
-            Previous
-          </button>
-          <button className="p-2 border border-blue-500 text-blue-500 rounded-md hover:bg-blue-50">
-            Next
-          </button>
-        </div> */}
       </div>
     </>
   );

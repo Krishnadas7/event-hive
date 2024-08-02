@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import image from './../../../assets/event_1.jpg';
 import { getEventWithCompany, blockEvent } from '../../../api/adminApi';
-import { toast } from 'react-toastify';
+import { toast } from 'react-hot-toast';
+import { IEvent } from '../../../types/schema';
+import { LineWave } from 'react-loader-spinner';
 
 const EventList = () => {
   const [data, setData] = useState([]);
@@ -9,23 +11,26 @@ const EventList = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
+  const [loading,setLoading] = useState(false)
 
   useEffect(() => {
     const fetchData = async () => {
       const res = await getEventWithCompany();
-      setData(res?.data.data);
+      setData(res?.data);
     };
     fetchData();
-  }, [block]);
+  }, [block,loading]);
 
   const handleBlock = async (eventId: string) => {
-    try {
-      const res: any = await blockEvent(eventId);
+    setLoading(true)
+      const res = await blockEvent(eventId);
+      if(!res.success){
+        toast.error(res?.message);
+        return
+      }
       setBlock(!block);
-      toast(res.data.message);
-    } catch (error) {
-      toast.error('something went wrong');
-    }
+      toast.success(res?.message);
+      setLoading(false)
   };
 
   const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -41,7 +46,7 @@ const EventList = () => {
   };
   let filteredEvents
   if(data && data.length>0){
-     filteredEvents = data?.filter((event: any) => {
+     filteredEvents = data?.filter((event:IEvent) => {
       const eventStartDate = new Date(event.start_date);
       const eventEndDate = new Date(event.end_date);
       const startDateFilter = startDate ? new Date(startDate) : null;
@@ -57,7 +62,23 @@ const EventList = () => {
   
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className={`${loading ? 'opacity-65' : ''}container mx-auto px-4 py-8`}>
+      {loading && (
+       <div className='w-full opacity-80 absolute h-screen flex items-center justify-center'>
+       <LineWave 
+               visible={true}
+               height="100"
+               width="100"
+               color="#4fa94d"
+               ariaLabel="line-wave-loading"
+               wrapperStyle={{}}
+               wrapperClass=""
+               firstLineColor=""
+               middleLineColor=""
+               lastLineColor=""
+               />
+   </div>
+    )}
       <div className="mb-4 flex justify-between items-center">
         <input
           type="text"
@@ -81,8 +102,9 @@ const EventList = () => {
           />
         </div>
       </div>
-      <div className="grid grid-cols-1 sm:grid-cols-2 bg-gray-200 lg:grid-cols-3 gap-4">
-        {filteredEvents?.map((details: any, index) => (
+      <div className={`${loading ? 'opacity-75' : ''} relative grid  grid-cols-1 sm:grid-cols-2 bg-gray-200 lg:grid-cols-3 gap-4`}>
+      
+        {filteredEvents?.map((details:IEvent, index) => (
           <div
             key={index}
             className="shadow-lg rounded-lg overflow-hidden cursor-pointer transition-transform transform hover:scale-105"
@@ -99,14 +121,14 @@ const EventList = () => {
               <div className="mt-4">
                 {details.is_block ? (
                   <button
-                    onClick={() => handleBlock(details._id)}
+                    onClick={() => handleBlock(details._id as string)}
                     className="w-32 h-8 font-bold bg-green-600 text-white rounded"
                   >
                     UNBLOCK
                   </button>
                 ) : (
                   <button
-                    onClick={() => handleBlock(details._id)}
+                    onClick={() => handleBlock(details._id as string)}
                     className="w-32 h-8 font-bold bg-red-600 text-white rounded"
                   >
                     BLOCK

@@ -16,9 +16,8 @@ const  LandingPage:React.FC = ():JSX.Element => {
   useEffect(()=>{
     const fetchData = async () =>{
       const res =await landingPageEventCount()
-      
-      if(res?.data.success){
-        setEventCount(res?.data?.data)
+      if(res?.success){
+        setEventCount(res?.data)
       }
     }
     fetchData()
@@ -26,8 +25,7 @@ const  LandingPage:React.FC = ():JSX.Element => {
   useEffect(()=>{
    const fetchData = async () =>{
     const res  = await landingPageLiveEventCount()
-    console.log('res from landing page',res)
-    if(res?.data.success){
+    if(res?.success){
       setLiveCount(res?.data?.data)
     }
    }

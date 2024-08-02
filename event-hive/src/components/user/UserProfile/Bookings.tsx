@@ -1,6 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useState } from 'react';
-import { toast } from 'react-toastify';
 import { allBookings } from '../../../api/userApi';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../../app/store';
@@ -32,21 +30,21 @@ function Bookings() {
 
   useEffect(() => {
     const fetchData = async () => {
-      try {
         const res = await allBookings(userInfo?._id as string);
-        console.log('Booking data:', res?.data.data);
-        setBooking(res?.data.data);
-      } catch (error) {
-        toast.error('Something went wrong while fetching data');
-      }
+        if(res?.success){
+          setBooking(res?.data);
+        }     
     };
     fetchData();
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Filter bookings based on searchQuery
-  const filteredBookings = booking?.filter((data: any) => {
-    return data?.events.event_name.toLowerCase().includes(searchQuery.toLowerCase());
+  const filteredBookings = booking?.filter((data:Booking) => {
+    if(data.events){
+      return data?.events.event_name.toLowerCase().includes(searchQuery.toLowerCase());
+    }
+   
   });
 
   return (
@@ -76,7 +74,7 @@ function Bookings() {
             </tr>
           </thead>
           <tbody>
-            {filteredBookings.map((data: any, index) => (
+            {filteredBookings.map((data, index) => (
               <tr key={index}>
                 <td className='p-2 border-b border-blue-gray-200'>
                   <div className="flex text-black items-center gap-3">
@@ -84,16 +82,16 @@ function Bookings() {
                   </div>
                 </td>
                 <td className='p-2 border-b border-blue-gray-200'>
-                  <span className="text-sm text-blue-700">{data.events.event_name}</span>
+                  <span className="text-sm text-blue-700">{data.events && data.events.event_name }</span>
                 </td>
                 <td className='p-2 border-b border-blue-gray-200'>
-                  <span className="text-sm text-blue-700">{data.events.start_date}</span>
+                  <span className="text-sm text-blue-700">{data.events && data.events.start_date}</span>
                 </td>
                 <td className='p-2 border-b border-blue-gray-200'>
-                  <span className="text-sm text-blue-700">{data.events.end_date}</span>
+                  <span className="text-sm text-blue-700">{data.events && data.events.end_date}</span>
                 </td>
                 <td className='p-2 border-b border-blue-gray-200'>
-                  <span className="text-sm text-blue-700">{formatBookingDate(data.booking_date)}</span>
+                  <span className="text-sm text-blue-700">{formatBookingDate(data?.booking_date as string)}</span>
                 </td>
                 <td className='p-2 border-b border-blue-gray-200'>
                   <span className={`text-sm text-blue-700 ${data.payment_status === 'completed' ? 'text-green-500' : 'text-red-600'}`}>{data.payment_status}</span>

@@ -1,13 +1,25 @@
-import axios, { AxiosInstance } from 'axios';
+import axios, { AxiosInstance, AxiosResponse } from 'axios';
 import { IUser } from '../types/schema';
 import { Booking } from '../validations/validationTypes';
 import { Obj } from '../types/schema';
+import { store } from '../app/store';
+import { userLogOut } from '../slices/authSlice';
 const USER_API = process.env.USER_API
+// import { userLogOut } from '../slices/authSlice';
 console.log(process.env.USER_API,process.env.ADMIN_API)
 const USER_REFRESH_API = process.env.USER_REFRESH_API
 export const userApi: AxiosInstance = axios.create({
     baseURL: USER_API
 });
+
+interface Error {
+  response?: {
+      data?: {
+          message: string,
+      }
+  }
+}
+
 
 userApi.interceptors.request.use(
     (config) => {
@@ -36,7 +48,11 @@ userApi.interceptors.response.use(
         const originalRequest = error.config;
         const refreshToken = localStorage.getItem('userRefreshToken')
         
-        
+        if(error?.response.status === 403){
+          store.dispatch(userLogOut())
+      
+        }
+
         if (error?.response.status === 401 && !originalRequest._retry && refreshToken) {
           originalRequest._retry = true;
           try {
@@ -58,117 +74,95 @@ userApi.interceptors.response.use(
 
 export const signUp = async ({ first_name, last_name, email, mobile, password, confirm_password }: IUser) => {
     try {
-        if (password !== confirm_password) {
-            alert('password and confirm password not match');
-        }
-        const res = await userApi.post('/signup', { first_name, last_name, email, mobile, password, confirm_password }, {
+       
+        const res:AxiosResponse = await userApi.post('/signup', { first_name, last_name, email, mobile, password, confirm_password }, {
             withCredentials: true
         });
 
-        console.log(res.data.token);
-        return res;
+        return res?.data;
     } catch (error) {
-        console.log(error);
+      return (error as Error).response?.data;
     }
 };
 
 export const login = async ({ email, password }: { email: string; password: string; }) => {
-    
-        const res = await userApi.post('/login', { email, password }, {
+        try {
+           const res:AxiosResponse = await userApi.post('/login', { email, password }, {
             withCredentials: true
         });
-          
-        // Store tokens securely
-        localStorage.setItem('userAccessToken', res.data.userAccessToken);
-        localStorage.setItem('userRefreshToken', res.data.userRefreshToken);
-        return res;
-   
+        
+        return res?.data;
+      } catch (error) {
+        return (error as Error).response?.data;
+    }
 };
-export const getProfile = async ()=>{
-  try {
-   
-    
-    const res = await userApi.get('/profile');
-      console.log('from userprofile frontend',res);
-      
-    return res
-  } catch (error) {
-    console.log(error);
-    
-  }
-}
-export const sendOtpToEmail = async ({first_name,email}:{first_name:string,email:string}) =>{
+
+export const sendOtpToEmail = async (first_name:string,email:string) =>{
   try {
     const res = await userApi.post('/sendEmail',{
       first_name,email
     },{withCredentials:true})
-    return res
+    
+    return res?.data
   } catch (error) {
-    console.log(error);
+    return (error as Error).response?.data;
     
   }
 }
 export const otpVerification = async ({otp,email}:{otp:string,email:string}) =>{
   try {
-    console.log('otpp',otp);
-    
     const res = await userApi.post('/verifyEmail',{otp,email},{withCredentials:true})
-    console.log('resss ',res)
-    return res
+    return res?.data
   } catch (error) {
-    console.log(error);
-    
+    return (error as Error).response?.data;
   }
 }
+
 export const googleAuth = async ({name,email,password}:{name:string,email:string,password:string}) =>{
   const first_name=name
   try {
     const res = await userApi.post('/oauth',{first_name,email,password},{withCredentials:true})
-    return res
+    return res?.data
   } catch (error) {
-    console.log(error);
+    return (error as Error).response?.data;
     
   }
 }
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const profileImageUpload = async (formData :any) =>{
+export const profileImageUpload = async (formData:FormData) =>{
   try {
     console.log('data from usreprofile update',formData)
-    const res =await userApi.post('/profile-image-update',formData,{headers: {
+    const res:AxiosResponse = await userApi.post('/profile-image-update',formData,{headers: {
       'Content-Type': 'multipart/form-data',
     }})
-    console.log('response from imagecrop==',res.data.data);
-    
-    return res
-  
+    return res?.data
   } catch (error) {
-    console.log(error);
+    return (error as Error).response?.data;
     
   }
 }
 export const getImage = async (email:string) =>{
   try {
-    const res = await userApi.get(`/get-image?email=${email}`)
-    return res
+    const res:AxiosResponse = await userApi.get(`/get-image?email=${email}`)
+    return res?.data
   } catch (error) {
-    console.log(error)
+    return (error as Error).response?.data;
   }
 }
 export const forgotPassword = async ({name,email}:{name:string,email:string}) =>{
   try {
-    const res = userApi.post('/sendemailfor-forgot',{name,email},{withCredentials:true})
-    return res
+    const res:AxiosResponse =await userApi.post('/sendemailfor-forgot',{name,email},{withCredentials:true})
+    return res?.data
   } catch (error) {
-    console.log(error)
+    return (error as Error).response?.data;
   }
 }
 export const resetPassword = async ({password,forgotToken}:{password:string,forgotToken:string}) =>{
    try {
     console.log('itemssss  ',password,forgotToken)
-    const res = userApi.post('/reset-password',{password,forgotToken},{withCredentials:true})
-    return res
+    const res:AxiosResponse = await userApi.post('/reset-password',{password,forgotToken},{withCredentials:true})
+    return res?.data
    } catch (error) {
-    console.log('reset password error')
+    return (error as Error).response?.data;
    }
 }
 export const updateProfile = async ({
@@ -185,112 +179,101 @@ export const updateProfile = async ({
     socialmedialink1:string,
     socialmedialink2:string
   }) =>{
-    console.log(first_name,last_name,qualification,bio,socialmedialink1,socialmedialink2)
-     const res = await userApi.post('/profile-update',{
-      first_name,
-      last_name,
-      bio,
-      qualification,
-      socialmedialink1,
-      socialmedialink2
-     },{withCredentials:true})
-     return res
+    try {
+      console.log(first_name,last_name,qualification,bio,socialmedialink1,socialmedialink2)
+      const res:AxiosResponse = await userApi.post('/profile-update',{
+       first_name,
+       last_name,
+       bio,
+       qualification,
+       socialmedialink1,
+       socialmedialink2
+      },{withCredentials:true})
+       console.log('res dataa from eidt profile',res)
+      return res?.data
+    } catch (error) {
+      return (error as Error).response?.data;
+    }
+   
   }
   export const userData = async (email:string) =>{
     try {
-      const res = await userApi.get(`/user-data?email=${email}`,{withCredentials:true})
-      console.log('res from userdata',res);
-      
-      return res
+      const res:AxiosResponse = await userApi.get(`/user-data?email=${email}`,{withCredentials:true})
+      return res?.data
     } catch (error) {
-      console.log(error); 
+      return (error as Error).response?.data;
     }
   }
   export const getRandomUser = async (userId:string) =>{
     try{
-      const res = await userApi.get(`/random-user-data?userId=${userId}`,{withCredentials:true})
+      const res:AxiosResponse = await userApi.get(`/random-user-data?userId=${userId}`,{withCredentials:true})
       console.log('res from userdata',res);
       
-      return res
+      return res?.data
     }catch(error){
-      console.log(error)
+      return (error as Error).response?.data;
     }
   }
   export const allUsers = async () =>{
     try {
-      const res = await userApi.get('/all-user')
-      return res
+      const res:AxiosResponse = await userApi.get('/all-user')
+      return res?.data
     } catch (error) {
-     console.log(error);
+      return (error as Error).response?.data;
      
     }
   }
   export const eventForUser = async (pagination:number) =>{
     try{
-      console.log('ppppppppppp',pagination);
       
-      const res = await userApi.get('/event-for-users',{
+      const res:AxiosResponse = await userApi.get('/event-for-users',{
         params: { pagination: pagination },
       })
-      return res
+      return res?.data
     }catch(error){
-      console.log(error);
+      return (error as Error).response?.data;
       
     }
   }
   export const selectedEvent = async (eventId:string) =>{
     try {
-      console.log('idddd',eventId)
       const res = await userApi.get(`/selected-event?eventId=${eventId}`)
-      console.log('sdfdsfds',res)
-      return res
+      return res?.data
     } catch (error) {
-      console.log(error);
-      
+      return (error as Error).response?.data;
     }
   }
-  export const searchEvent = async (search:string) =>{
-    try {
-      const res = await userApi.get('/search-event',{
-        params:{search:search}
-      })
-      return res
-    } catch (error) {
-      console.log(error)
-    }
-  }
+
   export const filterEvent= async ({type,ticket,date}:{type:string,ticket:string,date:string}) =>{
     console.log(type,ticket,date)
     try {
-      const res = await userApi.get('/filter-events',{
+      const res:AxiosResponse = await userApi.get('/filter-events',{
         params:{type:type,
           ticket:ticket,
           date:date
         }
       })
-      return res
+      return res?.data
     } catch (error) {
-      console.log(error)
+      return (error as Error).response?.data;
     }
   }
   export const ticketBooking = async (obj:Booking) =>{
     try {
-      const res = await userApi.post('/ticket-booking',obj)
-      console.log('====',res)
-      return res
+      const res:AxiosResponse = await userApi.post('/ticket-booking',obj)
+      return res.data
     } catch (error) {
-      console.log(error)
+      return (error as Error).response?.data;
     }
   }
   export const allBookings = async (userId : string) =>{
      try {
-      console.log('all bookings')
-      const res = await userApi.get('/all-bookings',{
+      const res:AxiosResponse = await userApi.get('/all-bookings',{
         params:{userId:userId}
       })
-      return res
+      return res?.data
      } catch (error) {
-       console.log(error)
+      return (error as Error).response?.data;
      }
   }
   export const membersExist = async (userId:string,email :string) =>{
@@ -308,24 +291,26 @@ export const updateProfile = async ({
   }
   export const liveChecking = async (userId:string) =>{
      try {
-        const res =await userApi.get('/live-checking',{
+        const res:AxiosResponse =await userApi.get('/live-checking',{
           params:{userId:userId}
         })
-        return res
+        console.log(res,'kkk')
+        return res?.data
      } catch (error) {
-      console.log(error)
+      console.log(error,'kkk')
+      return (error as Error).response?.data;
      }
   }
   export const liveListing = async (userId:string) =>{
     try {
-      const res = await userApi.get('/live-listing',{
+      const res:AxiosResponse = await userApi.get('/live-listing',{
         params:{
           userId:userId
         }
       })
-      return res
+      return res?.data
     } catch (error) {
-      console.log(error)
+      return (error as Error).response?.data;
     }
   }
   export const getNotification = async () =>{
@@ -333,36 +318,36 @@ export const updateProfile = async ({
       const res = await userApi.get('/user-notification',{
         withCredentials:true
       })
-      return res
+      return res?.data
     } catch (error) {
-      console.log(error);
+      return (error as Error).response?.data;
     }
   }
   
   export const landingPageEventCount = async () =>{
     try {
-       const res = await userApi.get('/landing-page-event-count')
-       return res
+       const res:AxiosResponse = await userApi.get('/landing-page-event-count')
+       return res?.data
     } catch (error) {
-      console.log(error)
+      return (error as Error).response?.data;
     }
   }
   
   export const landingPageLiveEventCount = async () =>{
     try {
-      const res = await userApi.get('/landing-page-live-event-count')
-      return res
+      const res:AxiosResponse = await userApi.get('/landing-page-live-event-count')
+      return res?.data
     } catch (error) {
-      console.log(error)
+      return (error as Error).response?.data;
     }
   }
 
   export const createReport = async (obj:Obj) =>{
     try{
-      const res = await userApi.post('/create-report',obj)
-      return res
+      const res:AxiosResponse = await userApi.post('/create-report',obj)
+      return res?.data
     }catch(error){
-      console.log(error)
+      return (error as Error).response?.data;
     }
   }
 

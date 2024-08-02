@@ -31,16 +31,19 @@ const yyyy = today.getFullYear();
 const mm = String(today.getMonth() + 1).padStart(2, '0'); // Months are 0-indexed
 const dd = String(today.getDate()).padStart(2, '0');
 const todayStr = `${yyyy}-${mm}-${dd}`;
-  const handleChange = (event:React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (event:React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedValue(event.target.value);
   };
-  const handleTicket = (event:React.ChangeEvent<HTMLInputElement>) => {
+  const handleTicket = (event:React.ChangeEvent<HTMLSelectElement>) => {
     setTicket(event.target.value)
   }
   useEffect(()=>{
   const fetchData = async () =>{
     const res = await eventForUser(pagination)
-    setEvents(res?.data.data)
+    if(res?.success){
+    setEvents(res?.data)
+       
+    }
   }
   fetchData()
   
@@ -48,17 +51,19 @@ const todayStr = `${yyyy}-${mm}-${dd}`;
  
 
  const handleSubmit = async () =>{
-  try {
-    let obj={
+  
+    const obj = {
       type:selectedValue,
       ticket,
       date
-    }
+           }
     const res = await filterEvent(obj)
-    setEvents(res?.data.data)
-  } catch (error) {
-    toast.error('something wrong')
-  }
+    if(res?.success){
+    setEvents(res?.data)
+    }else{
+      toast.error(res?.message)
+    }
+  
  }
  
   return (
@@ -75,7 +80,7 @@ const todayStr = `${yyyy}-${mm}-${dd}`;
                       <label htmlFor="" className='font-bold text-white ml-3'>Type</label>
                       <select 
                         value={selectedValue}
-                        onChange={(e)=>handleChange(e as any)}
+                        onChange={handleChange}
                         className="p-2 bg-transparent outline-none text-white w-full rounded-md"
                          >
                           
@@ -91,7 +96,7 @@ const todayStr = `${yyyy}-${mm}-${dd}`;
                       <label htmlFor="" className='font-bold ml-3 text-white'>Ticket</label>
                       <select
                         value={ticket}
-                        onChange={(e)=>handleTicket(e as any)}
+                        onChange={handleTicket}
                         className="p-2 text-white w-full outline-none bg-transparent rounded-md"
                          >
                         {location.map((option, index) => (

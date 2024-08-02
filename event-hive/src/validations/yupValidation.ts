@@ -74,21 +74,21 @@ export const editProfileValidation = Yup.object({
   socialmedialink1:Yup.string(),
   socialmedialink2:Yup.string()
 })
-export const companyEditProfileValidation = Yup.object({
-  company_name: Yup.string().required('Please enter company name'),
-  company_email: Yup.string().required('Please enter company email'),
-  company_address: Yup.string().required('Enter company address'),
-  postal_code: Yup.string().required('Enter the pin code'),
-  locality: Yup.string().required('Enter locality'),
-  state: Yup.string().required('Enter your state'),
-  company_description: Yup.string().required('Enter your company description'),
-  company_website: Yup.string().required('Enter company website'),
-  company_contactperson: Yup.string().required('Enter contact name'),
-  company_contactphone: Yup.string().required('Enter contact phone'),
-  country: Yup.string().required('Enter country'),
-  industry_type: Yup.string().required('Select any industry'),
-  // company_logo: Yup.mixed().required('Select company logo')
-});
+// export const companyEditProfileValidation = Yup.object({
+//   company_name: Yup.string().required('Please enter company name'),
+//   company_email: Yup.string().required('Please enter company email'),
+//   company_address: Yup.string().required('Enter company address'),
+//   postal_code: Yup.string().required('Enter the pin code'),
+//   locality: Yup.string().required('Enter locality'),
+//   state: Yup.string().required('Enter your state'),
+//   company_description: Yup.string().required('Enter your company description'),
+//   company_website: Yup.string().required('Enter company website'),
+//   company_contactperson: Yup.string().required('Enter contact name'),
+//   company_contactphone: Yup.string().required('Enter contact phone'),
+//   country: Yup.string().required('Enter country'),
+//   industry_type: Yup.string().required('Select any industry'),
+//   // company_logo: Yup.mixed().required('Select company logo')
+// });
 export const resetValidation = Yup.object({
   password: Yup.string()
       .min(6, "Password must be at least 6 characters")
@@ -133,4 +133,20 @@ export const validationSchema = Yup.object({
     confirm_password: Yup.string()
       .oneOf([Yup.ref("password")], "Password not matched")
       .required("Please enter confirm password"),
+  });
+
+  export const companyEditProfileValidation = Yup.object({
+    company_name: Yup.string().required('Please enter company name'),
+    company_email: Yup.string().email('Invalid email format').required('Please enter company email'),
+    company_address: Yup.string().required('Enter company address'),
+    postal_code: Yup.string().required('Enter the pin code'),
+    locality: Yup.string().required('Enter locality'),
+    state: Yup.string().required('Enter your state'),
+    company_description: Yup.string().required('Enter your company description'),
+    company_website: Yup.string().url('Invalid URL').required('Enter company website'),
+    contact_personname: Yup.string().required('Enter contact name'),
+    contact_personphone: Yup.string().required('Enter contact phone'),
+    country: Yup.string().required('Enter country'),
+    industry_type: Yup.string().required('Select any industry'),
+    // company_logo: Yup.mixed().required('Select company logo'),
   });

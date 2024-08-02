@@ -3,7 +3,7 @@ export interface CountryOption {
     label: string;
   }
 
-export const countryOptions:CountryOption[]|any = [
+export const countryOptions:CountryOption[] = [
     { value: 'usa', label: 'United States' },
     { value: 'canada', label: 'Canada' },
     { value: 'uk', label: 'United Kingdom' },
@@ -35,7 +35,7 @@ export const countryOptions:CountryOption[]|any = [
     { value: 'singapore', label: 'Singapore' },
     { value: 'thailand', label: 'Thailand' }
   ];
-  export const skillsOptions:any = [
+  export const skillsOptions:CountryOption[] = [
     { value: 'javascript', label: 'JavaScript' },
     { value: 'python', label: 'Python' },
     { value: 'java', label: 'Java' },
@@ -43,7 +43,7 @@ export const countryOptions:CountryOption[]|any = [
     { value: 'node', label: 'Node.js' },
     { value: 'docker', label: 'Docker' },
   ];
-  export const eventTypesOptions:any = [
+  export const eventTypesOptions:CountryOption[]= [
     { value: 'workshop', label: 'Workshop' },
     { value: 'hackathon', label: 'Hackathon' },
     { value: 'conference', label: 'Conference' },

@@ -1,5 +1,4 @@
-/* eslint-disable no-empty */
-/* eslint-disable @typescript-eslint/no-explicit-any */
+import { OTP_EXPIRED } from '../../../config/toastMessages';
 import {ThreeDots} from 'react-loader-spinner'
 import { motion } from 'framer-motion';
 import React, { useState,useEffect } from 'react'
@@ -19,20 +18,21 @@ import { CustomModal } from '../../common/Modal';
 import { RootState } from '../../../app/store';
 import { otpVerification } from '../../../api/userApi';
 import { IUser } from '../../../types/schema';
+import { INVALID_OTP } from '../../../config/toastMessages';
+import { OTP_VERIFICATION_FAILED } from '../../../config/toastMessages';
+
 
 const Register: React.FC = () => {
   const [otp, setOtp] = useState("");
-  const [load,setLoad] = useState(false)
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [timer,setTimer] = useState(60)
   const [resendButton,setresendButton] = useState(false)
   const {userInfo} = useSelector((state:RootState)=>state.auth)
-  const [isSumbit, setSubmit] = useState(false)
+  // const [isSumbit, setSubmit] = useState(false)
   const dispatch = useDispatch()
   const navigate = useNavigate()
 
-  if(load){}
-  if(isSumbit){}
+
 
   const {registerInfo} = useSelector((state :RootState)=>state.auth)
   useEffect(()=>{
@@ -40,6 +40,7 @@ const Register: React.FC = () => {
          navigate('/')
     }
 
+// eslint-disable-next-line react-hooks/exhaustive-deps
 },[])
 useEffect(()=>{
   let interval:NodeJS.Timeout;
@@ -71,71 +72,78 @@ useEffect(()=>{
       
       const currentTime:number = new Date().getTime()
        dispatch(setRegister({...values,timestamp:currentTime}))
-       setSubmit(true)
+      //  setSubmit(true)
         try {
           const { first_name, email } = values;
-              const response:any = await sendOtpToEmail({first_name,email})
-                  if(response){
-
-                  }
+              // eslint-disable-next-line @typescript-eslint/no-unused-vars
+              const response = await sendOtpToEmail(first_name,email)
+                   if(!response.success){
+                    toast.error(response.message)
+                    return
+                   }
                   setIsModalOpen(true)
       } catch (error) {
         setIsModalOpen(false)
         dispatch(clearRegister())
-         toast.error('otp error')
+         toast.error(INVALID_OTP)
       }
     }
   })
   async function handleOTPVerification(){
     const OTP_VALIDITY_DURATION = 60 * 1000; // 60 seconds in milliseconds
     try {
-      setLoad(true)
-      const {email,timestamp}:any = registerInfo
+      const { email, timestamp } = registerInfo ?? { email: '', timestamp: 0 };
       
       const currentTime = new Date().getTime();
-      const timeElapsed = currentTime - timestamp;
-      console.log(timestamp,'this i timee')
-      if (timeElapsed > OTP_VALIDITY_DURATION) {
-        toast.error('OTP has expired');
-        return;
-    }
-      const res:any = await otpVerification({otp,email})
-       
-         if(res?.data.success){
-            if(registerInfo != null){
-              const {first_name,last_name,email,mobile,password,confirm_password}:UserInfo = registerInfo
-            const res:any = await signUp({first_name,last_name,email,mobile,password,confirm_password} as IUser )
-            console.log('resssignup',res);
-            if(res.data.success){
-              setIsModalOpen(false)
-              setLoad(false)
-             navigate('/user/login')
-            }else{
-              setLoad(false)
-              toast.error('invalid otp')
-            }
-            }
-         }else{
-          toast.error('otp verification failed')
-         }
+      if(timestamp){
+        const timeElapsed = currentTime - timestamp;
+        console.log(timestamp,'this i outside',timeElapsed,OTP_VALIDITY_DURATION)
+        if (timeElapsed > OTP_VALIDITY_DURATION) {
+          console.log(timestamp,'this i inside',timeElapsed,OTP_VALIDITY_DURATION)
+          toast.error(OTP_EXPIRED);
+          return;
+      }
+      }
+      if(email){
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const res = await otpVerification({otp,email})
+        console.log('res from otp verification',res)
+        if(res?.success){
+          if(registerInfo != null){
+            const {first_name,last_name,email,mobile,password,confirm_password}:UserInfo = registerInfo
+          const res = await signUp({first_name,last_name,email,mobile,password,confirm_password} as IUser )
+          console.log('resssignup',res);
+          if(res?.success){
+            toast.success(res?.message)
+            setIsModalOpen(false)
+           navigate('/user/login')
+          }else{
+            toast.error(INVALID_OTP)
+          }
+          }
+       }else{
+        toast.error(res.message)
+       }
+      }
     } catch (error) {
       setIsModalOpen(false)
-      toast.error('otp verification failed')
+      toast.error(OTP_VERIFICATION_FAILED)
     }
 }
 
-const resendOtpHandler = async (e:React.FormEvent<HTMLFormElement>)=>{
+const resendOtpHandler = async (e: React.MouseEvent<HTMLButtonElement>)=>{
   e.preventDefault()
   try {
-    const {first_name,last_name,email,mobile,password,confirm_password}:any = registerInfo
+    const {first_name,last_name,email,mobile,password,confirm_password} =registerInfo ?? {first_name:'',last_name:'', email: '', mobile:'',password:'',confirm_password:'' };
+     if(first_name && last_name && email&&mobile && password && confirm_password){
     const currentTime:number = new Date().getTime()
-    console.log('timeee for register',currentTime)
      dispatch(setRegister({first_name,last_name,email,mobile,password,confirm_password,timestamp:currentTime}))
-     const response:any = await sendOtpToEmail({first_name,email})
-     if(response.data.success){
-      toast.success(response.data.message)
-     }
-     console.log('res from resend otp ',response)
+      const response = await sendOtpToEmail(first_name,email)
+      if(response?.success){
+       toast.success(response?.message)
+      }
+     
+    }
      setresendButton(false)
     setTimer(60)
   } catch (error) {
@@ -175,7 +183,7 @@ const resendOtpHandler = async (e:React.FormEvent<HTMLFormElement>)=>{
        </div>
        <div className="flex justify-between w-full">
            <p>Remaining Time: {timer}</p>
-          {resendButton && (<button onClick={(e:React.MouseEvent<HTMLButtonElement, MouseEvent>)=>resendOtpHandler(e as any)} className="text-blue-500">Resend OTP?</button>) } 
+          {resendButton && (<button onClick={(e:React.MouseEvent<HTMLButtonElement, MouseEvent>)=>resendOtpHandler(e)} className="text-blue-500">Resend OTP?</button>) } 
        </div>
        <div className="flex justify-between w-full gap-4">
            <button 

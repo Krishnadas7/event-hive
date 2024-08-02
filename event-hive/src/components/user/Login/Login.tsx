@@ -1,9 +1,8 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import {ThreeDots} from 'react-loader-spinner'
 import { motion } from 'framer-motion';
 import React,{useEffect, useState} from 'react'
 import { Link,useNavigate } from 'react-router-dom'
-import { useFormik } from "formik";
+import {  useFormik } from "formik";
 import { setCredential } from '../../../slices/authSlice';
 import { login } from '../../../api/userApi';
 import { forgotValidation, loginValidation } from '../../../validations/yupValidation';
@@ -17,9 +16,12 @@ import { FcInfo } from "react-icons/fc";
 import { RootState } from '../../../app/store';
 import {toast} from 'react-hot-toast'
 
+
+
 interface DecodedCredential{
      name:string;
      email:string;
+
 } 
 
 
@@ -48,19 +50,19 @@ const Login: React.FC = () => {
        },
        validationSchema:loginValidation,
        onSubmit: async (values) => {
-            try {
-                 const response :any = await login(values)
-                 toast.success(response.data.message)
-                 console.log('response from login page',response);  
-                 localStorage.setItem("userAccessToken",response.data.userAccessToken)  
+            
+                 const response = await login(values)
+                 console.log('response from login page',response); 
+                 if(!response.success){
+                    toast.error(response.message)
+                    return
+                 }
+                 localStorage.setItem("userAccessToken",response?.data.userAccessToken)  
                  localStorage.setItem("userRefreshToken",response.data.userRefreshToken)  
                 
-                 dispatch(setCredential({...response.data.data}))
+                 dispatch(setCredential({...response.data}))
                        navigate('/')
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            } catch (error : any) {
-                 toast.error('wrong password or email')
-            }
+            
        }
   })
   // ======forgot password
@@ -73,22 +75,21 @@ const Login: React.FC = () => {
                  email:''
             },
             validationSchema:forgotValidation,
-            onSubmit: async (values : any) =>{
+            onSubmit: async (values ) =>{
                  const {email} = values
                  const name = email.split('@')[0]
                  setIsModalOpen(true)
 
-                 try {
-                      const response:any = await forgotPassword({name,email})
-                      console.log('res from forgot password',response);
-                      
-                 } catch (error) {
-                      toast.error('invalid email for forgot')
-                 }
+                 
+                      const response = await forgotPassword({name,email})
+                      if(response.success){
+                        toast.success(response?.message)
+                      }
+               
             }
        })
 
-  const handleForgot = (e:any) =>{
+  const handleForgot = (e: React.MouseEvent<HTMLButtonElement>) =>{
        e.preventDefault()
         setIsModalOpen(true)
 
@@ -225,11 +226,15 @@ const Login: React.FC = () => {
                     }
                     console.log('p',password);
                     try {
-                         const res :any =await googleAuth({name,email,password})
+                         const res  =await googleAuth({name,email,password})
+                         if(!res.success){
+                           toast.error(res.message)
+                           return
+                         }
                          localStorage.setItem("userAccessToken",res.data.userAccessToken)  
                          localStorage.setItem("userRefreshToken",res.data.userRefreshToken)  
                          console.log('res from googleAuth ',res);
-                         dispatch(setCredential({...res.data.data}))
+                         dispatch(setCredential({...res.data}))
                          navigate('/')  
                     } catch (error) {
                          console.log('ee',error);

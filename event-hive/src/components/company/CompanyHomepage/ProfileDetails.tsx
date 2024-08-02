@@ -1,9 +1,10 @@
 import { useFormik } from 'formik';
 import React, { useEffect, useState } from 'react';
-import * as Yup from 'yup';
 import { getCompanyProfileData } from '../../../api/companyApi';
 import { toast } from 'react-toastify';
 import { companyProfileEdit } from '../../../api/companyApi';
+import { ICompany } from '../../../types/schema';
+import { companyEditProfileValidation } from '../../../validations/yupValidation';
 
 export interface CompanyData {
   company_name: string;
@@ -27,9 +28,7 @@ function ProfileDetails() {
   useEffect(() => {
     const fetchData = async () => {
       const res = await getCompanyProfileData();
-      console.log('resss from profile company',res);
-      
-      setData(res?.data.data);
+      setData(res?.data);
     };
     fetchData();
   },[]);
@@ -72,20 +71,11 @@ function ProfileDetails() {
         formData.append('company_logo', selectedFile);  // Append the file
         formData.append('token',localStorage.getItem('companyAccessToken') as string)
       }
-      try {
-        const res = await companyProfileEdit(formData);
-        if(res?.data.success){
-          console.log('res from edit profile',res);
-          toast.success('Profile updated successfully');
-          setData(res.data.data)
-          // console.log('====',data)
-          // setCheck(!chek)
-
+        const res = await companyProfileEdit(formData as ICompany);
+        if(res?.success){
+          toast.success(res?.message);
+          setData(res?.data)
         }
-        
-      } catch (error) {
-        toast.error('Something went wrong');
-      }
     },
   });
   return (
@@ -306,18 +296,4 @@ function ProfileDetails() {
 
 export default ProfileDetails;
 
-export const companyEditProfileValidation = Yup.object({
-  company_name: Yup.string().required('Please enter company name'),
-  company_email: Yup.string().email('Invalid email format').required('Please enter company email'),
-  company_address: Yup.string().required('Enter company address'),
-  postal_code: Yup.string().required('Enter the pin code'),
-  locality: Yup.string().required('Enter locality'),
-  state: Yup.string().required('Enter your state'),
-  company_description: Yup.string().required('Enter your company description'),
-  company_website: Yup.string().url('Invalid URL').required('Enter company website'),
-  contact_personname: Yup.string().required('Enter contact name'),
-  contact_personphone: Yup.string().required('Enter contact phone'),
-  country: Yup.string().required('Enter country'),
-  industry_type: Yup.string().required('Select any industry'),
-  // company_logo: Yup.mixed().required('Select company logo'),
-});
+

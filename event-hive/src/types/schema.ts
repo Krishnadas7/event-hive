@@ -28,8 +28,7 @@ export interface IEvent {
     registrations: string[];
     is_block: boolean;
     event_poster: string;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    companyDetails: any;
+    companyDetails: [ICompany];
     company_id: string; 
 }
 export interface EventStatus {
@@ -83,4 +82,12 @@ export interface Obj{
 export interface ReportData{
   userEmail:string
   report:string
+}
+
+export interface IMessages {
+  conversationId?: string;
+  sender?: string;
+  text?: string;
+  createdAt?: Date|number; // If you include timestamps
+  updatedAt?: Date; // If you include timestamps
 }
