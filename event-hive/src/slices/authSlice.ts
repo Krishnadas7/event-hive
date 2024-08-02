@@ -22,7 +22,8 @@ interface InitialState {
     userInfo:  UserInfo | null // UserInfo | null;
     adminInfo: UserInfo | null
     registerInfo: UserInfo | null
-    timerInfo:number | null;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    timerInfo:any
     companyInfo: ICompany | null
 }
 

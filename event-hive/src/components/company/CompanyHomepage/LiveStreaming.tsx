@@ -49,7 +49,7 @@ function LiveStreaming() {
     useEffect(() => {
         const fetchData = async () => {
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
-            const res = await sendNotification(eventId as string, url);
+             await sendNotification(eventId as string, url);
             
         };
         fetchData();
