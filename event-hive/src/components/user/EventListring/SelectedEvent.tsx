@@ -122,7 +122,10 @@ function SelectedEvent() {
              localStorage.removeItem('teamData')
              if(res.data){
                 console.log(res.message)
+                if(event.ticket == 'paid'){
                navigate('/user/success-page')
+                  
+                }
                 
              }else{
                 toast.error(res.message)
