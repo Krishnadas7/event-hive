@@ -78,7 +78,7 @@ interface CompanyNavbarProps {
             <div className='mt-20 '>
               <ul className='text-black flex flex-col gap-3'>
              <li onClick={()=>handleProfile()} className='text-gray-500 hover:bg-slate-300 pl-3 h-7'>Account</li>
-               <li className='text-gray-500  hover:bg-slate-300 pl-3 h-7'>Wallet</li>
+               {/* <li className='text-gray-500  hover:bg-slate-300 pl-3 h-7'>Wallet</li> */}
                <div  className='text-red-500 flex items-center gap-3 hover:bg-slate-300 pl-3 h-7'>
                 <AiOutlineLogout className='w-6 h-6'/>
                 <span onClick={() => handleLogout()}>Logout</span>
