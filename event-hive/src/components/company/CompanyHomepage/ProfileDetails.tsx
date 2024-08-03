@@ -144,7 +144,7 @@ function ProfileDetails() {
           <div className='flex-col flex-1 flex p-2'>
             <label htmlFor='company_contactperson'>Contact Person Name</label>
             <input
-              name='company_contactperson'
+              name='contact_personname'
               value={formik.values.contact_personname}
               onChange={formik.handleChange}
               type='text'
@@ -157,7 +157,7 @@ function ProfileDetails() {
           <div className='flex flex-1 flex-col p-2'>
             <label htmlFor='company_contactphone'>Contact Person Phone</label>
             <input
-              name='company_contactphone'
+              name='contact_personphone'
               value={formik.values.contact_personphone}
               onChange={formik.handleChange}
               type='number'

@@ -71,6 +71,7 @@ const ImageCropper: React.FC<ImageCropperProps> = ({ closeModal, updateAvatar })
      
       const prof = async (formData: FormData) => {
         const res = await profileImageUpload(formData);
+        console.log('profile image upload',res)
         if(res?.success){
           dispatch(setCredential({...res?.data}))
         }
