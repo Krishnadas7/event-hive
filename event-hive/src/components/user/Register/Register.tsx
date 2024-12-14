@@ -28,7 +28,6 @@ const Register: React.FC = () => {
   const [timer,setTimer] = useState(60)
   const [resendButton,setresendButton] = useState(false)
   const {userInfo} = useSelector((state:RootState)=>state.auth)
-  // const [isSumbit, setSubmit] = useState(false)
   const dispatch = useDispatch()
   const navigate = useNavigate()
 

@@ -12,6 +12,7 @@ import { ticketBooking } from '../../../api/userApi';
 import { loadStripe,Stripe } from '@stripe/stripe-js';
 import { toast } from 'react-hot-toast';
 import TeamAdd from '../../common/TeamAdd';
+// import sample from '../../../assets/sample.jpg'
 // import { useNavigate } from 'react-router-dom';
 import { LineWave } from 'react-loader-spinner';
 

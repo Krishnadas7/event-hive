@@ -40,6 +40,7 @@ const todayStr = `${yyyy}-${mm}-${dd}`;
   useEffect(()=>{
   const fetchData = async () =>{
     const res = await eventForUser(pagination)
+    console.log('resfrom userevents==',res)
     if(res?.success){
     setEvents(res?.data)
        

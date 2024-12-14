@@ -21,6 +21,7 @@ const companyApi : AxiosInstance = axios.create({
 companyApi.interceptors.request.use(
   (config) => {
     const accessToken = localStorage.getItem('companyAccessToken');    
+    console.log(accessToken,'======')
     if (accessToken) {
       config.headers.Authorization = `Bearer ${accessToken}`;
       
@@ -35,13 +36,16 @@ companyApi.interceptors.request.use(
 
   companyApi.interceptors.response.use(
     (response) => {
+        console.log('resposne from company',response);
         
         return response;
       },
       async (error) => {
+        console.log('error from intercepror===',error);
+        
         const originalRequest = error.config;
         const refreshToken = localStorage.getItem('companyRefreshToken')
-        
+        console.log('refresh token',refreshToken,)
         if (error.response.status === 401 && !originalRequest._retry && refreshToken) {
           originalRequest._retry = true;
           try {
@@ -77,9 +81,9 @@ companyApi.interceptors.request.use(
     }
   }
 
-export const sendEmail = async (values:ICompany)=>{
+export const sendEmail = async (company_name:string,company_email:string)=>{
     try {
-        const res :AxiosResponse = await companyApi.post('/send-email',values)
+        const res :AxiosResponse = await companyApi.post('/send-email',{company_name,company_email})
     return res.data
     } catch (error) {
       return (error as Error).response?.data;
@@ -87,9 +91,9 @@ export const sendEmail = async (values:ICompany)=>{
     }
     
 }
-export const companyRegister = async (otp:string) =>{
+export const companyRegister = async (otp:string,company_name:string,company_email:string,company_website:string,company_address:string,industry_type:string,company_description:string,password:string) =>{
     try {
-        const res :AxiosResponse = await companyApi.post('/signup',{otp})
+        const res :AxiosResponse = await companyApi.post('/signup',{otp,company_name,company_email,company_website,company_address,industry_type,company_description,password})
         return res.data
     } catch (error) {
       return (error as Error).response?.data;
@@ -117,6 +121,8 @@ export const createEvent = async (formData:EventData) =>{
   try {
     const res:AxiosResponse = await companyApi.post('/event-creation',formData,{headers: {
       'Content-Type': 'multipart/form-data'}})
+      console.log('eeeeeee',res);
+      
       return res?.data
   } catch (error) {
     return (error as Error).response?.data;

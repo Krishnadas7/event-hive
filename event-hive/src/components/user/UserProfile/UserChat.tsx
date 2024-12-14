@@ -49,7 +49,7 @@ function UserChat() {
   
 
       useEffect(()=>{
-          socket.current =io('https://www.shoecrops.online')
+          socket.current =io('https://fullstackbackend-b9a0.onrender.com')
           socket.current.on('getMessage',(data)=>{
             console.log('get message',data)
            setArrivalMessage({
@@ -89,7 +89,7 @@ function UserChat() {
   useEffect(() => {
     const getData = async () => {
       try {
-        const res = await axios.get(`https://www.shoecrops.online/api/conversation?userId=${userInfo?._id}`);
+        const res = await axios.get(`https://fullstackbackend-b9a0.onrender.com/api/conversation?userId=${userInfo?._id}`);
         if(res?.data?.success){
         setConversation(res?.data?.data);
         }
@@ -103,7 +103,7 @@ function UserChat() {
   useEffect(() => {
     const getMessage = async () => {
       try {
-        const res = await axios.get(`https://www.shoecrops.online/api/message?conversationId=${currentChat?._id}`,{
+        const res = await axios.get(`https://fullstackbackend-b9a0.onrender.com/api/message?conversationId=${currentChat?._id}`,{
           withCredentials:true
         });
          if(res?.data?.success){
@@ -145,7 +145,7 @@ function UserChat() {
      
 
     try {
-      const res = await axios.post('https://www.shoecrops.online/api/message', message);
+      const res = await axios.post('https://fullstackbackend-b9a0.onrender.com/api/message', message);
       if(res?.data?.success){
       setMessages([...messages, res?.data?.data]);
         
@@ -161,7 +161,7 @@ function UserChat() {
       receiverId:userId
     }
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const res = await axios.post('https://www.shoecrops.online/api/conversation',obj)
+    const res = await axios.post('https://fullstackbackend-b9a0.onrender.com/api/conversation',obj)
     if(res?.data?.success){
     setSearchQuery('')
     setChange(!change)

@@ -64,7 +64,8 @@ function CompanySignup() {
       dispatch(setTimeInfo({timestamp:currentTime}))
       dispatch(setCompany({...values}))
       try {
-        const res = await sendEmail(values)
+        const {company_name,company_email} = values
+        const res = await sendEmail(company_name,company_email)
         if(res?.success){  
           setIsModalOpen(true)
         }else{
@@ -89,15 +90,9 @@ function CompanySignup() {
         companyInfo.company_email && companyInfo.company_website &&
          companyInfo.company_address && companyInfo.industry_type && 
          companyInfo.company_description && companyInfo.password){
-          const {company_name,company_email,
-            company_website, company_address,industry_type,
-            company_description,password
-          }=companyInfo
-          const obj ={company_name,company_email,
-            company_website, company_address,industry_type,
-            company_description,password
-          }
-          const res =  await sendEmail(obj) 
+          const {company_name,company_email}=companyInfo
+          
+          const res =  await sendEmail(company_name,company_email) 
           
           if(res?.success){
             toast.success(res.message)
@@ -116,7 +111,22 @@ function CompanySignup() {
         toast.error(OTP_EXPIRED);
         return;
       }
-        const res = await companyRegister(otp)
+      if(companyInfo && companyInfo.company_name && 
+        companyInfo.company_email && companyInfo.company_website &&
+         companyInfo.company_address && companyInfo.industry_type && 
+         companyInfo.company_description && companyInfo.password){
+
+          const {company_name,
+            company_email,
+            company_website,
+            company_address,
+            industry_type,
+            company_description,
+            password}=companyInfo
+         
+        const res = await companyRegister(otp,company_name,company_email,company_website,company_address,industry_type,company_description,password)
+        console.log('companyregister ==',res);
+        
         if(res?.success){
           setIsModalOpen(false)
           toast.success(res?.message)
@@ -125,6 +135,7 @@ function CompanySignup() {
           toast.error(res?.message)
         }
    }
+  }
   return (
     <>
       {isModalOpen && (

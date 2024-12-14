@@ -48,9 +48,11 @@ function EventModal({onClose}:EventModalProps) {
       const handleImageChange = (e: React.ChangeEvent<HTMLInputElement> | null) =>{
         if(e && e.target.files && e.target.files.length>0){
             const file = e.target.files[0]
+            console.log('fileee==',file)
             if(file){
                 const imageUrl = URL.createObjectURL(file)
                 setSelectedImage(imageUrl)
+                console.log('fileee==',file)
                 setimageFile(file)
             }
         }
@@ -85,6 +87,7 @@ function EventModal({onClose}:EventModalProps) {
               } 
             }
             const res = await createEvent(formData as EventData)
+            console.log(res,'=====================')
             if(res?.success){
               onClose()
               toast.success(res?.message)
