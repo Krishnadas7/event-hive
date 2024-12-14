@@ -1,4 +1,4 @@
-import  { useEffect } from 'react'
+// import  { useEffect } from 'react'
 import { companyLogin } from '../../../validations/yupValidation';
 import {useFormik} from 'formik'
 import {cLogin} from '../../../api/companyApi'
@@ -8,18 +8,18 @@ import { setCompany } from '../../../slices/authSlice';
 import { useDispatch } from 'react-redux';
  import image from '../../../assets/company_login_page.png'
  import { Link } from 'react-router-dom';
-import { useSelector } from 'react-redux';
-import { RootState } from '../../../app/store';
+// import { useSelector } from 'react-redux';
+// import { RootState } from '../../../app/store';
 
 function CompanyLogin() {
-  const {companyInfo} = useSelector((state:RootState)=>state.auth)
+  // const {companyInfo} = useSelector((state:RootState)=>state.auth)
   const navigate = useNavigate()
 
-  useEffect(()=>{
-    if(companyInfo){
-      navigate('/company/homepage')
-    }
-   },[])
+  // useEffect(()=>{
+  //   if(companyInfo){
+  //     navigate('/company/homepage')
+  //   }
+  //  },[])
 
    const dispatch = useDispatch()
   const {values:loginValues,
