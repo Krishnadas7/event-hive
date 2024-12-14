@@ -130,7 +130,7 @@ function CompanySignup() {
         if(res?.success){
           setIsModalOpen(false)
           toast.success(res?.message)
-          navigate('/company')
+          navigate('/')
         }else{
           toast.error(res?.message)
         }
